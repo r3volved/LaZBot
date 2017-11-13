@@ -9,6 +9,7 @@
 		"user":"lazbot",
 		"password":"lazbot314",
 		"database":"lazbot"
-	}
+	},
 
+	"commands":["desc","help","get","set","del","setup","sync","channel"]
 }

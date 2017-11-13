@@ -3,8 +3,7 @@ var content = fs.readFileSync("./config/settings.json");
 var settings = JSON.parse(content);
 	
 const botToken 		= settings.discordToken;
-const botSettings 	= { "adminRole":settings.adminRole, "database":settings.database };
-const COMMANDS 		= ["get","set","del","desc","setup","sync","channel"];
+const botSettings 	= { "adminRole":settings.adminRole, "database":settings.database, "commands":settings.commands };
 
 const Discord = require('discord.js');
 const client = new Discord.Client();
@@ -26,7 +25,7 @@ client.on('message', message => {
 	var messageParts = message.content.split(" ");
 	
 	//IF THERE'S ONLY ONE WORD IN MESSAGE OR THE FIRST WORD IN MESSAGE IS NOT IN THE COMMANDS INDEX, IGNORE MESSAGE
-	if( messageParts.length === 1 || (COMMANDS.indexOf(messageParts[0].toLowerCase()) === -1 && COMMANDS.lastIndexOf(messageParts[0].toLowerCase()) === -1) ) { return; }
+	if( messageParts.length === 1 || (botSettings.commands.indexOf(messageParts[0].toLowerCase()) === -1 && botSettings.commands.lastIndexOf(messageParts[0].toLowerCase()) === -1) ) { return; }
 
 
 	//LOOK FOR CHANNEL SETTINGS AND DO COMMAND

@@ -71,10 +71,10 @@ function commandGet( args ) {
     }
     
     //IF found DOESN'T MATCH SEARCHINDEX LENGTH THEN WE DIDN'T MATCH THEM ALL RETURN ERROR
-    if( searchKeys.length > 0 && searchIndex.length !== found ) { continue; }
+    if( searchIndex.length !== found ) { continue; }
     
     //SUCCESS
-    //TO GET HERE MEANS YOU'VE MATCHED CHANNELID AND SEARCHKEYS SO GET THIS ROW
+    //TO GET HERE MEANS YOU'VE MATCHED SEARCHKEYS SO GET THIS ROW
     var obj = {};
     for( var f = 0; f !== data[0].length; ++f ) { 
       obj[data[0][f]] = data[r][f];

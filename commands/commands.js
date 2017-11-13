@@ -2,7 +2,19 @@
 
     module.exports.doCommand = function( command, message, messageParts, channel, botSettings ) {
     
-		//DO "get"
+		//==============================
+		// PUBLIC COMMANDS FIRST, HERE
+		//==============================
+    	
+    	//DO "help" or "desc"
+		if( command === "help" || command === "desc" ) {
+			
+			command = require('./commandHelp.js');
+			return command.Help( message, messageParts, channel, botSettings );
+			  
+		}
+    	   	
+    	//DO "get"
 		if( command === "get" ) {
 			
 			command = require('./commandGet.js');
@@ -10,21 +22,18 @@
 			  
 		}
 		 
-    	//==============================
-    	// PUBLIC COMMANDS ABOVE HERE
-    	//==============================
-    			
-		//IF NOT MOD OR ADMIN, RETURN AND ALERT
-		if( !message.member.roles.find("name", botSettings.adminRole) && !message.member.roles.find("name", channel.modrole) ) {
-			
-			return message.reply("You do not have permission to use this command");
-			
-		}
-		  
-		//=============================
-		// MODROLE COMMANDS BELOW HERE
-		//=============================
+		// ==== END PUBLIC COMMANDS ====
 		
+		
+		//IF NOT MOD OR ADMIN, RETURN AND ALERT
+		if( !message.member.roles.find("name", botSettings.adminRole) && !message.member.roles.find("name", channel.modrole) ) {			
+			return message.reply("You do not have permission to use this command");			
+		}
+
+		//=============================
+		// MODROLE COMMANDS NEXT HERE
+		//=============================	
+		  
 		//DO "set"
 		if( command === "set" ) {
 		
@@ -33,16 +42,11 @@
 	
 		}
 		
+		// ==== END MODROLE COMMANDS ====
 		 
-		//=============================
-		// MODROLE COMMANDS ABOVE HERE
-		//=============================
-
 		//IF NOT ADMIN, RETURN AND ALERT
-		if( !message.member.roles.find("name", botSettings.adminRole) ) {
-			
-			return message.reply("You do not have permission to use this command");
-			
+		if( !message.member.roles.find("name", botSettings.adminRole) ) {			
+			return message.reply("You do not have permission to use this command");			
 		}
 		  
 		//=============================
@@ -85,6 +89,7 @@
 	
 		}
 
+		// ==== END ADMIN COMMANDS ====
     
     }
 	

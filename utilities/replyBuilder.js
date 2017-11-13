@@ -1,6 +1,32 @@
 (function() {
 
-    module.exports.replyDetails = function( message, data ) {
+    module.exports.replyArray = function( message, title, arr ) {
+
+		//If data is a string, ensure it's less than 2000 characters and return it
+		if( typeof(arr) === "string" ) { 
+			if( arr.length > 2000 ) { arr = arr.substr(0,1900); }
+			return message.reply("\r\n"+arr); 
+		}
+    			
+		var reply = "```css\r\n";
+		reply += "[ "+title+" ]\r\n";
+		for( var i = 0; i !== arr.length; ++i ) { 
+			reply += i === 0 ? arr[i] : ", "+arr[i];			
+		}
+		reply += "```";
+    		
+		//If we already dm'd some info, send the last bit through dm and notify author in channel
+		if( arr.length > 50 ) {
+			message.author.send("\r\n"+reply);
+			return message.reply("results were too long, so I DM'd them to you");
+		}
+		
+		//...Otherwise reply in channel
+		return message.reply("\r\n"+reply);
+	}
+    
+    
+	module.exports.replyDetails = function( message, data ) {
 
 		//If data is a string, ensure it's less than 2000 characters and return it
 		if( typeof(data) === "string" ) { 

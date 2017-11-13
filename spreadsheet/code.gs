@@ -1,5 +1,5 @@
 //INDEX OF COMMANDS
-var BASE_COMMANDS = ["set","get","del","sync"];
+var BASE_COMMANDS = ["desc","set","get","del","sync"];
 //SYNC COMMANDS
 var SYNC_OPTIONS  = ["characters","ships","guildunits","mods","advisor"];
 
@@ -50,6 +50,9 @@ function doCommand( command, args ) {
   args = typeof(args) === "string" ? JSON.parse(args) : args;
   command = command.toLowerCase();
   switch( command ) {
+    case "desc":
+      return commandDesc( args );
+      break;
     case "set":
       return commandSet( args );
       break;
@@ -91,4 +94,3 @@ function Log( name, description ) {
 function encode(value) {
   return encodeURIComponent(decodeURIComponent(value));
 }
-
