@@ -1,8 +1,8 @@
 (function() {
 
-    module.exports.Sync = function( message, messageParts, channel ) {
+    module.exports.Sync = function( message, messageParts, channel, botSettings ) {
 
-        if( messageParts < 3 ) { message.reply("guildID required"); }
+        if( messageParts < 3 ) { message.reply(botSettings.error.NO_GUILDID); }
 
     	var sync = {};
         var details = messageParts[1].charAt(0) === '-' ? false : true;  
@@ -21,11 +21,16 @@
 		
 			try {
 				var body = JSON.parse(body);
-			    return message.reply("Sync success");
+
+				if( body.response === "error" ) { 
+			    	return message.reply( body.data );
+			    }			    
+
+			    return message.reply(botSettings.success.SYNC);
 			} catch(e) {
 			    console.error(e);
 			    console.error(response);
-			    return message.reply("Sync error");
+			    return message.reply(botSettings.error.SYNC);
 			}
 		
         });

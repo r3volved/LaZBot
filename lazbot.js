@@ -1,17 +1,20 @@
 var fs = require("fs");
 var content = fs.readFileSync("./config/settings.json");
 var settings = JSON.parse(content);
-	
-const botToken 		= settings.discordToken;
-const botSettings 	= { "adminRole":settings.adminRole, "database":settings.database, "commands":settings.commands };
 
+settings.commandList = [];
+for( var k in settings.command ) {
+	settings.commandList.push(settings.command[k]);
+}
+
+const botSettings = settings;
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
 
 //ON READY
 client.on('ready', () => {
-	console.log('Connected with token: '+botToken);
+	console.log("Connected with token: "+botSettings.botToken);	
 });
  
 
@@ -25,7 +28,7 @@ client.on('message', message => {
 	var messageParts = message.content.split(" ");
 	
 	//IF THERE'S ONLY ONE WORD IN MESSAGE OR THE FIRST WORD IN MESSAGE IS NOT IN THE COMMANDS INDEX, IGNORE MESSAGE
-	if( messageParts.length === 1 || (botSettings.commands.indexOf(messageParts[0].toLowerCase()) === -1 && botSettings.commands.lastIndexOf(messageParts[0].toLowerCase()) === -1) ) { return; }
+	if( messageParts.length === 1 || (botSettings.commandList.indexOf(messageParts[0].toLowerCase()) === -1 && botSettings.commandList.lastIndexOf(messageParts[0].toLowerCase()) === -1) ) { return; }
 
 
 	//LOOK FOR CHANNEL SETTINGS AND DO COMMAND
@@ -45,7 +48,7 @@ client.on('message', message => {
 		  con.query(sql, [message.channel.id], function (err, result, fields) {
 
 			//CANNOT FIND CHANNEL 
-			if (err) { return message.reply("this channel is not setup with a spreadsheet"); }
+			if (err) { return message.reply(botSettings.error.NO_SPREADSHEET); }
 		    
 			var channel = {};
 			channel.channelID 		= message.channel.id;
@@ -58,8 +61,8 @@ client.on('message', message => {
 			channel.modrole			= typeof(result[0]) !== "undefined" && typeof(result[0].modrole) 	 !== "undefined" ? result[0].modrole 	  : "botmods";
 			
 			//IF CHANNEL FAILED FOR ANY REASON ESCAPE
-			if( messageParts[0].toLowerCase() !== "setup" && ( typeof(channel.spreadsheet) === "undefined" || channel.spreadsheet === "" ) ) {
-				return message.reply("this channel is not setup with a spreadsheet");
+			if( messageParts[0].toLowerCase() !== botSettings.command.setup && ( typeof(channel.spreadsheet) === "undefined" || channel.spreadsheet === "" ) ) {
+				return message.reply(botSettings.error.NO_SPREADSHEET);
 			}
 			
 			//DO COMMAND
@@ -77,4 +80,4 @@ client.on('message', message => {
 
 
 //LOGIN WITH TOKEN
-client.login(botToken);
+client.login(botSettings.botToken);

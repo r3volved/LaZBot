@@ -2,9 +2,9 @@
 
     module.exports.Help = function( message, messageParts, channel, botSettings ) {
 
-    	if( message.content.toLowerCase() === "help" || messageParts[1].toLowerCase() === "me" ) {
+    	if( message.content.toLowerCase() === botSettings.command.help || messageParts[1].toLowerCase() === botSettings.options.me ) {
     		var replyBuilder = require("../utilities/replyBuilder.js");
-    		return replyBuilder.replyArray( message, "Possible commands", botSettings.commands );
+    		return replyBuilder.replyArray( message, botSettings.success.POSSIBLE_COMMANDS, botSettings.commandList );
     	}
     	    	
     	var help = {};
@@ -25,7 +25,12 @@
 			try {
 			    var body = JSON.parse(body);
 			    var replyBuilder = require("../utilities/replyBuilder.js");
-			    return replyBuilder.replyArray( message, "Possible fields in "+sheet, body.data[0].fields );
+			    
+			    if( body.response === "error" ) { 
+			    	return message.reply( body.data );
+			    }
+			    
+			    return replyBuilder.replyArray( message, botSettings.success.POSSIBLE_FIELDS+sheet, body.data[0].fields );
 			} catch(e) {
 			    console.error(e);
 			    console.error(response);

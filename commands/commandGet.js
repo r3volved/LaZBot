@@ -1,6 +1,6 @@
 (function() {
 
-    module.exports.Get = function( message, messageParts, channel ) {
+    module.exports.Get = function( message, messageParts, channel, botSettings ) {
 
     	var get = {};
         var details = messageParts[1].charAt(0) === '-' ? false : true;  
@@ -12,9 +12,30 @@
 
     		if( typeof(messageParts[i]) !== "undefined" || messageParts[i] !== "" ) { 
  
-    			get[sheet][messageParts[i]] = isNaN(messageParts[i+1]) ? messageParts[i+1] : parseInt(messageParts[i+1]);
+    			var field = messageParts[i];
+    			var value = "";
+    			
+    			if( messageParts[i+1].charAt(0) === "\"" ) {
+    				i++;
+    				value += messageParts[i].substr(1,messageParts[i].length-1);
+    				i++;
+    				for( i; i < messageParts.length; ++i ) {
+    					if( messageParts[i].charAt(messageParts[i].length-1) === "\"" ) {
+    						value += " "+messageParts[i].substr(0,messageParts[i].length-2);
+    						break;
+    					}
+    					value += " "+messageParts[i];
+    				}
+    				get[sheet][field] = isNaN(value) ? value : parseInt(value);
+    				
+    			} else {
+    				
+    				value = messageParts[i+1];
+    				get[sheet][field] = isNaN(value) ? value : parseInt(value);
+    			}	
+    			
     			if( typeof( get.on ) === "undefined" ) { get.on = ""; }
-	        	get.on += get.on ? "|"+messageParts[i] : messageParts[i];
+    			get.on += get.on ? "|"+field : field;
 
     		}
  
@@ -32,6 +53,11 @@
 			try {
 			    var body = JSON.parse(body);
 			    var replyBuilder = require("../utilities/replyBuilder.js");
+			    
+			    if( body.response === "error" ) { 
+			    	return message.reply( body.data );
+			    }
+			    
 			    return details ? replyBuilder.replyDetails( message, body.data ) : replyBuilder.replyData( message, body.data );
 			} catch(e) {
 			    console.error(e);
