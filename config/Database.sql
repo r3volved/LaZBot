@@ -1,10 +1,10 @@
-CREATE USER 'lazbot'@'%' IDENTIFIED WITH mysql_native_password AS '***';
+CREATE DATABASE IF NOT EXISTS `lazbot` CHARACTER SET UTF8;
 
-GRANT USAGE ON *.* TO 'lazbot'@'%' REQUIRE NONE WITH MAX_QUERIES_PER_HOUR 0 MAX_CONNECTIONS_PER_HOUR 0 MAX_UPDATES_PER_HOUR 0 MAX_USER_CONNECTIONS 0;
+CREATE USER 'lazbot'@'localhost' IDENTIFIED BY 'lazbot314';
 
-CREATE DATABASE IF NOT EXISTS `lazbot`;
+GRANT ALL ON `lazbot`.* TO 'lazbot'@'localhost';
 
-GRANT ALL PRIVILEGES ON `lazbot`.* TO 'lazbot'@'%';
+USE `lazbot`;
 
 CREATE TABLE `channel` (
   `channelID` varchar(50) PRIMARY KEY,

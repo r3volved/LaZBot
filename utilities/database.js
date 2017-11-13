@@ -1,11 +1,6 @@
 (function() {
-
-	const dbhost = "localhost";
-	const dbuser = "lazbot";
-	const dbpassword = dbuser+"314";
-	const dbdatabase = dbuser;
 	    
-    module.exports.Setup = function( message, messageParts, channel ) {
+    module.exports.Setup = function( message, messageParts, channel, botSettings ) {
 
     	//Set settable attributes 
     	for( var i = 1; i < messageParts.length; i+=2 ) {
@@ -17,10 +12,10 @@
     	var mysql = require('mysql');
 
     	var con = mysql.createConnection({
-      	  host: dbhost,
-      	  user: dbuser,
-      	  password: dbpassword,
-      	  database: dbdatabase
+      	  host: botSettings.database.host,
+      	  user: botSettings.database.user,
+      	  password: botSettings.database.password,
+      	  database: botSettings.database.database
       	});
     	    	
     	try {

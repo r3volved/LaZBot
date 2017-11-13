@@ -1,0 +1,14 @@
+{
+	
+	"discordToken":"YOUR_BOT_TOKEN_HERE",
+	
+	"adminRole":"botadmins",
+	
+	"database":{
+		"host":"localhost",
+		"user":"lazbot",
+		"password":"lazbot314",
+		"database":"lazbot"
+	}
+
+}

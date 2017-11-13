@@ -1,18 +1,22 @@
+var fs = require("fs");
+var content = fs.readFileSync("./config/settings.json");
+var settings = JSON.parse(content);
+	
+const botToken 		= settings.discordToken;
+const botSettings 	= { "adminRole":settings.adminRole, "database":settings.database };
+const COMMANDS 		= ["get","set","del","desc","setup","sync","channel"];
+
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const token = "Mzc4Njk5NjAyNjk1Njg0MDk2.DOfTHA.22IRCzXYZPGBjMOhRf6lQfFsVlE";
 
-const dbhost = "localhost";
-const dbuser = "lazbot";
-const dbpassword = dbuser+"314";
-const dbdatabase = dbuser;
 
-const COMMANDS = ["get","set","del","desc","setup","sync","channel"];
-
+//ON READY
 client.on('ready', () => {
-  console.log('Connected with token: '+token);
+	console.log('Connected with token: '+botToken);
 });
  
+
+//ON MESSAGE RECEIVED
 client.on('message', message => {
   
 	//IF AUTHOR IS BOT, IGNORE MESSAGE
@@ -29,10 +33,10 @@ client.on('message', message => {
 	var mysql = require('mysql');
 	var channel = {};
 	var con = mysql.createConnection({
-	  host: dbhost,
-	  user: dbuser,
-	  password: dbpassword,
-	  database: dbdatabase
+	  host: botSettings.database.host,
+	  user: botSettings.database.user,
+	  password: botSettings.database.password,
+	  database: botSettings.database.database
 	});
 	    	
 	try {
@@ -55,13 +59,13 @@ client.on('message', message => {
 			channel.modrole			= typeof(result[0]) !== "undefined" && typeof(result[0].modrole) 	 !== "undefined" ? result[0].modrole 	  : "botmods";
 			
 			//IF CHANNEL FAILED FOR ANY REASON ESCAPE
-			if( typeof(channel.spreadsheet) === "undefined" || channel.spreadsheet === "" ) {
+			if( messageParts[0].toLowerCase() !== "setup" && ( typeof(channel.spreadsheet) === "undefined" || channel.spreadsheet === "" ) ) {
 				return message.reply("this channel is not setup with a spreadsheet");
 			}
 			
 			//DO COMMAND
 			var command = require('./commands/commands.js');
-			return command.doCommand( messageParts[0].toLowerCase(), message, messageParts, channel );
+			return command.doCommand( messageParts[0].toLowerCase(), message, messageParts, channel, botSettings );
 	  
 		  });
 		});
@@ -72,4 +76,6 @@ client.on('message', message => {
   
 });
 
-client.login(token);
+
+//LOGIN WITH TOKEN
+client.login(botToken);

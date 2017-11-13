@@ -1,8 +1,6 @@
 (function() {
 
-	const admin = "botadmins";
-
-    module.exports.doCommand = function( command, message, messageParts, channel ) {
+    module.exports.doCommand = function( command, message, messageParts, channel, botSettings ) {
     
 		//DO "get"
 		if( command === "get" ) {
@@ -17,7 +15,7 @@
     	//==============================
     			
 		//IF NOT MOD OR ADMIN, RETURN AND ALERT
-		if( !message.member.roles.find("name", admin) && !message.member.roles.find("name", channel.modrole) ) {
+		if( !message.member.roles.find("name", botSettings.adminRole) && !message.member.roles.find("name", channel.modrole) ) {
 			
 			return message.reply("You do not have permission to use this command");
 			
@@ -41,7 +39,7 @@
 		//=============================
 
 		//IF NOT ADMIN, RETURN AND ALERT
-		if( !message.member.roles.find("name", admin) ) {
+		if( !message.member.roles.find("name", botSettings.adminRole) ) {
 			
 			return message.reply("You do not have permission to use this command");
 			
@@ -63,7 +61,7 @@
 		if( command === "setup" ) {
 	
 			command = require('../utilities/database.js');
-			return command.Setup( message, messageParts, channel );
+			return command.Setup( message, messageParts, channel, botSettings );
 	
 		}
 
