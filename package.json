@@ -1,0 +1,17 @@
+{
+  "name": "jsbot",
+  "version": "1.0.0",
+  "description": "JSBot packages",
+  "main": "jsbot.js",
+  "dependencies": {
+    "discord.js": "^11.2.1",
+    "mysql": "^2.15.0",
+    "request": "^2.83.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
