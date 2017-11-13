@@ -17,7 +17,7 @@ var RETURN_ERROR_COMMAND_MISSING           = "No command specified",
     RETURN_ERROR_SEARCH_MISSING            = "This command is missing a search-on parameter",
     RETURN_ERROR_OBJECT_MISSING            = "This command requires an object to search against.",
     RETURN_ERROR_OBJECT_EMPTY              = "This command received an empty object.",
-    RETURN_ERROR_OBJECT_UNEXPECTED         = "This command received an unexpected object.",
+    RETURN_ERROR_OBJECT_UNEXPECTED         = "This command received an unexpected sheet name.",
     RETURN_ERROR_OBJECT_MISSING_SEARCH_KEY = "This object is missing it's own search key.",
     RETURN_ERROR_DATA_SOURCE_UNINITIALIZED = "This data source was found uninitialized.",
     RETURN_ERROR_DATA_SOURCE_MISSING       = "This data source was not found.",
@@ -91,3 +91,4 @@ function Log( name, description ) {
 function encode(value) {
   return encodeURIComponent(decodeURIComponent(value));
 }
+

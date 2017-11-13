@@ -61,47 +61,42 @@ function setJSON( json, sheet, guildID ) {
   var sheetObj = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(sheet),
       i = 0,
       rows = [],
-      expiration = new Date();
+      updateDate = new Date();
   
-  //Set to expire tomorrow at noon in order to ensure accurate platoon orders
-  expiration.setDate(expiration.getDate() + 1);
-  expiration.setHours(8);
-  expiration.setMinutes(0);
-  expiration.setSeconds(0);
   
   try {
     switch( sheet ) {
       case "guildunits":
-        rows.push(["guildID","player","cname","rarity","combat_type","power","level","expiration"]);
+        rows.push(["guildID","player","cname","rarity","combat_type","power","level","lastUpdated"]);
         for( var units in json ) {
           for (i = 0; i < json[units].length; i++) {
             var unit = json[units][i];
-            rows.push([guildID,unit["player"],units,unit["rarity"],unit["combat_type"],unit["power"],unit["level"],expiration.toISOString().slice(0, 19).replace('T', ' ')]); 
+            rows.push([guildID,unit["player"],units,unit["rarity"],unit["combat_type"],unit["power"],unit["level"],updateDate.toLocalISOString().slice(0, 19).replace('T', ' ')]); 
           }
         }
         break;
       case "mods":
-        rows.push(["mod","secValue","rating","expiration"]);
+        rows.push(["mod","secValue","rating","lastUpdated"]);
         for( var mod in json.secondaries ) {
           var details = json.secondaries[mod].data;
           for( var d = 0; d !== details.length; d++ ) {          
-            rows.push([mod,details[d]["secValue"],details[d]["rating"],expiration.toISOString().slice(0, 19).replace('T', ' ')]);
+            rows.push([mod,details[d]["secValue"],details[d]["rating"],updateDate.toLocalISOString().slice(0, 19).replace('T', ' ')]);
           }
         }
         break;
       case "advisor":
-        rows.push(["name","cname","set1","set2","set3","square","arrow","diamond","triangle","circle","cross","short","families","crew","expiration"]);
+        rows.push(["name","cname","set1","set2","set3","square","arrow","diamond","triangle","circle","cross","short","families","crew","lastUpdated"]);
         for( var d = 0; d !== json.data.length; d++ ) {
           var data = json.data[d];
-          rows.push([data.name,data.cname,data.set1,data.set2,data.set3,data.square,data.arrow,data.diamond,data.triangle,data.circle,data.cross,data.short,data.families,data.crew,expiration.toISOString().slice(0, 19).replace('T', ' ')]);        
+          rows.push([data.name,data.cname,data.set1,data.set2,data.set3,data.square,data.arrow,data.diamond,data.triangle,data.circle,data.cross,data.short,data.families,data.crew,updateDate.toLocalISOString().slice(0, 19).replace('T', ' ')]);        
         }
         break;
       case "ships":
       case "characters":
-        rows.push(["name","base_id","url","image","power","description","combat_type","expiration"]);
+        rows.push(["name","base_id","url","image","power","description","combat_type","lastUpdated"]);
         for (i = 0; i < json.length; i++) {
           var data = json[i];
-          rows.push([data.name, data.base_id,data.url,data.image,data.power,data.description,data.combat_type,expiration.toISOString().slice(0, 19).replace('T', ' ')]); 
+          rows.push([data.name, data.base_id,data.url,data.image,data.power,data.description,data.combat_type,updateDate.toLocalISOString().slice(0, 19).replace('T', ' ')]); 
         }
         break;
       default:
@@ -119,4 +114,9 @@ function setJSON( json, sheet, guildID ) {
   
   //PASS INPUT JSON THROUGH TO OUTPUT
   return JSON.stringify( json );
+}
+
+Date.prototype.toLocalISOString = function() {
+  var off = this.getTimezoneOffset();
+  return new Date(this.getFullYear(), this.getMonth(), this.getDate(), this.getHours(), this.getMinutes() - off, this.getSeconds(), this.getMilliseconds()).toISOString().slice(0,-1);
 }

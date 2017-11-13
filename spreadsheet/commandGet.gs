@@ -12,29 +12,25 @@ function commandGet( args ) {
   
   //GET KEYS IN args
   var keys = Object.keys(args);
-  
+
   //IF NO KEYS RETURN ERROR
   if( keys.length === 0 ) { return Reply(RETURN_ERROR_OBJECT_EMPTY); }
-  
-  //IF NO SEARCH KEY RETURN ERROR
-  if( keys.indexOf("on") < 0 ) { return Reply(RETURN_ERROR_SEARCH_MISSING); }
-  var searchKeys = args[keys.splice(keys.indexOf("on"),1)].split("|");
-  
-  //IF NO OBJECT KEY RETURN ERROR
-  if( keys.length === 0 ) { return Reply(RETURN_ERROR_OBJECT_MISSING); }
+
+  //IF NO SEARCH KEY RETURN ALL
+  var searchKeys = keys.indexOf( "on" ) === -1 && keys.lastIndexOf( "on" ) === -1 ? [] : args[keys.splice(keys.indexOf("on"),1)].split("|");
   var searchObj = keys.pop().toLowerCase();
+  if( searchKeys.length > 0 ) { 
+    //IF OBJECT IS MISSING ITS OWN SEARCH KEYS RETURN ERROR
+    for( var k = 0; k !== searchKeys.length; ++k ) { 
+      if( typeof(args[searchObj][searchKeys[k]]) === "undefined" ) { return Reply(RETURN_ERROR_OBJECT_MISSING_SEARCH_KEY); }  
+    }
+  }  
   
   //IF OBJECT IS NOT IN COMMANDS LIST RETURN ERROR
   if( COMMANDS.indexOf( searchObj ) === -1 && COMMANDS.lastIndexOf( searchObj ) === -1 ) { 
-    var cmds = COMMANDS.toString();
     return Reply(RETURN_ERROR_OBJECT_UNEXPECTED); 
   }
-    
-  //IF OBJECT IS MISSING ITS OWN SEARCH KEYS RETURN ERROR
-  for( var k = 0; k !== searchKeys.length; ++k ) { 
-    if( typeof(args[searchObj][searchKeys[k]]) === "undefined" ) { return Reply(RETURN_ERROR_OBJECT_MISSING_SEARCH_KEY); }  
-  }
-  
+
   //IF NO DATA SOURCE IS PRESENT RETURN ERROR
   try {
     var ssheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(searchObj);
@@ -50,18 +46,6 @@ function commandGet( args ) {
   for( var i = 0; i !== data[0].length; i++ ) {
     fieldIndex.push( data[0][i] );
   }
-
-  //IF FIRST RECORD HAS AN EXPIRATION DATE AND IT'S EXPIRED THEN RESYNC
-  if( typeof(data[1][fieldIndex.indexOf("expiration")]) !== "undefined" ) {
-    var now = new Date();
-    var expired = new Date( data[1][fieldIndex.indexOf("expiration")] );
-    if( now.getTime() > expired.getTime() ) { 
-      var src = {};
-      src[searchObj] = { "guildID":0 };
-      syncSource( src ); 
-    }
-    data = ssheet.getDataRange().getValues();
-  }
   
   //IF FIELD INDEX IS BLANK RETURN ERROR
   if( fieldIndex.length === 0 ) { return Reply(RETURN_ERROR_DATA_SOURCE_UNINITIALIZED); } 
@@ -74,7 +58,7 @@ function commandGet( args ) {
   }
 
   //IF SEARCH INDEX IS EMPTY RETURN ERROR
-  if( searchIndex.length === 0 ) { return Reply(RETURN_ERROR_DATA_SOURCE_MISSING_KEY); }
+  if( searchKeys.length > 0 && searchIndex.length === 0 ) { return Reply(RETURN_ERROR_DATA_SOURCE_MISSING_KEY); }
   
  
 //==SEARCH==
@@ -82,12 +66,12 @@ function commandGet( args ) {
   for( var r = 1; r !== data.length; ++r ) {
     var found = 0;
     for( var i = 0; i !== searchIndex.length; ++i ) {
-      if( data[r][searchIndex[i]].toString().toLowerCase() !== args[searchObj][searchKeys[i]].toString().toLowerCase() ) { continue; }
-      ++found;
+      var val = data[r][searchIndex[i]].toString().toLowerCase();
+      if( val.indexOf( decodeURIComponent(args[searchObj][searchKeys[i]].toString().toLowerCase()) )>-1 ) { ++found; }
     }
     
     //IF found DOESN'T MATCH SEARCHINDEX LENGTH THEN WE DIDN'T MATCH THEM ALL RETURN ERROR
-    if( searchIndex.length !== found ) { continue; }
+    if( searchKeys.length > 0 && searchIndex.length !== found ) { continue; }
     
     //SUCCESS
     //TO GET HERE MEANS YOU'VE MATCHED CHANNELID AND SEARCHKEYS SO GET THIS ROW
