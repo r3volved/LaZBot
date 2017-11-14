@@ -46,6 +46,21 @@
         });
         
     }
+    
+    module.exports.Self = function( message, messageParts, channel, botSettings ) {
+
+	    var replyBuilder = require("../utilities/replyBuilder.js");			    
+	    replyBuilder.replyJSON( message, "your user settings:", message.author );
+    	
+    }
+    
+    module.exports.Bot = function( message, messageParts, channel, botSettings ) {
+
+	    var replyBuilder = require("../utilities/replyBuilder.js");			    
+	    replyBuilder.replyJSON( message, "your user settings:", client );
+    	
+    }
+    
 
 }());
 

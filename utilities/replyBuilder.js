@@ -158,5 +158,47 @@
 		message.channel.stopTyping(true);
 	    return message.reply(title+"\r\n"+reply);
 	}
+    
+    
+    module.exports.replyJSON = function( botSettings, message, title, data ) {
+    	    	
+    	title = typeof(title) !== "undefined" ? title : "";
+    	
+		var cache = [];
+		var reply = JSON.stringify(data, function(key, value) {
+			// Ignore sensitive bot settings
+			if ( (message.author.id !== botSettings.master || message.channel.type !== "dm") && ( key === "database" || key === "botToken" )) { value = "XXXXXXXXXX"; }
+			
+      	  	// Filtering out properties
+    		if (typeof value === 'object' && value !== null) {
+    			console.log()
+    			if (cache.indexOf(value) !== -1 || value.length > 50) { return undefined; }    			
+    			cache.push(value);
+    		}    		
+    		return value;
+      	}, "  ");				
+    	cache = null;  	
+    	  
+    	reply = typeof reply === "undefined" ? "undefined" : reply;
+    	
+    	while( reply.length > 2000 ) {
+    		 		
+    		var n = reply.lastIndexOf(",", 1900);
+
+    		chunk = reply.slice(0,n+1);		    		
+    		reply = reply.slice(n+1);
+    		
+    		chunk = "```js\r\n"+chunk+"```";
+	    	message.author.send(title+"\r\n"+chunk);
+	    	title += title.indexOf("...") === -1 ? "...continued" : "";
+	    	
+    	} 
+
+    	reply = "```js\r\n"+reply+"```";
+    	message.author.send(title+"\r\n"+reply);
+		message.channel.stopTyping(true);
+		return;
+    	    
+    }
 
 }());

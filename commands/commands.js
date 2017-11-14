@@ -6,7 +6,15 @@
 		// PUBLIC COMMANDS FIRST, HERE
 		//==============================
     	
-    	//DO "help" or "desc"
+    	//DO "self"
+		if( command === botSettings.command.self ) {
+			
+			command = require('./commandHelp.js');
+			return command.Self( message, messageParts, channel, botSettings );
+			  
+		}
+
+		//DO "help" or "desc"
 		if( command === botSettings.command.help || command === botSettings.command.describe ) {
 			
 			command = require('./commandHelp.js');
@@ -53,6 +61,14 @@
 		// ADMIN COMMANDS BELOW HERE
 		//=============================
 
+    	//DO "bot"
+		if( command === botSettings.command.bot ) {
+			
+			command = require('./commandHelp.js');
+			return command.Bot( message, messageParts, channel, botSettings );
+			  
+		}
+		
 		//DO "del"
 		if( command === botSettings.command.delete ) {
 	

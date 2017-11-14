@@ -1,9 +1,16 @@
-var fs = require("fs");
-var content = fs.readFileSync("./config/settings.json");
-var settings = JSON.parse(content);
+let fs = require("fs");
+let content = fs.readFileSync("./config/settings.json");
+let settings = JSON.parse(content);
 
+//Compile list of prefixes
+settings.prefixList = [];
+for( let k in settings.prefix ) {
+	settings.prefixList.push(settings.prefix[k]);
+}
+
+//Compile list of commands
 settings.commandList = [];
-for( var k in settings.command ) {
+for( let k in settings.command ) {
 	settings.commandList.push(settings.command[k]);
 }
 
@@ -28,64 +35,52 @@ client.on('disconnect', () => {
 });
 
 
+//LISTEN FOR JOINERS
+client.on('guildMemberAdd', member => {
+	member.channel.send("Hello "+member.username+"!");
+});
+
+
+//LISTEN FOR AVAILABLE
+client.on('guildMemberAvailable', member => {
+	member.channel.send("Welcome back "+member.username+"!");
+});
+
+
 //ON MESSAGE RECEIVED
 client.on('message', message => {
   
-	//IF AUTHOR IS BOT, IGNORE MESSAGE
+	// IF AUTHOR IS BOT, IGNORE MESSAGE
 	if( message.author.bot ) { return; }
-  
-	//SPLIT MESSAGE INTO PARTS
-	var messageParts = message.content.split(" ");
+  	
+	// IF PREFIX IS NOT IN THE PREFIX LIST, IGNORE
+	let prefix = message.content.charAt(0);
+	if( botSettings.prefixList.indexOf(prefix) === -1 && botSettings.prefixList.lastIndexOf(prefix) === -1 ) { return; }
 	
-	//IF THERE'S ONLY ONE WORD IN MESSAGE OR THE FIRST WORD IN MESSAGE IS NOT IN THE COMMANDS INDEX, IGNORE MESSAGE
-	if( messageParts.length === 1 || (botSettings.commandList.indexOf(messageParts[0].toLowerCase()) === -1 && botSettings.commandList.lastIndexOf(messageParts[0].toLowerCase()) === -1) ) { return; }
+	// IF COMMAND IS NOT IN THE COMMAND LIST, IGNORE
+	message.content = message.content.slice(1).trim();
 
-
-	//LOOK FOR CHANNEL SETTINGS AND DO COMMAND
-	var mysql = require('mysql');
-	var channel = {};
-	var con = mysql.createConnection({
-	  host: botSettings.database.host,
-	  user: botSettings.database.user,
-	  password: botSettings.database.password,
-	  database: botSettings.database.database
-	});
-	    	
-	try {
-		con.connect(function(err) {
-		  if (err) throw err;
-		  var sql = "SELECT * FROM `channel` WHERE `channelID`=?";
-		  con.query(sql, [message.channel.id], function (err, result, fields) {
-
-			//CANNOT FIND CHANNEL 
-			if (err) { return message.reply(botSettings.error.NO_SPREADSHEET); }
-		    
-			var channel = {};
-			channel.channelID 		= message.channel.id;
-			channel.serverID		= message.guild.id;
-			channel.server 			= message.guild.name;
-			channel.region 			= message.guild.region;
-			channel.memberCount 	= message.guild.memberCount;			
-			channel.spreadsheet 	= typeof(result[0]) !== "undefined" && typeof(result[0].spreadsheet) !== "undefined" ? result[0].spreadsheet  : "";
-			channel.webhook 		= typeof(result[0]) !== "undefined" && typeof(result[0].webhook) 	 !== "undefined" ? result[0].webhook 	  : "";    	        
-			channel.modrole			= typeof(result[0]) !== "undefined" && typeof(result[0].modrole) 	 !== "undefined" ? result[0].modrole 	  : "botmods";
-			
-			//IF CHANNEL FAILED FOR ANY REASON ESCAPE
-			if( messageParts[0].toLowerCase() !== botSettings.command.setup && ( typeof(channel.spreadsheet) === "undefined" || channel.spreadsheet === "" ) ) {
-				return message.reply(botSettings.error.NO_SPREADSHEET);
-			}
-			
-			//DO COMMAND
-			var command = require('./commands/commands.js');
-			return command.doCommand( messageParts[0].toLowerCase(), message, messageParts, channel, botSettings );
-	  
-		  });
-		});
-		  
-	} catch (err) {
-		return message.reply(err);
+	/**
+	 * TO GET HERE MEANS PREFIX MATCHES
+	 */
+	
+	switch( prefix ) {
+		case botSettings.prefix.query:
+			// QUERY OBJECT DETAILS
+			var command = require('./commands/query.js');
+			break;
+		case botSettings.prefix.append:
+		case botSettings.prefix.remove:
+		case botSettings.prefix.eval:
+			// EVALUATE AN EXPRESSION
+			var command = require('./commands/eval.js');
+			break;
+		default:
+			return;
 	}
-  
+	
+	return command.doCommand( botSettings, client, message );
+
 });
 
 

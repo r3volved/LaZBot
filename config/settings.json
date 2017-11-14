@@ -1,6 +1,8 @@
 {
 	
-	"botToken":"YOUR_BOT_TOKEN_HERE",
+	"botToken":"YOUR_BOT_TOKEN",
+	
+	"master":"YOUR_USER_ID",
 	
 	"adminRole":"botadmins",
 	
@@ -9,6 +11,13 @@
 		"user":"lazbot",
 		"password":"lazbot314",
 		"database":"lazbot"
+	},
+	
+	"prefix":{
+		"query":"?",
+		"eval":"!",
+		"append":"+",
+		"remove":"-"
 	},
 
 	"command":{
@@ -19,7 +28,9 @@
 		"delete":"del",
 		"setup":"setup",
 		"sync":"sync",
-		"channel":"channel"
+		"channel":"channel",
+		"self":"myself",
+		"bot":"lazybot"
 	},
 	
 	"options":{

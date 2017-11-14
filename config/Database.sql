@@ -16,3 +16,13 @@ CREATE TABLE `channel` (
   `webhook` varchar(256) NOT NULL,
   `modrole` varchar(32) DEFAULT NULL
 )
+
+CREATE TABLE `server` (
+  `serverID` varchar(50) PRIMARY KEY,
+  `region` varchar(50) NOT NULL,
+  `memberCount` int(11) NOT NULL,
+  `joined` TIMESTAMP NOT NULL,
+  `botName` varchar(64) NOT NULL,
+  `botPermissions` TEXT NOT NULL,
+  `botRoles` TEXT NOT NULL
+)
