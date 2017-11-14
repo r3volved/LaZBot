@@ -41,10 +41,10 @@
 		"NO_PERMISSION":"You do not have permission to use this command",
 		"NO_GUILDID":"Your guildID needs to be a number",
 		"NO_CONDITIONS":"This command does not use conditions",
-		"GET_HELP":"Your command was malformed. Try:\r\nget <sheet> <field> <value>",
-		"SET_HELP":"Your command was malformed. Try:\r\nset <sheet> <field> <value>",
-		"DEL_HELP":"Your command was malformed. Try:\r\ndel <sheet> <field> <value>",
-		"SYNC_HELP":"Your command was malformed. Try:\r\nsync <sheet> <guildID>",
+		"GET_HELP":"Your command was malformed\r\nTry:\r\nget <sheet> <field> <value>\r\n\r\nOr to learn more about the sheet, try:\r\ndesc <sheet>",
+		"SET_HELP":"Your command was malformed\r\nTry:\r\nset <sheet> <field> <value>\r\n\r\nOr to learn more about the sheet, try:\r\ndesc <sheet>",
+		"DEL_HELP":"Your command was malformed\r\nTry:\r\ndel <sheet> <field> <value>\r\n\r\nOr to learn more about the sheet, try:\r\ndesc <sheet>",
+		"SYNC_HELP":"Your command was malformed\r\nTry:\r\nsync <sheet> <guildID>",
 		"SYNC":"An error occurred while syncing"
 	}
 }

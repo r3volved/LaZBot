@@ -2,6 +2,8 @@
 
     module.exports.Set = function( message, messageParts, channel, botSettings ) {
 
+    	message.channel.startTyping();
+	    
     	var set = {};
         var details = messageParts[1].charAt(0) === '-' ? false : true;  
         var sheet = !details ? messageParts[1].substr(1,messageParts[1].length) : messageParts[1];
@@ -15,14 +17,20 @@
     			var field = messageParts[i];
     			var value = "";
     			
-    			if( typeof(messageParts[i+1]) === "undefined" ) { return message.reply(botSettings.error.SET_HELP); }
+    			if( typeof(messageParts[i+1]) === "undefined" ) { 
+    				
+    				message.channel.stopTyping(true);
+    			    return message.reply(botSettings.error.SET_HELP); 
+    			
+    			}
     			
     			switch( messageParts[i+1] ) {
 	    			case ">":
 	    			case ">=":
 	    			case "<":
 	    			case "<=":
-	    				return message.reply(botSettings.error.NO_CONDITIONS);
+	    				message.channel.stopTyping(true);
+	    			    return message.reply(botSettings.error.NO_CONDITIONS);
 	    			default:
 				}
     			
@@ -65,14 +73,19 @@
 			    var replyBuilder = require("../utilities/replyBuilder.js");
 			    
 			    if( body.response === "error" ) { 
-			    	return message.reply( body.data );
+			    	
+			    	message.channel.stopTyping(true);
+				    return message.reply( body.data );
+			    
 			    }
 			    
 			    var title = botSettings.success.SET_X_RECORDS.replace("%s", body.length);
 			    return details ? replyBuilder.replyDetails( message, title, body.data ) : replyBuilder.replyData( message, title, body.data );
 			} catch(e) {
-			    console.error(e);
-			    console.error(response);
+				//JSON Error
+			    //console.error(e);
+			    //console.error(error);
+				message.channel.stopTyping(true);
 			    message.reply("I had an error with this request");
 			    return;
 			}

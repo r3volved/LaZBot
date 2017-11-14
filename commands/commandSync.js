@@ -2,8 +2,21 @@
 
     module.exports.Sync = function( message, messageParts, channel, botSettings ) {
 
-        if( messageParts.length !== 3 ) { return message.reply(botSettings.error.SYNC_HELP); }
-        if( isNaN(messageParts[2]) ) { return message.reply(botSettings.error.NO_GUILDID); } 
+    	message.channel.startTyping();
+	    
+        if( messageParts.length !== 3 ) { 
+        	
+        	message.channel.stopTyping(true);
+		    return message.reply(botSettings.error.SYNC_HELP); 
+		    
+        }
+        
+        if( isNaN(messageParts[2]) ) { 
+        	
+        	message.channel.stopTyping(true);
+		    return message.reply(botSettings.error.NO_GUILDID); 
+		    
+        } 
         
     	var sync = {};
         var details = messageParts[1].charAt(0) === '-' ? false : true;  
@@ -24,13 +37,19 @@
 				var body = JSON.parse(body);
 
 				if( body.response === "error" ) { 
-			    	return message.reply( body.data );
-			    }			    
+					
+					message.channel.stopTyping(true);
+				    return message.reply( body.data );
+			    
+				}			    
 
+				message.channel.stopTyping(true);
 			    return message.reply(botSettings.success.SYNC);
 			} catch(e) {
-			    console.error(e);
-			    console.error(response);
+				//JSON Error
+			    //console.error(e);
+			    //console.error(error);
+				message.channel.stopTyping(true);
 			    return message.reply(botSettings.error.SYNC);
 			}
 		

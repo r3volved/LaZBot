@@ -18,6 +18,16 @@ client.on('ready', () => {
 });
  
 
+//ON DISCONNECT
+client.on('disconnect', () => {
+	let dcdate = new Date();
+	console.error("Client disconnected at "+dcdate.toISOString());
+	
+	//LOGIN WITH TOKEN
+	client.login(botSettings.botToken);
+});
+
+
 //ON MESSAGE RECEIVED
 client.on('message', message => {
   

@@ -2,6 +2,8 @@
 
     module.exports.Get = function( message, messageParts, channel, botSettings ) {
 
+    	message.channel.startTyping();
+    	
     	var get = {};
         var details = messageParts[1].charAt(0) === '-' ? false : true;  
         var sheet = !details ? messageParts[1].substr(1,messageParts[1].length) : messageParts[1];
@@ -16,7 +18,12 @@
     			var value = "";
     			var condition = "eq";
 
-    			if( typeof(messageParts[i+1]) === "undefined" ) { return message.reply(botSettings.error.GET_HELP); }
+    			if( typeof(messageParts[i+1]) === "undefined" ) { 
+
+    				message.channel.stopTyping();
+    				return message.reply(botSettings.error.GET_HELP); 
+    				
+    			}
 
     			switch( messageParts[i+1] ) {
 	    			case ">":
@@ -76,16 +83,21 @@
 			    var body = JSON.parse(body);
 			    var replyBuilder = require("../utilities/replyBuilder.js");
 			    
-			    if( body.response === "error" ) { 
+			    if( body.response === "error" ) {
+			    	
+					message.channel.stopTyping(true);
 			    	return message.reply( body.data );
+			    	
 			    }
 			    
 			    var title = botSettings.success.GET_X_RECORDS.replace("%s", body.length);
 			    return details ? replyBuilder.replyDetails( message, title, body.data ) : replyBuilder.replyData( message, title, body.data );
 			} catch(e) {
-			    console.error(e);
-			    console.error(response);
-			    message.reply("I had an error with this request");
+				//JSON Error
+			    //console.error(e);
+			    //console.error(error);
+				message.channel.stopTyping(true);
+				message.reply("I had an error with this request");
 			    return;
 			}
 		

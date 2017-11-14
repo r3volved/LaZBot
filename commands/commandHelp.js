@@ -24,16 +24,21 @@
 		
 			try {
 			    var body = JSON.parse(body);
-			    var replyBuilder = require("../utilities/replyBuilder.js");
 			    
 			    if( body.response === "error" ) { 
-			    	return message.reply( body.data );
+
+					message.channel.stopTyping(true);
+					return message.reply( body.data );
+					
 			    }
 			    
+			    var replyBuilder = require("../utilities/replyBuilder.js");			    
 			    return replyBuilder.replyArray( message, botSettings.success.POSSIBLE_FIELDS+sheet, body.data[0].fields );
 			} catch(e) {
-			    console.error(e);
-			    console.error(response);
+				//JSON Error
+			    //console.error(e);
+			    //console.error(error);
+				message.channel.stopTyping(true);
 			    message.reply("I had an error with this request");
 			    return;
 			}

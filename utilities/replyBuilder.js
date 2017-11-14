@@ -6,25 +6,35 @@
 		
 		//If data is a string, ensure it's less than 2000 characters and return it
 		if( typeof(arr) === "string" ) { 
+			
 			if( arr.length > 2000 ) { arr = arr.substr(0,1900); }
-			return message.reply(title+"\r\n"+arr); 
+			
+			message.channel.stopTyping(true);
+		    return message.reply(title+"\r\n"+arr); 
+		
 		}
     			
 		var reply = "```css\r\n";
 		reply += "[ "+title+" ]\r\n";
 		for( var i = 0; i !== arr.length; ++i ) { 
+			
 			reply += i === 0 ? arr[i] : ", "+arr[i];			
+		
 		}
 		reply += "```";
     		
 		//If we already dm'd some info, send the last bit through dm and notify author in channel
 		if( arr.length > 50 ) {
-			message.author.send(reply);
+			
+			message.channel.stopTyping(true);
+		    message.author.send(reply);
 			return message.reply("results were too long, so I DM'd them to you");
+		
 		}
 		
 		//...Otherwise reply in channel
-		return message.reply(reply);
+		message.channel.stopTyping(true);
+	    return message.reply(reply);
 	}
     
     
@@ -34,10 +44,22 @@
 		
 		//If data is a string, ensure it's less than 2000 characters and return it
 		if( typeof(data) === "string" ) { 
+			
 			if( data.length > 2000 ) { data = data.substr(0,1900); }
-			return message.reply(title+"\r\n"+data); 
+			
+			message.channel.stopTyping(true);
+		    return message.reply(title+"\r\n"+data); 
+		
 		}
     	
+
+		var longest = 0;
+		for (var k in data[0]) {
+			if (data[0].hasOwnProperty(k)) {
+				longest = k.length > longest ? k.length : longest;
+			}
+		}
+		
 		//If data is array, loop through
 		var reply = "";
 		var dm = false;
@@ -45,16 +67,20 @@
 			
 			//If our reply has grown over 1500 characters, or array > 5 send to DM and start new page
 			if( reply.length > 1500 || ( i > 0 && i % 10 === 0 ) ) {
+				
 				message.author.send(reply);			
 				reply = "";
 				dm = true;
+			
 			}
 		    
 			//Prepare data in a code block
-			reply += "```\r\n";
+			reply += "```css\r\n";
 			for (var k in data[i]) {
 				if (data[i].hasOwnProperty(k)) {
-					reply += typeof(data[i][k]) !== undefined ? k+" : "+data[i][k]+"\r\n" : "";
+					var fieldstr = k;
+					for( var s = k.length; s < longest; ++s ) { fieldstr += " "; }
+					reply += typeof(data[i][k]) !== undefined ? "[ "+fieldstr+" ] : "+data[i][k]+"\r\n" : "[ "+fieldstr+" ] : null";
 				}
 			}
 			reply += "```";
@@ -62,12 +88,16 @@
     		
 		//If we already dm'd some info, send the last bit through dm and notify author in channel
 		if( dm || data.length > 10 ) {
-			message.author.send(title+"\r\n"+reply);
+			
+			message.channel.stopTyping(true);
+		    message.author.send(title+"\r\n"+reply);
 			return message.reply("results were too long, so I DM'd them to you");
+		
 		}
 		
 		//...Otherwise reply in channel
-		return message.reply(title+"\r\n"+reply);
+		message.channel.stopTyping(true);
+	    return message.reply(title+"\r\n"+reply);
 	}
 
     
@@ -77,8 +107,12 @@
 		
 		//If data is a string, ensure it's less than 2000 characters and return it
 		if( typeof(data) === "string" ) { 
+		
 			if( data.length > 2000 ) { data = data.substr(0,1900); }
-			return message.reply(title+"\r\n"+reply); 
+			
+			message.channel.stopTyping(true);
+		    return message.reply(title+"\r\n"+reply); 
+		
 		}
     	
 		//If data is array, loop through
@@ -88,9 +122,11 @@
 			
 			//If our reply has grown over 1500 characters, or array > 5 send to DM and start new page
 			if( reply.length > 1500 || ( i > 0 && i % 10 === 0 ) ) {
+				
 				message.author.send(reply);			
 				reply = "";
 				dm = true;
+			
 			}
 		    
 			//Prepare data in a code block
@@ -111,12 +147,16 @@
     		
 		//If we already dm'd some info, send the last bit through dm and notify author in channel
 		if( dm || data.length > 10 ) {
-			message.author.send(title+"\r\n"+reply);
+			
+			message.channel.stopTyping(true);
+		    message.author.send(title+"\r\n"+reply);
 			return message.reply("results were too long, so I DM'd them to you");
+		
 		}
 		
 		//...Otherwise reply in channel
-		return message.reply(title+"\r\n"+reply);
+		message.channel.stopTyping(true);
+	    return message.reply(title+"\r\n"+reply);
 	}
 
 }());

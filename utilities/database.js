@@ -2,6 +2,8 @@
 	    
     module.exports.Setup = function( message, messageParts, channel, botSettings ) {
 
+    	message.channel.startTyping();
+	    
     	//Set settable attributes 
     	for( var i = 1; i < messageParts.length; i+=2 ) {
     		if( messageParts[i].toLowerCase() === "spreadsheet" ) { channel.spreadsheet = typeof(messageParts[i+1]) === "undefined" || messageParts[i+1] === "" ? "" 		: messageParts[i+1]; }
@@ -27,12 +29,15 @@
 				con.query(sql, sqlargs, function (err, result) {
 					if (err) { throw err; }
 					
+					message.channel.stopTyping(true);
 				    return message.reply("Updated successfully");
 				});
 
     		});
 
     	} catch (err) {
+    		
+    		message.channel.stopTyping(true);
     		return message.reply(err);
     	}
     	
