@@ -80,7 +80,7 @@ function commandDel( args ) {
       obj[data[0][f]] = data[r][f];
     }
     success.push( obj );
-    ssheet.deleteRow(r+1);
+    ssheet.deleteRow(r);
   }
 //==END SEARCH==
   

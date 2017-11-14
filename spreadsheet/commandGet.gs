@@ -53,8 +53,9 @@ function commandGet( args ) {
   //IF NO SEARCH KEY IN FIELD INDEX RETURN ERROR
   var searchIndex = [];
   for( var k = 0; k !== searchKeys.length; ++k ) { 
-    if( fieldIndex.indexOf( searchKeys[k] ) < 0 ) { return Reply(RETURN_ERROR_DATA_SOURCE_MISSING_KEY); }
-    searchIndex.push( fieldIndex.indexOf( searchKeys[k] ) );
+    var thisKey = searchKeys[k].split("-");
+    if( fieldIndex.indexOf( thisKey[0] ) < 0 ) { return Reply(RETURN_ERROR_DATA_SOURCE_MISSING_KEY); }
+    searchIndex.push( fieldIndex.indexOf( thisKey[0] ) );
   }
 
   //IF SEARCH INDEX IS EMPTY RETURN ERROR
@@ -64,10 +65,41 @@ function commandGet( args ) {
 //==SEARCH==
   var success = [];
   for( var r = 1; r !== data.length; ++r ) {
+    
     var found = 0;
     for( var i = 0; i !== searchIndex.length; ++i ) {
+      
+      var keyCondition = searchKeys[i].split("-");
+      
       var val = data[r][searchIndex[i]].toString().toLowerCase();
-      if( val.indexOf( decodeURIComponent(args[searchObj][searchKeys[i]].toString().toLowerCase()) )>-1 ) { ++found; }
+      val = isNaN(val) ? val : parseInt(val);
+      
+      var key = decodeURIComponent(args[searchObj][searchKeys[i]].toString().toLowerCase());
+      key = isNaN(key) ? key : parseInt(key);
+            
+      switch( keyCondition[1] ) {
+        case "gt":
+          if( isNaN(val) || isNaN(key) ) { return Reply(RETURN_ERROR_CONDITION_NO_NUMBER); }
+          if( val > key ) { ++found; }
+          break;
+        case "ge":
+          if( isNaN(val) || isNaN(key) ) { return Reply(RETURN_ERROR_CONDITION_NO_NUMBER); }
+          if( val >= key ) { ++found; }
+          break;
+        case "lt":
+          if( isNaN(val) || isNaN(key) ) { return Reply(RETURN_ERROR_CONDITION_NO_NUMBER); }
+          if( val < key ) { ++found; }
+          break;
+        case "le":
+          if( isNaN(val) || isNaN(key) ) { return Reply(RETURN_ERROR_CONDITION_NO_NUMBER); }
+          if( val <= key ) { ++found; }
+          break;
+        case "eq":
+        default:
+          if( (!isNaN(val) && val === key) || (isNaN(val) && val.indexOf( key )>-1) ) { ++found; }
+          break;
+      }
+      
     }
     
     //IF found DOESN'T MATCH SEARCHINDEX LENGTH THEN WE DIDN'T MATCH THEM ALL RETURN ERROR

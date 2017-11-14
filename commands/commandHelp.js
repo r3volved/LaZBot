@@ -34,6 +34,7 @@
 			} catch(e) {
 			    console.error(e);
 			    console.error(response);
+			    message.reply("I had an error with this request");
 			    return;
 			}
 		

@@ -24,7 +24,7 @@
 		 
 		// ==== END PUBLIC COMMANDS ====
 		
-		
+
 		//IF NOT MOD OR ADMIN, RETURN AND ALERT
 		if( !message.member.roles.find("name", botSettings.adminRole) && !message.member.roles.find("name", channel.modrole) ) {			
 			return message.reply(botSettings.error.NO_PERMISSION);			
@@ -83,7 +83,7 @@
 			if( messageParts[1].toLowerCase() === botSettings.options.settings ) {
 				  
 				var replyBuilder = require('../utilities/replyBuilder.js');
-				return replyBuilder.replyDetails( message, [channel] );
+				return replyBuilder.replyDetails( message, "", [channel] );
 				  			
 			}
 	

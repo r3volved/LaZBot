@@ -21,8 +21,9 @@ var RETURN_ERROR_COMMAND_MISSING           = "No command specified",
     RETURN_ERROR_OBJECT_MISSING_SEARCH_KEY = "This object is missing it's own search key.",
     RETURN_ERROR_DATA_SOURCE_UNINITIALIZED = "This data source was found uninitialized.",
     RETURN_ERROR_DATA_SOURCE_MISSING       = "This data source was not found.",
-    RETURN_ERROR_DATA_SOURCE_MISSING_KEY   = "This data source does not have the requested search key.";
-
+    RETURN_ERROR_DATA_SOURCE_MISSING_KEY   = "This data source does not have the requested search key.",
+    RETURN_ERROR_CONDITION_NO_NUMBER       = "This condition requires a number";
+    
 // Return fail string
 var RETURN_FAIL_EXECUTION  = "No commands were processed",
     RETURN_FAIL_RECORDS    = "This command did not find any matching records";

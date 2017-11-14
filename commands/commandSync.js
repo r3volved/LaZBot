@@ -2,14 +2,15 @@
 
     module.exports.Sync = function( message, messageParts, channel, botSettings ) {
 
-        if( messageParts < 3 ) { message.reply(botSettings.error.NO_GUILDID); }
-
+        if( messageParts.length !== 3 ) { return message.reply(botSettings.error.SYNC_HELP); }
+        if( isNaN(messageParts[2]) ) { return message.reply(botSettings.error.NO_GUILDID); } 
+        
     	var sync = {};
         var details = messageParts[1].charAt(0) === '-' ? false : true;  
         var sheet = !details ? messageParts[1].substr(1,messageParts[1].length) : messageParts[1];
         
         sync[sheet] = {};
-        sync[sheet].guildID = parseInt(messageParts[2]);
+        sync[sheet].guildID = messageParts[2];
         
         var requestURL = channel.spreadsheet+"?sync="+encodeURIComponent(JSON.stringify(sync));
         console.log( channel.spreadsheet+"?sync="+JSON.stringify(sync) );

@@ -30,13 +30,21 @@
 	"success":{
 		"POSSIBLE_COMMANDS":"Possible commands",
 		"POSSIBLE_FIELDS":"Possible fields in ",
+		"GET_X_RECORDS":"Found %s record(s)",
+		"DEL_X_RECORDS":"Deleted %s record(s)",
+        "SET_X_RECORDS":"Updated %s record(s)",        
 		"SYNC":"Synced successfully"
 	},
 		
 	"error":{
 		"NO_SPREADSHEET":"This channel is not setup with a spreadsheet",
 		"NO_PERMISSION":"You do not have permission to use this command",
-		"NO_GUILDID":"This command requires your guildID",
+		"NO_GUILDID":"Your guildID needs to be a number",
+		"NO_CONDITIONS":"This command does not use conditions",
+		"GET_HELP":"Your command was malformed. Try:\r\nget <sheet> <field> <value>",
+		"SET_HELP":"Your command was malformed. Try:\r\nset <sheet> <field> <value>",
+		"DEL_HELP":"Your command was malformed. Try:\r\ndel <sheet> <field> <value>",
+		"SYNC_HELP":"Your command was malformed. Try:\r\nsync <sheet> <guildID>",
 		"SYNC":"An error occurred while syncing"
 	}
 }

@@ -15,19 +15,29 @@
     			var field = messageParts[i];
     			var value = "";
     			
+    			if( typeof(messageParts[i+1]) === "undefined" ) { return message.reply(botSettings.error.SET_HELP); }
+    			
+    			switch( messageParts[i+1] ) {
+	    			case ">":
+	    			case ">=":
+	    			case "<":
+	    			case "<=":
+	    				return message.reply(botSettings.error.NO_CONDITIONS);
+	    			default:
+				}
+    			
     			if( messageParts[i+1].charAt(0) === "\"" ) {
-    				i++;
-    				value += messageParts[i].substr(1,messageParts[i].length-1);
-    				i++;
+    				value += messageParts[++i].replace(/\"/gi,"");
+    				++i;
     				for( i; i < messageParts.length; ++i ) {
     					if( messageParts[i].charAt(messageParts[i].length-1) === "\"" ) {
-    						value += " "+messageParts[i].substr(0,messageParts[i].length-2);
+    						value += " "+messageParts[i].replace(/\"/gi,"");
     						break;
     					}
     					value += " "+messageParts[i];
     				}
     				set[sheet][field] = isNaN(value) ? value : parseInt(value);
-    				
+    				--i;
     			} else {
     				
     				value = messageParts[i+1];
@@ -58,10 +68,12 @@
 			    	return message.reply( body.data );
 			    }
 			    
-			    return details ? replyBuilder.replyDetails( message, body.data ) : replyBuilder.replyData( message, body.data );
+			    var title = botSettings.success.SET_X_RECORDS.replace("%s", body.length);
+			    return details ? replyBuilder.replyDetails( message, title, body.data ) : replyBuilder.replyData( message, title, body.data );
 			} catch(e) {
 			    console.error(e);
 			    console.error(response);
+			    message.reply("I had an error with this request");
 			    return;
 			}
 		

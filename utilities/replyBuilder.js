@@ -2,10 +2,12 @@
 
     module.exports.replyArray = function( message, title, arr ) {
 
+    	title = typeof(title) !== "undefined" ? title : "";
+		
 		//If data is a string, ensure it's less than 2000 characters and return it
 		if( typeof(arr) === "string" ) { 
 			if( arr.length > 2000 ) { arr = arr.substr(0,1900); }
-			return message.reply("\r\n"+arr); 
+			return message.reply(title+"\r\n"+arr); 
 		}
     			
 		var reply = "```css\r\n";
@@ -17,21 +19,23 @@
     		
 		//If we already dm'd some info, send the last bit through dm and notify author in channel
 		if( arr.length > 50 ) {
-			message.author.send("\r\n"+reply);
+			message.author.send(reply);
 			return message.reply("results were too long, so I DM'd them to you");
 		}
 		
 		//...Otherwise reply in channel
-		return message.reply("\r\n"+reply);
+		return message.reply(reply);
 	}
     
     
-	module.exports.replyDetails = function( message, data ) {
+	module.exports.replyDetails = function( message, title, data ) {
 
+		title = typeof(title) !== "undefined" ? title : "";
+		
 		//If data is a string, ensure it's less than 2000 characters and return it
 		if( typeof(data) === "string" ) { 
 			if( data.length > 2000 ) { data = data.substr(0,1900); }
-			return message.reply("\r\n"+data); 
+			return message.reply(title+"\r\n"+data); 
 		}
     	
 		//If data is array, loop through
@@ -41,7 +45,7 @@
 			
 			//If our reply has grown over 1500 characters, or array > 5 send to DM and start new page
 			if( reply.length > 1500 || ( i > 0 && i % 10 === 0 ) ) {
-				message.author.send("\r\n"+reply);			
+				message.author.send(reply);			
 				reply = "";
 				dm = true;
 			}
@@ -58,21 +62,23 @@
     		
 		//If we already dm'd some info, send the last bit through dm and notify author in channel
 		if( dm || data.length > 10 ) {
-			message.author.send("\r\n"+reply);
+			message.author.send(title+"\r\n"+reply);
 			return message.reply("results were too long, so I DM'd them to you");
 		}
 		
 		//...Otherwise reply in channel
-		return message.reply("\r\n"+reply);
+		return message.reply(title+"\r\n"+reply);
 	}
 
     
-    module.exports.replyData = function( message, data ) {
+    module.exports.replyData = function( message, title, data ) {
 
+    	title = typeof(title) !== "undefined" ? title : "";
+		
 		//If data is a string, ensure it's less than 2000 characters and return it
 		if( typeof(data) === "string" ) { 
 			if( data.length > 2000 ) { data = data.substr(0,1900); }
-			return message.reply("\r\n"+data); 
+			return message.reply(title+"\r\n"+reply); 
 		}
     	
 		//If data is array, loop through
@@ -82,7 +88,7 @@
 			
 			//If our reply has grown over 1500 characters, or array > 5 send to DM and start new page
 			if( reply.length > 1500 || ( i > 0 && i % 10 === 0 ) ) {
-				message.author.send("\r\n"+reply);			
+				message.author.send(reply);			
 				reply = "";
 				dm = true;
 			}
@@ -105,12 +111,12 @@
     		
 		//If we already dm'd some info, send the last bit through dm and notify author in channel
 		if( dm || data.length > 10 ) {
-			message.author.send("\r\n"+reply);
+			message.author.send(title+"\r\n"+reply);
 			return message.reply("results were too long, so I DM'd them to you");
 		}
 		
 		//...Otherwise reply in channel
-		return message.reply("\r\n"+reply);
+		return message.reply(title+"\r\n"+reply);
 	}
 
 }());
