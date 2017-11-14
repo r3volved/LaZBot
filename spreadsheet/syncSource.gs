@@ -18,13 +18,16 @@ function syncSource( args ) {
   //IF OBJECT IS NOT IN SYNC LIST RETURN ERROR
   if( SYNC_OPTIONS.lastIndexOf( syncObj ) < 0 ) { 
     var cmds = SYNC_OPTIONS.toString();
-    Logger.log( syncObj );
-    Logger.log( SYNC_OPTIONS.lastIndexOf( syncObj ) );
     return Reply("error","Unknown object type for SYNC request - Try one of the following: "+cmds); 
   }
   
   //IF OBJECT IS MISSING CHANNEL ID RETURN ERROR
-  if( typeof(args[syncObj].guildID) === "undefined" ) { return Reply("error","Missing a guildID for "+syncObj); }
+  if( typeof(args[syncObj].guildID) === "undefined" || typeof(args[syncObj].guildID) === null ) { 
+    args[syncObj].guildID = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("COMMANDS").getRange(4,2,1,1).getValue();
+    if( typeof(args[syncObj].guildID) === "undefined" || typeof(args[syncObj].guildID) === null ) { 
+      return Reply("error","Missing a guildID for "+syncObj); 
+    }
+  }
   //IF GUILDID IS NOT A NUMBER RETURN ERROR
   if( isNaN(args[syncObj].guildID) ) { return Reply("error","guildID needs to be a number"); }
   args[syncObj].guildID = typeof(args[syncObj].guildID) === "string" ? parseInt(args[syncObj].guildID) : args[syncObj].guildID;

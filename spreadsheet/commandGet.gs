@@ -79,24 +79,20 @@ function commandGet( args ) {
             
       switch( keyCondition[1] ) {
         case "gt":
-          if( isNaN(val) || isNaN(key) ) { return Reply(RETURN_ERROR_CONDITION_NO_NUMBER); }
           if( val > key ) { ++found; }
           break;
         case "ge":
-          if( isNaN(val) || isNaN(key) ) { return Reply(RETURN_ERROR_CONDITION_NO_NUMBER); }
           if( val >= key ) { ++found; }
           break;
         case "lt":
-          if( isNaN(val) || isNaN(key) ) { return Reply(RETURN_ERROR_CONDITION_NO_NUMBER); }
           if( val < key ) { ++found; }
           break;
         case "le":
-          if( isNaN(val) || isNaN(key) ) { return Reply(RETURN_ERROR_CONDITION_NO_NUMBER); }
           if( val <= key ) { ++found; }
           break;
         case "eq":
         default:
-          if( (!isNaN(val) && val === key) || (isNaN(val) && val.indexOf( key )>-1) ) { ++found; }
+          if( (!isNaN(val) && val === key) || (isNaN(val) && val.toString().toLowerCase().indexOf( key.toString().toLowerCase() )>-1) ) { ++found; }
           break;
       }
       
