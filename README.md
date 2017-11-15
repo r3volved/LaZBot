@@ -18,6 +18,10 @@ This json file is your bot's global settings and references
 
 Set the bot's language by translating the settings.json command and message values into your native language 
 
+### Finally
+
+Remove the language tag from the settings.json filename - resulting final file should be "settings.json"
+
 
 ## Usage
 
@@ -31,21 +35,21 @@ Some prefixes can be doubled up for special purpose, example:
 
 Setup channel settings with [ ~~ ]:
 
-~~spreadsheet <spreadsheetURL>
-~~webhook <webhookURL>
-~~modrole <botModeratorRole>
+~~spreadsheet <spreadsheetURL>\r\n
+~~webhook <webhookURL>\r\n
+~~modrole <botModeratorRole>\r\n
 
 Query the channel settings, or your own settings, 
 or describe the fields in a sheet with [ ?? ]:
 
-??<sheet>
-??channel       (editable in settings.json)
-??me            (editable in settings.json)
+??<sheet>\r\n
+??channel       (editable in settings.json)\r\n
+??me            (editable in settings.json)\r\n
 
 ### Conditions
 
 Query spreadsheet against specific conditions such as:
 
-?warning player "Dr Play"
-?player score < 10
-?characters power >= 1000000
+?warning player "Dr Play"\r\n
+?player score < 10\r\n
+?characters power >= 1000000\r\n
