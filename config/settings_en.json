@@ -34,12 +34,14 @@
     
     "messages":{
     	"HELLO":"Hello %s! Welcome to the shit show!",
-        "KEYS":"Keys in ",
-        "VALUE":"Value of ",
-        "VALUES":"Values of ",
-        "DETAILS":"Details of ",
+        "KEYS":"Keys in: ",
+        "VALUE":"Value of: ",
+        "VALUES":"Values of: ",
+        "DETAILS":"Details of: ",
+        "RESULTS":"Result of: ",
         "CHANNEL_SETTINGS":"Channel settings ",
-        "YOUR_SETTINGS":"Your settings "
+        "YOUR_SETTINGS":"Your settings ",
+        "CONTINUED":"...continued"
     },
     
     "success":{
@@ -53,12 +55,12 @@
     },
         
     "error":{
-        "NO_DM":"I can't query a spreadsheet through DM", 
+        "NO_DM":"I can't run this query through DM", 
         "NO_SPREADSHEET":"This channel is not setup with a spreadsheet",
         "NO_PERMISSION":"You do not have permission to use this command",
         "NO_GUILDID":"Your guildID needs to be a number",
         "NO_CONDITIONS":"This command does not use conditions",
-        "RESULTS_TOOL_LONG":"The results of this request are too long, try again with more details",
+        "RESULTS_TOO_LONG":"The results of this request are too long, try again with more details",
         "GET_HELP":"Your command was malformed\r\nTry:\r\n?<sheet> <field> <value>\r\n\r\nOr to learn more about the sheet, try:\r\n??<sheet>",
         "SET_HELP":"Your command was malformed\r\nTry:\r\n+<sheet> <field> <value>\r\n\r\nOr to learn more about the sheet, try:\r\n??<sheet>",
         "DEL_HELP":"Your command was malformed\r\nTry:\r\n-<sheet> <field> <value>\r\n\r\nOr to learn more about the sheet, try:\r\n??<sheet>",
