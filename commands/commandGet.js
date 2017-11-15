@@ -1,6 +1,6 @@
 (function() {
 
-    module.exports.doCommand = function( botSettings, client, message ) {
+    module.exports.doCommand = function( botSettings, client, message, prefix ) {
     	
     	var messageParts = message.content.split(" ");
         var sheet = messageParts[0];
@@ -70,7 +70,7 @@
     	}
     	
     	var query = require("../utilities/queryBuilder.js");
-    	return query.QuerySheet( botSettings, client, message, "get", get );
+    	return query.QuerySheet( botSettings, client, message, prefix, "get", get );
                    
     }
 

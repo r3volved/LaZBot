@@ -84,7 +84,8 @@ function commandSet( args ) {
   }
 //==END SEARCH==
   
-
+  var action = success.length === 0 ? "Nothing" : "Updated";
+  
   //IF NOT FOUND AND UPDATED APPEND NEW ROW
   if( success.length === 0 ) { 
     var newRow = [];
@@ -94,8 +95,9 @@ function commandSet( args ) {
     }
     ssheet.appendRow(newRow);
     success.push(args[searchObj]);
+    action = "Logged";
   }  
   
   //RETURN UPDATE SUCCESS
-  return Reply(success);
+  return Reply(success,title);
 }

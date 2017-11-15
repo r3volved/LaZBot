@@ -1,3 +1,5 @@
+//DEV link: https://script.google.com/macros/s/AKfycbw9fObTPYu252a3-FNyk31deLZGq4VmpkIOeYbG9MqM/dev
+//Live link: https://script.google.com/macros/s/AKfycbx-d8pmqfvJhuLDhjfBYDRMcoym79pYRoX8UU16PlZqvh3ROyeO/exec
 //INDEX OF COMMANDS
 var BASE_COMMANDS = ["desc","set","get","del","sync"];
 //SYNC COMMANDS
@@ -73,7 +75,8 @@ function doCommand( command, args ) {
 
 //BASIC REPLY STRINGIFIER FOR CONSISTENT REPLY SCHEMA
 // { "response":RESPONSE_SRTING, "data":OBJECT_ARRAY, "length":INT }
-function Reply( val ) {
+function Reply( val, action ) {
+  action = typeof(action) !== "undefined" ? action : "Nothing";
   var len = typeof(val) !== "string" ? val.length :-1;
   var response = typeof(val) !== "string" ? RETURN_SUCCESS : val.toString().toLowerCase().indexOf("fail") >= 0 ? RETURN_FAIL : RETURN_ERROR;
   
@@ -82,8 +85,14 @@ function Reply( val ) {
     Log( response, val );
   }
 
+  var msg = {};
+  msg.response = response;
+  msg.action = action;
+  msg.data = val;
+  msg.length = len;
+  
   //RETURN TO WEB SERVICES
-  return "{\"response\":\""+response+"\",\"data\":"+JSON.stringify(val)+",\"length\":"+len+"}";
+  return JSON.stringify(msg);
 }
 //Quick append to log sheet
 function Log( name, description ) {

@@ -56,5 +56,5 @@ function commandDesc( args ) {
   //  
   //}
   
-  return Reply(success);
+  return Reply(success,"Description");
 }

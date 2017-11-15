@@ -1,18 +1,12 @@
 (function() {
 
-    module.exports.doCommand = function( botSettings, client, message ) {
+    module.exports.doCommand = function( botSettings, client, message, prefix ) {
 
 		//IF NOT ADMIN, RETURN AND ALERT
 		if( message.channel.type !== "dm" && !message.member.roles.find("name", botSettings.adminRole) ) {			
 			return message.reply(botSettings.error.NO_PERMISSION);			
 		}
 
-		return objectDetails( botSettings, client, message );
-
-    }
-    
-    
-    function objectDetails( botSettings, client, message ) {
     	var parts = message.content.split(".");
     	var obj = {};
     	switch( parts[0] ) {
@@ -46,10 +40,10 @@
     	}
     	
     	var content = typeof obj === "object" ? Object.keys( obj ) : obj;
-    	var title = typeof obj === "object" ? "Keys in "+message.content : "Value of "+message.content;
+    	var title = typeof obj === "object" ? botSettings.messages.KEYS+message.content : botSettings.messages.VALUES+message.content;
     	
     	var replyBuilder = require("../utilities/replyBuilder.js");
-    	return replyBuilder.replyJSON( botSettings, message, title, content );
+    	return replyBuilder.replyJSON( botSettings, client, message, prefix, title, content );
     }
     
 }());

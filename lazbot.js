@@ -20,7 +20,9 @@ const client = new Discord.Client();
 
 const botLog = require("./utilities/database.js");
 
-
+/**
+ * MONITOR CHANNEL
+ */
 //ON MESSAGE RECEIVED
 client.on('message', message => {
   
@@ -34,10 +36,7 @@ client.on('message', message => {
 	// IF COMMAND IS NOT IN THE COMMAND LIST, IGNORE
 	message.content = message.content.slice(1).trim();
 
-	/**
-	 * TO GET HERE MEANS PREFIX MATCHES
-	 */
-	
+	// TO GET HERE MEANS PREFIX MATCHES	
 	switch( prefix ) {
 		case botSettings.prefix.query:
 			// QUERY OBJECT DETAILS
@@ -51,6 +50,7 @@ client.on('message', message => {
 			// QUERY AGAINST SPREADSHEET
 			if( message.content.charAt(0) === botSettings.command.describe ) {
 				// DESCRIBE SHEET
+				prefix += message.content.charAt(0);
 				message.content = message.content.slice(1).trim();
 				var command = require('./commands/commandHelp.js');
 			} else {
@@ -69,6 +69,7 @@ client.on('message', message => {
 		case botSettings.prefix.sync:
 			if( message.content.charAt(0) === botSettings.command.setup ) {
 				// SETUP
+				prefix += message.content.charAt(0);
 				message.content = message.content.slice(1).trim();
 				var command = require('./commands/commandSetup.js');
 			} else {
@@ -80,28 +81,33 @@ client.on('message', message => {
 			return;
 	}
 	
-	return command.doCommand( botSettings, client, message );
+	return command.doCommand( botSettings, client, message, prefix );
 
 });
 
 
-
+/**
+ * MONITOR MEMBERS
+ */
 
 //LISTEN FOR JOINERS
 client.on('guildMemberAdd', member => {
 
-	member.channel.send("Hello "+member.username+"!");
+	member.channel.send(botSettings.messages.HELLO.replace("%s", member.username));
 
 });
 
 
-
+/** 
+ * MONITOR CLIENT CONNECTION 
+ */
 
 //ON READY
 client.on('ready', () => {
-	console.log("Connected with token: "+botSettings.botToken);	
-});
- 
+	
+	console.log("Connected with token: "+botSettings.botToken);
+	
+}); 
 
 //ON DISCONNECT
 client.on('disconnect', () => {
@@ -117,14 +123,12 @@ client.on('disconnect', () => {
 	
 });
 
-
 //ON RECONNECTING
 client.on('reconnecting', () => {
 
 	botLog.LogBotActivity(botSettings, "Client reconnecting");	
 
 });
-
 
 //LOGIN WITH TOKEN
 client.login(botSettings.botToken);

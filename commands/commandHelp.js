@@ -1,6 +1,6 @@
 (function() {
 
-    module.exports.doCommand = function( botSettings, client, message ) {
+    module.exports.doCommand = function( botSettings, client, message, prefix ) {
     	
     	var help = {};
 
@@ -10,14 +10,14 @@
         if( sheet === botSettings.command.channel ) { 
         	
         	var channel = require("../utilities/database.js");
-        	return channel.Channel( botSettings, client, message );
+        	return channel.Channel( botSettings, client, message, prefix );
         	
         }
         
         if( sheet === botSettings.command.author ) { 
         	
         	var channel = require("../utilities/queryBuilder.js");
-        	return channel.Author( botSettings, client, message );
+        	return channel.Author( botSettings, client, message, prefix );
         	
         }
         
@@ -25,7 +25,7 @@
         help[sheet] = {};
         
     	var query = require("../utilities/queryBuilder.js");
-    	return query.QuerySheet( botSettings, client, message, "desc", help );
+    	return query.QuerySheet( botSettings, client, message, prefix, "desc", help );
         
     }
     

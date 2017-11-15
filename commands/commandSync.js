@@ -1,6 +1,6 @@
 (function() {
 
-    module.exports.doCommand = function( botSettings, client, message ) {
+    module.exports.doCommand = function( botSettings, client, message, prefix ) {
 	    
     	var sync = {};
 
@@ -25,7 +25,7 @@
         sync[sheet].guildID = messageParts[1];
         
     	var query = require("../utilities/queryBuilder.js");
-    	return query.QuerySheet( botSettings, client, message, "sync", sync );
+    	return query.QuerySheet( botSettings, client, message, prefix, "sync", sync );
                 
     }
 

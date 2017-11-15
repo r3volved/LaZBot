@@ -113,5 +113,5 @@ function commandGet( args ) {
 
 
   //IF NOT FOUND RETURN ERROR
-  return success.length === 0 ? Reply(RETURN_FAIL_RECORDS) : Reply(success);
+  return success.length === 0 ? Reply(RETURN_FAIL_RECORDS) : Reply(success,"Retrieved");
 }

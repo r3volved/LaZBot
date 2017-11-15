@@ -1,6 +1,6 @@
 (function() {
 
-    module.exports.doCommand = function( botSettings, client, message ) {
+    module.exports.doCommand = function( botSettings, client, message, prefix ) {
 
     	var del = {};
     	
@@ -59,7 +59,7 @@
     	}
            
     	var query = require("../utilities/queryBuilder.js");
-    	return query.QuerySheet( botSettings, client, message, "del", del );
+    	return query.QuerySheet( botSettings, client, message, prefix, "del", del );
 
     }
 

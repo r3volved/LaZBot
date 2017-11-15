@@ -1,6 +1,6 @@
 (function() {
 	    
-    module.exports.Setup = function( botSettings, client, message, messageParts ) {
+    module.exports.Setup = function( botSettings, client, message, prefix, messageParts ) {
 
     	var mysql = require('mysql');
 
@@ -43,7 +43,7 @@
 					if (err) { throw err; }
 					
 					message.channel.stopTyping(true);
-				    return message.reply("Updated successfully");
+				    return message.reply(botSettings.success.UPDATED);
 				});
 			  });
     		});
@@ -87,7 +87,7 @@
     }
 
     
-    module.exports.Channel = function( botSettings, client, message ) {
+    module.exports.Channel = function( botSettings, client, message, prefix ) {
     
 		//LOOK FOR CHANNEL SETTINGS AND DO COMMAND
 		var mysql = require('mysql');
@@ -119,7 +119,7 @@
 				channel.modrole			= typeof(result[0]) !== "undefined" && typeof(result[0].modrole) 	 !== "undefined" ? result[0].modrole 	  : "botmods";	
 				
 				var replyBuilder = require("./replyBuilder.js");
-				return replyBuilder.replyJSON( botSettings, message, "Channel settings", channel )
+				return replyBuilder.replyQueryJSON( botSettings, client, message, prefix, botSettings.messages.CHANNEL_SETTINGS, channel )
 				
 			  });
 			});

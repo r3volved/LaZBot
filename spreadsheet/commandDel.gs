@@ -63,7 +63,10 @@ function commandDel( args ) {
  
 //==SEARCH==
   var success = [];
-  for( var r = 1; r !== data.length; ++r ) {
+  var datalen = data.length;
+  var deleteList = [];
+  
+  for( var r = 1; r !== datalen; ++r ) {
     var found = 0;
     for( var i = 0; i !== searchIndex.length; ++i ) {
       var val = data[r][searchIndex[i]].toString().toLowerCase();
@@ -79,11 +82,19 @@ function commandDel( args ) {
     for( var f = 0; f !== data[0].length; ++f ) { 
       obj[data[0][f]] = data[r][f];
     }
+    
     success.push( obj );
-    ssheet.deleteRow(r);
+    deleteList.push(r+1);
+    
   }
 //==END SEARCH==
+
+  //Delete found items
+  for( var d = deleteList.length - 1; d !== -1; --d ) {
+    var drow = deleteList[d];
+    ssheet.deleteRow(drow);
+  }
   
   //IF NOT FOUND RETURN ERROR
-  return success.length === 0 ? Reply(RETURN_FAIL_RECORDS) : Reply(success);
+  return success.length === 0 ? Reply(RETURN_FAIL_RECORDS) : Reply(success,"Deleted");
 }

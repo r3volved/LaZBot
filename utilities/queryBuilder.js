@@ -1,6 +1,6 @@
 (function() {
 
-    module.exports.QuerySheet = function( botSettings, client, message, cmd, cmdObj ) {
+    module.exports.QuerySheet = function( botSettings, client, message, prefix, cmd, cmdObj ) {
 
     	if( message.channel.type === "dm" ) {
     	
@@ -59,17 +59,18 @@
     	        var request = require('request');
     	        request(ruleURL, function (error, response, body) {
     				try {
-    					if(error) { throw e; }
+    					    					
     					if( typeof(body) === "undefined" || body.length === 0 ) { return; }
     					
-    					var body = JSON.parse(body);
+    					if( cmd === botSettings.commands.sync ) { return message.reply(botSettings.success.SYNC); }
     					
+    					var body = JSON.parse(body);
+    					    				    
     				    var title = botSettings.success.GET_X_RECORDS.replace("%s", body.length);
-    				    var replyBuilder = require("../utilities/replyBuilder.js");
     				    
-    				    if( cmd === "sync" ) { return message.reply("Sync successful"); }
+    				    var replyBuilder = require("../utilities/replyBuilder.js");    				    
+    				    return replyBuilder.replyJSON( botSettings, client, message, prefix, title, body );
     				    
-    				    return replyBuilder.replyJSON( botSettings, message, title, body );
     				} catch(e) {
     					//JSON Error
     				    //console.error(e);
@@ -90,7 +91,7 @@
     }
     
     
-    module.exports.Author = function( botSettings, client, message, cmd, cmdObj ) {
+    module.exports.Author = function( botSettings, client, message, prefix, cmd, cmdObj ) {
 
     	var author = {}
     	author.id = message.author.id || "";
@@ -101,8 +102,8 @@
     	author.tag = message.author.tag || "";
 
 	    var replyBuilder = require("../utilities/replyBuilder.js");
-	    return replyBuilder.replyJSON( botSettings, message, "You are:", author );
+	    return replyBuilder.replyQueryJSON( botSettings, client, message, prefix, botSettings.messages.YOUR_SETTINGS, author );
     	
-    }    
+    }
     
 }());
