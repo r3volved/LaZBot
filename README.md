@@ -31,25 +31,34 @@ Spreadsheet commands are tied to prefixed specified in settings.json.
 
 The Default prefixes are [ ?(get), +(set), -(del), ~(sync) ]
 
+
 Some prefixes can be doubled up for special purpose, example:
 
 Setup channel settings with [ ~~ ]:
 
-~~spreadsheet <spreadsheetURL>\r\n
-~~webhook <webhookURL>\r\n
-~~modrole <botModeratorRole>\r\n
+~~spreadsheet <spreadsheetURL>
+
+~~webhook <webhookURL>
+
+~~modrole <botModeratorRole>
+
 
 Query the channel settings, or your own settings, 
 or describe the fields in a sheet with [ ?? ]:
 
-??<sheet>\r\n
-??channel       (editable in settings.json)\r\n
-??me            (editable in settings.json)\r\n
+??<sheet>
+
+??channel       (editable in settings.json)
+
+??me            (editable in settings.json)
+
 
 ### Conditions
 
 Query spreadsheet against specific conditions such as:
 
-?warning player "Dr Play"\r\n
-?player score < 10\r\n
-?characters power >= 1000000\r\n
+?warning player "Dr Play"
+
+?player score < 10
+
+?characters power >= 1000000
