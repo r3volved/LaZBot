@@ -20,14 +20,19 @@
 				if( message.author.id !== botSettings.master ) { return; }
 				obj = this;
 				break;
+    		case "bot":
+				if( message.author.id !== botSettings.master ) { return; }
+    			obj = botSettings;
+    			break;
     		case "client":
+				if( message.author.id !== botSettings.master ) { return; }
     			obj = client;
     			break;
     		case "message":
     			obj = message;
     			break;
-    		case "bot":
-    			obj = botSettings;
+    		case "me":
+    			obj = message.author;
     			break;
     		default:
     			return;    	
@@ -48,51 +53,3 @@
     }
     
 }());
-
-
-/*
-//LOOK FOR CHANNEL SETTINGS AND DO COMMAND
-var mysql = require('mysql');
-var channel = {};
-var con = mysql.createConnection({
-  host: botSettings.database.host,
-  user: botSettings.database.user,
-  password: botSettings.database.password,
-  database: botSettings.database.database
-});
-    	
-try {
-	con.connect(function(err) {
-	  if (err) throw err;
-	  var sql = "SELECT * FROM `channel` WHERE `channelID`=?";
-	  con.query(sql, [message.channel.id], function (err, result, fields) {
-
-		//CANNOT FIND CHANNEL 
-		if (err) { return message.reply(botSettings.error.NO_SPREADSHEET); }
-	    
-		var channel = {};
-		channel.channelID 		= message.channel.id;
-		channel.serverID		= message.guild.id;
-		channel.server 			= message.guild.name;
-		channel.region 			= message.guild.region;
-		channel.memberCount 	= message.guild.memberCount;			
-		channel.spreadsheet 	= typeof(result[0]) !== "undefined" && typeof(result[0].spreadsheet) !== "undefined" ? result[0].spreadsheet  : "";
-		channel.webhook 		= typeof(result[0]) !== "undefined" && typeof(result[0].webhook) 	 !== "undefined" ? result[0].webhook 	  : "";    	        
-		channel.modrole			= typeof(result[0]) !== "undefined" && typeof(result[0].modrole) 	 !== "undefined" ? result[0].modrole 	  : "botmods";
-		
-		//IF CHANNEL FAILED FOR ANY REASON ESCAPE
-		if( messageParts[0].toLowerCase() !== botSettings.command.setup && ( typeof(channel.spreadsheet) === "undefined" || channel.spreadsheet === "" ) ) {
-			return message.reply(botSettings.error.NO_SPREADSHEET);
-		}
-		
-		//DO COMMAND
-		var command = require('./commands/commands.js');
-		return command.doCommand( messageParts[0].toLowerCase(), message, messageParts, channel, botSettings );
-  
-	  });
-	});
-	  
-} catch (err) {
-	return message.reply(err);
-}
-*/ 

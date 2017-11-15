@@ -6,7 +6,12 @@ GRANT ALL ON `lazbot`.* TO 'lazbot'@'localhost';
 
 USE `lazbot`;
 
-CREATE TABLE `channel` (
+CREATE TABLE IF NOT EXISTS `botlog` (
+  `timestamp` TIMESTAMP,
+  `message` TEXT
+);
+
+CREATE TABLE IF NOT EXISTS `channel` (
   `channelID` varchar(50) PRIMARY KEY,
   `serverID` varchar(50) NOT NULL,
   `server` varchar(50) NOT NULL,
@@ -15,9 +20,9 @@ CREATE TABLE `channel` (
   `spreadsheet` varchar(256) NOT NULL,
   `webhook` varchar(256) NOT NULL,
   `modrole` varchar(32) DEFAULT NULL
-)
+);
 
-CREATE TABLE `server` (
+CREATE TABLE IF NOT EXISTS `server` (
   `serverID` varchar(50) PRIMARY KEY,
   `region` varchar(50) NOT NULL,
   `memberCount` int(11) NOT NULL,
@@ -25,4 +30,6 @@ CREATE TABLE `server` (
   `botName` varchar(64) NOT NULL,
   `botPermissions` TEXT NOT NULL,
   `botRoles` TEXT NOT NULL
-)
+);
+
+

@@ -1,16 +1,14 @@
 (function() {
 
-    module.exports.Get = function( message, messageParts, channel, botSettings ) {
-
-    	message.channel.startTyping();
+    module.exports.doCommand = function( botSettings, client, message ) {
     	
-    	var get = {};
-        var details = messageParts[1].charAt(0) === '-' ? false : true;  
-        var sheet = !details ? messageParts[1].substr(1,messageParts[1].length) : messageParts[1];
+    	var messageParts = message.content.split(" ");
+        var sheet = messageParts[0];
         
+        var get = {};        
         get[sheet] = {};
         
-    	for( var i = 2; i < messageParts.length; i+=2 ) {
+    	for( var i = 1; i < messageParts.length; i+=2 ) {
 
     		if( typeof(messageParts[i]) !== "undefined" || messageParts[i] !== "" ) { 
     			
@@ -44,11 +42,11 @@
     			field += "-"+condition;
     			if( condition !== "eq" ) { ++i; }
     			
-    			if( messageParts[i+1].charAt(0) === "\"" ) {
+    			if( messageParts[i+1].charAt(0).match(/\"/) ) {
     				value += messageParts[++i].replace(/\"/gi,"");
     				++i;
     				for( i; i < messageParts.length; ++i ) {
-    					if( messageParts[i].charAt(messageParts[i].length-1) === "\"" ) {
+    					if( messageParts[i].charAt(messageParts[i].length-1).match(/\"/) ) {
     						value += " "+messageParts[i].replace(/\"/gi,"");
     						break;
     					}
@@ -67,42 +65,13 @@
 	    				
 
     		}
- 
+    		
+
     	}
-           
-        var sheetURL = channel.spreadsheet;
-        var ruleURL = sheetURL+"?get="+encodeURIComponent(JSON.stringify(get));
-        console.log( sheetURL+"?get="+JSON.stringify(get) );
-        
-        var request = require('request');
-        request(ruleURL, function (error, response, body) {
-          
-        	if( typeof(body) === "undefined" || body.length === 0 ) { return; }
-		
-			try {
-			    var body = JSON.parse(body);
-			    var replyBuilder = require("../utilities/replyBuilder.js");
-			    
-			    if( body.response === "error" ) {
-			    	
-					message.channel.stopTyping(true);
-			    	return message.reply( body.data );
-			    	
-			    }
-			    
-			    var title = botSettings.success.GET_X_RECORDS.replace("%s", body.length);
-			    return details ? replyBuilder.replyDetails( message, title, body.data ) : replyBuilder.replyData( message, title, body.data );
-			} catch(e) {
-				//JSON Error
-			    //console.error(e);
-			    //console.error(error);
-				message.channel.stopTyping(true);
-				message.reply("I had an error with this request");
-			    return;
-			}
-		
-        });
-        
+    	
+    	var query = require("../utilities/queryBuilder.js");
+    	return query.QuerySheet( botSettings, client, message, "get", get );
+                   
     }
 
 }());

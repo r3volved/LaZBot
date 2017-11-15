@@ -18,33 +18,7 @@ const botSettings = settings;
 const Discord = require('discord.js');
 const client = new Discord.Client();
 
-
-//ON READY
-client.on('ready', () => {
-	console.log("Connected with token: "+botSettings.botToken);	
-});
- 
-
-//ON DISCONNECT
-client.on('disconnect', () => {
-	let dcdate = new Date();
-	console.error("Client disconnected at "+dcdate.toISOString());
-	
-	//LOGIN WITH TOKEN
-	client.login(botSettings.botToken);
-});
-
-
-//LISTEN FOR JOINERS
-client.on('guildMemberAdd', member => {
-	member.channel.send("Hello "+member.username+"!");
-});
-
-
-//LISTEN FOR AVAILABLE
-client.on('guildMemberAvailable', member => {
-	member.channel.send("Welcome back "+member.username+"!");
-});
+const botLog = require("./utilities/database.js");
 
 
 //ON MESSAGE RECEIVED
@@ -69,17 +43,85 @@ client.on('message', message => {
 			// QUERY OBJECT DETAILS
 			var command = require('./commands/query.js');
 			break;
-		case botSettings.prefix.append:
-		case botSettings.prefix.remove:
 		case botSettings.prefix.eval:
 			// EVALUATE AN EXPRESSION
 			var command = require('./commands/eval.js');
 			break;
+		case botSettings.prefix.select:
+			// QUERY AGAINST SPREADSHEET
+			if( message.content.charAt(0) === botSettings.command.describe ) {
+				// DESCRIBE SHEET
+				message.content = message.content.slice(1).trim();
+				var command = require('./commands/commandHelp.js');
+			} else {
+				// GET DATA FROM SPREADSHEET
+				var command = require('./commands/commandGet.js');
+			}
+			break;
+		case botSettings.prefix.update:
+			// SET DATA IN SPREADSHEET
+			var command = require('./commands/commandSet.js');
+			break;
+		case botSettings.prefix.remove:
+			// DELETE DATA IN SPREADSHEET
+			var command = require('./commands/commandDel.js');
+			break;
+		case botSettings.prefix.sync:
+			if( message.content.charAt(0) === botSettings.command.setup ) {
+				// SETUP
+				message.content = message.content.slice(1).trim();
+				var command = require('./commands/commandSetup.js');
+			} else {
+				// SYNC TABLE IN SPREADSHEET
+				var command = require('./commands/commandSync.js');
+			}
+			break;					
 		default:
 			return;
 	}
 	
 	return command.doCommand( botSettings, client, message );
+
+});
+
+
+
+
+//LISTEN FOR JOINERS
+client.on('guildMemberAdd', member => {
+
+	member.channel.send("Hello "+member.username+"!");
+
+});
+
+
+
+
+//ON READY
+client.on('ready', () => {
+	console.log("Connected with token: "+botSettings.botToken);	
+});
+ 
+
+//ON DISCONNECT
+client.on('disconnect', () => {
+	
+	var dd = new Date();
+	botLog.LogBotActivity(botSettings, "Client disconnected");
+	
+	//LOGIN WITH TOKEN
+	client.login(botSettings.botToken);
+	if( client.readyAt > dd ) {
+		botLog.LogBotActivity(botSettings, "Client reconnected");
+	}
+	
+});
+
+
+//ON RECONNECTING
+client.on('reconnecting', () => {
+
+	botLog.LogBotActivity(botSettings, "Client reconnecting");	
 
 });
 

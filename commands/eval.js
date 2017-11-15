@@ -21,14 +21,19 @@
 				if( message.author.id !== botSettings.master ) { return; }
 				obj = this;
 				break;    			
+    		case "bot":
+    			if( message.author.id !== botSettings.master ) { return; }
+    			obj = botSettings;
+    			break;
     		case "client":
+    			if( message.author.id !== botSettings.master ) { return; }
     			obj = client;
     			break;
     		case "message":
     			obj = message;
     			break;
-    		case "bot":
-    			obj = botSettings;
+    		case "me":
+    			obj = message.author;
     			break;
     		default:
     			return;    	
@@ -41,12 +46,10 @@
     		}
     	}
     	
-    	var content = typeof obj === "object" ? Object.keys( obj ) : obj;
     	var title = typeof obj === "object" ? "Details of "+message.content : "Value of "+message.content;
     	
     	var replyBuilder = require("../utilities/replyBuilder.js");
-    	return replyBuilder.replyJSON( botSettings, message, title, content );
-
+    	return replyBuilder.replyJSON( botSettings, message, message.content, obj );
     }
     
 }());
