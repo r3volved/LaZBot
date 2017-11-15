@@ -62,21 +62,21 @@
     					    					
     					if( typeof(body) === "undefined" || body.length === 0 ) { return; }
     					
-    					if( cmd === botSettings.commands.sync ) { return message.reply(botSettings.success.SYNC); }
+    					if( cmd === botSettings.command.sync ) { return message.reply(botSettings.success.SYNC); }
     					
     					var body = JSON.parse(body);
     					    				    
     				    var title = botSettings.success.GET_X_RECORDS.replace("%s", body.length);
     				    
     				    var replyBuilder = require("../utilities/replyBuilder.js");    				    
-    				    return replyBuilder.replyJSON( botSettings, client, message, prefix, title, body );
+    				    return replyBuilder.replyQueryJSON( botSettings, client, message, prefix, title, body );
     				    
     				} catch(e) {
     					//JSON Error
     				    //console.error(e);
     				    //console.error(error);
     					message.channel.stopTyping(true);
-    					message.reply(botSettings.error.ERROR_QUERY);
+    					message.reply(botSettings.error.ERROR_QUERY+"\r\n"+e);
     				    return;
     				}
     			

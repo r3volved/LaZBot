@@ -9,6 +9,8 @@
 
         if( sheet === botSettings.command.channel ) { 
         	
+        	if( message.channel.type === "dm" ) { return message.reply(botSettings.error.NO_DM); }
+        	        	
         	var channel = require("../utilities/database.js");
         	return channel.Channel( botSettings, client, message, prefix );
         	

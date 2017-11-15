@@ -88,7 +88,7 @@
 
     
     module.exports.Channel = function( botSettings, client, message, prefix ) {
-    
+        	
 		//LOOK FOR CHANNEL SETTINGS AND DO COMMAND
 		var mysql = require('mysql');
 		var channel = {};
