@@ -4,7 +4,8 @@
 
 		//IF NOT ADMIN, RETURN AND ALERT
 		if( message.channel.type !== "dm" && !message.member.roles.find("name", botSettings.adminRole) ) {			
-			return message.reply(botSettings.error.NO_PERMISSION);			
+			message.react("🚫");
+    		return message.reply(botSettings.error.NO_PERMISSION);			
 		}
 
     	var parts = message.content.split(".");
@@ -29,7 +30,7 @@
     			obj = message.author;
     			break;
     		default:
-    			return;    	
+    			obj = message.content;
     	}
     	    	
     	for( let i = 1; i !== parts.length; ++i ) {

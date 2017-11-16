@@ -10,7 +10,8 @@
         if( messageParts.length !== 2 ) { 
         	
         	message.channel.stopTyping(true);
-		    return message.reply(botSettings.error.SYNC_HELP); 
+        	message.react("❌");
+    		return message.reply(botSettings.error.SYNC_HELP); 
 		    
         }
         

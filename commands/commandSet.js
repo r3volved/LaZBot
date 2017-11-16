@@ -18,8 +18,8 @@
     			
     			if( typeof(messageParts[i+1]) === "undefined" ) { 
     				
-    				message.channel.stopTyping(true);
-    			    return message.reply(botSettings.error.SET_HELP); 
+    				message.react("❌");
+    	    		return message.reply(botSettings.error.SET_HELP); 
     			
     			}
     			
@@ -28,8 +28,8 @@
 	    			case ">=":
 	    			case "<":
 	    			case "<=":
-	    				message.channel.stopTyping(true);
-	    			    return message.reply(botSettings.error.NO_CONDITIONS);
+	    				message.react("❌");
+	    	    		return message.reply(botSettings.error.NO_CONDITIONS);
 	    			default:
 				}
     			

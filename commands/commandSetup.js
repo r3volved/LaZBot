@@ -4,7 +4,8 @@
 
 		// REMOVE - CHECK PERMISSIONS - IF NOT ADMIN, RETURN AND ALERT
 		if( !message.member.roles.find("name", botSettings.adminRole) ) {			
-			return message.reply(botSettings.error.NO_PERMISSION);			
+			message.react("🚫");
+    		return message.reply(botSettings.error.NO_PERMISSION);			
 		}
 
     	var messageParts = message.content.split(" ");

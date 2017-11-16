@@ -18,8 +18,8 @@
 
     			if( typeof(messageParts[i+1]) === "undefined" ) { 
 
-    				message.channel.stopTyping();
-    				return message.reply(botSettings.error.GET_HELP); 
+    				message.react("❌");
+    	    		return message.reply(botSettings.error.GET_HELP); 
     				
     			}
 

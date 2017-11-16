@@ -1,8 +1,8 @@
 (function() {
 
 	const Discord = require('discord.js');
-
-    module.exports.replyJSON = function( botSettings, client, message, prefix, title, data ) {
+		
+	module.exports.replyJSON = function( botSettings, client, message, prefix, title, data ) {
     	   	
     	title = typeof(title) !== "undefined" ? title : "";
     	
@@ -28,11 +28,12 @@
     	if( reply.length > 10000 && message.channel.type !== "dm" ) {  
     		
     		message.channel.stopTyping(true);
+			message.react("🚫");
     		return message.reply(botSettings.error.RESULTS_TOO_LONG);
     		
     	}
     	
-    	const embed = new Discord.RichEmbed();
+    	var embed = new Discord.RichEmbed();
 		embed.setColor(0x6F9AD3);
     	
     	while( reply.length > 1600 ) {
@@ -40,21 +41,21 @@
     		dm = true;
     		var n = reply.lastIndexOf(",", 1600);
 
-    		chunk = reply.slice(0,n+1);		    		
-    		reply = reply.slice(n+1);
-    		
-    		embed.setDescription("```js\r\n"+chunk+"```");
-    		embed.setTimestamp();
+    		var chunk = reply.slice(0,n+1);		    		
     		embed.setAuthor(title,"");
-			embed.addField(botSettings.messages.RESULTS+"[ "+prefix+" ]", "```js\r\n"+prefix+message+"```");
-    		embed.setFooter("LaZBot 2.0");
-
+    		embed.setDescription("```js\r\n"+chunk+"```");
     		message.author.send({embed});
+			message.react("📫");
+    		
 	    	title += title.indexOf(botSettings.messages.CONTINUED) === -1 ? botSettings.messages.CONTINUED : "";
-	    	
+    		reply = reply.slice(n+1);
+
     	} 
     	
-		embed.setDescription("```js\r\n"+reply+"```");
+    	embed = new Discord.RichEmbed();
+		embed.setColor(0x6F9AD3);
+
+    	embed.setDescription("```js\r\n"+reply+"```");
 		embed.setTimestamp();
 		embed.setAuthor(title,"");
 		embed.addField(botSettings.messages.RESULTS+"[ "+prefix+" ]", "```js\r\n"+prefix+message+"```");
@@ -63,8 +64,15 @@
     	message.channel.stopTyping(true);
 		
     	//If already sent chunks to DM, send last bit to DM
-    	if( dm ) { return message.author.send({embed}); }
-    	else { return message.channel.send({embed}); }
+    	if( dm ) { 
+    		message.author.send({embed}); 
+    		message.react("✅");
+    		console.log("Replied - QueryJSON - DM");
+    	} else { 
+    		message.channel.send({embed}); 
+    		message.react("✅");
+    		console.log("Replied - QueryJSON - Channel");
+    	}
   
     }
     
@@ -73,14 +81,12 @@
     	 	
     	title = typeof(title) !== "undefined" ? title : "";
     	
-    	var jsonData = /*typeof(data.data) !== "undefined" ? data.data :*/ data;
-    	//jsonData = jsonData.isArray ? jsonData : [jsonData]; 
-    	
+    	var jsonData = data;
     	var dm = false;
+
     	const embed = new Discord.RichEmbed();
 
     	var msg = "";
-    	var max = 0;
 		var cache = [];
 		var reply = JSON.stringify(jsonData, function(key, value) {
 			// Ignore sensitive bot settings
@@ -91,90 +97,120 @@
     			if (cache.indexOf(value) !== -1 || value.length > 50) { return undefined; }    			
     			cache.push(value);
     		}
-    		
-    		if( key.length > max ) { max = key.length; }
-    		return value;
+      		return value;
       	}, "  ");				
     	cache = null;  	
     	  
     	reply = typeof reply === "undefined" ? "undefined" : reply;
-    	
-    	reply = JSON.parse(reply);
+       	reply = JSON.parse(reply);
 
+		var maxData = 0;
+    	var maxResponse = 0;
+    	for( var kr in reply ) {
+    		if( reply.hasOwnProperty(kr) ) {
+	    		if( kr.length > maxResponse ) { maxResponse = kr.length; }
+    		}
+    	}
+    	
     	for( var k in reply ) {
+    		
     		if( reply.hasOwnProperty(k) ) {
     			
 				if ( (message.author.id !== botSettings.master || message.channel.type !== "dm") && ( k === "database" || k === "botToken" )) { reply[k] = "XXXXXXXXXX"; }
 
-    			msg += k;
-    			for( var i = 0; i < (max - k.length); ++i ) { msg += " "; }
-    			msg += " : ";
+    			msg += k + (new Array((maxResponse - k.length) + 1).join(' '))+" : ";
     			
-    			if( typeof(reply[k]) === "object" ) {
-    				msg += "\r\n";
-    				for( var i = 0; i < max*2; ++i ) { msg += "-"; }
-    				msg += "\r\n";
+    			if( typeof(reply[k]) === "object" && Array.isArray(reply[k])) {
     				
-    				for( var ks = 0; ks !== reply[k].length; ++ks ) {    		    	
-    					let thisObj = reply[k][ks];
-	    		    	for( var k2 in thisObj ) {
+					msg += "\r\n"+(new Array((maxResponse*2) + 1).join('-'))+"\r\n";
+					
+    				for( let ks = 0; ks < reply[k].length; ++ks ) {    
+
+    					if( msg.length > 1600 ) {
+	    					msg += "\r\n...data too large, try to be more specific\r\n\r\n";
+	    					message.react("⚠");
+	    					break;
+	    				}
+
+    					var thisObj = reply[k][ks];
+    	    			
+    					if( ks === 0 ) {
+	    			    	for( let k2 in thisObj ) {
+	    			    		if( thisObj.hasOwnProperty(k2) ) {
+	    			    	    	if( k2.length > maxData ) { maxData = k2.length; }
+	    			    		}
+	    			    	}
+    					} 
+    					
+	    		    	for( let k2 in thisObj ) {
 	    		    		if( thisObj.hasOwnProperty(k2) ) {
-	    		    			msg += "["+k2;
-	    		    			for( var i = 0; i < (max - k2.length); ++i ) { msg += " "; }
-	    		    			msg += "] : "+JSON.stringify(thisObj[k2])+"\r\n";
+	    		    			if( Array.isArray(thisObj[k2]) ) {
+	    		    				msg += "["+k2+(new Array((maxData - k2.length) + 1).join(' '))+"] :\r\n"
+	    		    				for( var x = 0; x < thisObj[k2].length; ++x ) {
+	    		    					msg += JSON.stringify(thisObj[k2][x])+"\r\n";
+	    		    				}
+	    		    			} else {
+	    		    				msg += "["+k2+(new Array((maxData - k2.length) + 1).join(' '))+"] : "+JSON.stringify(thisObj[k2])+"\r\n";
+	    		    			}
 	    		    		}
 	    		    	}
-	    		    	//msg += "\r\n";
-	    				for( var i = 0; i < max*2; ++i ) { msg += "-"; }
-	    				msg += "\r\n";
+	    		    	
+	    				msg += (new Array((maxResponse*2) + 1).join('-'))+"\r\n";
+
     				}	
-    				
+
     			} else {
+    				
     				msg += reply[k]+"\r\n";
+    			
     			}
     			
     		}
     	}
     		    	
-    	if( msg.length > 10000 && message.channel.type !== "dm" ) {  
-    		
-    		message.channel.stopTyping(true);
-    		return message.reply(botSettings.error.RESULTS_TOO_LONG);
-    		
-    	}
-    	
 		embed.setColor(0x6F9AD3);
     	
-    	while( msg.length > 1600 ) {
+    	while( msg.length > 2000 ) {
     		
     		dm = true;
-    		var n = reply.lastIndexOf(",", 1600);
+    		var n = msg.lastIndexOf(",", 1800);
 
-    		chunk = reply.slice(0,n+1);		    		
-    		msg = reply.slice(n+1);
+    		chunk = msg.slice(0,n+1);		    		
     		
     		embed.setDescription("```css\r\n"+chunk+"```");
-    		embed.setTimestamp();
-    		embed.setAuthor(title,"");
-			embed.addField(botSettings.messages.RESULTS+"[ "+prefix+" ]", "```js\r\n"+prefix+message+"```");
-    		embed.setFooter("LaZBot 2.0");
-
     		message.author.send({embed});
+			message.react("📫");
 	    	title += title.indexOf(botSettings.messages.CONTINUED) === -1 ? botSettings.messages.CONTINUED : "";
 	    	
+	    	msg = msg.slice(n+1);
+    		
     	} 
     	
 		embed.setDescription("```css\r\n"+msg+"```");
 		embed.setTimestamp();
-		embed.setAuthor(title,"");
+		embed.setAuthor(title,message.author.displayAvatarURL);
+		
+		if( message.content === botSettings.command.author && message.author.displayAvatarURL ) {
+			embed.setThumbnail(message.author.displayAvatarURL);
+		} else if( message.content === botSettings.command.channel && message.guild.available ) {
+			embed.setThumbnail(message.guild.iconURL);
+		}
+		
+		embed.setFooter("LaZBot 2.0", client.user.displyAvatarURL);
 		embed.addField(botSettings.messages.RESULTS+"[ "+prefix+" ]", "```js\r\n"+prefix+message+"```");
-		embed.setFooter("LaZBot 2.0");
 		
     	message.channel.stopTyping(true);
 		
     	//If already sent chunks to DM, send last bit to DM
-    	if( dm ) { message.author.send({embed}); }
-    	else { message.channel.send({embed}); }
+    	if( dm ) {
+    		message.author.send({embed}); 
+    		message.react("✅");
+    		console.log("Replied - QueryJSON - DM");
+    	} else { 
+    		message.channel.send({embed});
+    		message.react("✅");
+    		console.log("Replied - QueryJSON - Channel");
+    	}
     	
     }
 

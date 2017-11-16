@@ -4,7 +4,8 @@
 
     	if( message.channel.type === "dm" ) {
     	
-    		return message.author.send(botSettings.error.NO_DM);
+    		message.react("❌");
+			return message.author.send(botSettings.error.NO_DM);
     		
     	}
     	
@@ -25,7 +26,10 @@
     		  con.query(sql, [message.channel.id], function (err, result, fields) {
 
     			//CANNOT FIND CHANNEL 
-    			if (err) { return message.reply(botSettings.error.NO_SPREADSHEET); }
+    			if (err) { 
+    				message.react("❌");
+    				return message.reply(botSettings.error.NO_SPREADSHEET); 
+    			}
     		    
     			var channel = {};
     			channel.channelID 		= message.channel.id;
@@ -39,17 +43,20 @@
     			
     			//IF CHANNEL FAILED FOR ANY REASON ESCAPE
     			if( typeof(channel.spreadsheet) === "undefined" || channel.spreadsheet === "" ) {
+    				message.react("❌");
     				return message.reply(botSettings.error.NO_SPREADSHEET);
     			}
     			
     			// UPDATE - CHECK PERMISSIONS - IF NOT MOD OR ADMIN, RETURN AND ALERT
     			if( cmd === botSettings.prefix.update && !message.member.roles.find("name", botSettings.adminRole) && !message.member.roles.find("name", channel.modrole) ) {			
-    				return message.reply(botSettings.error.NO_PERMISSION);			
+    				message.react("🚫");
+    	    		return message.reply(botSettings.error.NO_PERMISSION);			
     			}
 
     			// REMOVE - CHECK PERMISSIONS - IF NOT ADMIN, RETURN AND ALERT
     			if( ( cmd === botSettings.prefix.remove || cmd === botSettings.prefix.sync ) && !message.member.roles.find("name", botSettings.adminRole) ) {			
-    				return message.reply(botSettings.error.NO_PERMISSION);			
+    				message.react("🚫");
+    	    		return message.reply(botSettings.error.NO_PERMISSION);			
     			}
  
     	        var sheetURL = channel.spreadsheet;
@@ -77,6 +84,7 @@
     				    //console.error(error);
     					message.channel.stopTyping(true);
     					message.reply(botSettings.error.ERROR_QUERY+"\r\n"+e);
+    					message.react("❌");
     				    return;
     				}
     			
@@ -85,7 +93,8 @@
     		});
     		  
     	} catch (err) {
-    		return message.reply(err);
+    		message.react("❌");
+			return message.reply(err);
     	}
  
     }
@@ -95,12 +104,12 @@
 
     	var author = {}
     	author.id = message.author.id || "";
+    	author.tag = message.author.tag || "";
     	author.username = message.author.username || "";
     	author.createdAt = message.author.createdAt || "";
     	author.avatar = message.author.avatar || "";
-    	author.displayAvatarURL  = message.author.displayAvatarURL  || "";
-    	author.tag = message.author.tag || "";
-
+    	//author.displayAvatarURL  = message.author.displayAvatarURL  || "";
+    	
 	    var replyBuilder = require("../utilities/replyBuilder.js");
 	    return replyBuilder.replyQueryJSON( botSettings, client, message, prefix, botSettings.messages.YOUR_SETTINGS, author );
     	

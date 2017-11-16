@@ -19,7 +19,10 @@
 			  con.query(sql, [message.channel.id], function (err, result, fields) {
 	
 				//CANNOT FIND CHANNEL 
-				if (err) { return message.reply(botSettings.error.NO_SPREADSHEET); }
+				if (err) { 
+					message.react("❌");
+					return message.reply(botSettings.error.NO_SPREADSHEET); 
+		    	}
 			    
 				var channel = {};
 				channel.channelID 		= message.channel.id;
@@ -43,15 +46,16 @@
 					if (err) { throw err; }
 					
 					message.channel.stopTyping(true);
-				    return message.reply(botSettings.success.UPDATED);
+					message.react("✅");
+		    		return message.reply(botSettings.success.UPDATED);
 				});
 			  });
     		});
 
     	} catch (err) {
     		
-    		message.channel.stopTyping(true);
-    		return message.reply(err);
+    		message.react("❌");
+			return message.reply(err);
     	}
     	
     }
@@ -106,7 +110,10 @@
 			  con.query(sql, [message.channel.id], function (err, result, fields) {
 	
 				//CANNOT FIND CHANNEL 
-				if (err) { return message.reply(botSettings.error.NO_SPREADSHEET); }
+				if (err) { 
+					message.react("❌");
+					return message.reply(botSettings.error.NO_SPREADSHEET); 
+		    	}
 			    
 				var channel = {};
 				channel.channelID 		= message.channel.id;
@@ -125,6 +132,7 @@
 			});
 			  
 		} catch (err) {
+			message.react("❌");
 			return err;
 		}
 		

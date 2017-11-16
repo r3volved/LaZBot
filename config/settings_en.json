@@ -13,10 +13,8 @@
         "database":"lazbot"
     },
     
-    "help":"coming soon...",
-    
     "prefix":{
-        "query":":",
+        "query":"$",
         "eval":"!",
         "select":"?",
         "update":"+",
@@ -32,15 +30,23 @@
         "sync":"sync"
     },
     
+    "help":{
+        "COMMANDS":"Commands are tied to prefixes [ ?(get), +(set), -(del), ~(sync) ]\r\nSetup your channel settings with ~~<field> <value>\r\nQuery your channel settings with ??channel\r\nGet possible fields in a sheet with ??<sheet>",
+        "GET":"Get sheet data with prefix [ ? ]\r\n?<sheet> <field> <value>\r\n\r\nOr to learn more about the sheet, try:\r\n??<sheet>",
+        "SET":"Add or update sheet data with prefix [ + ]\r\nTry:\r\n+<sheet> <field> <value>\r\n\r\nOr to learn more about the sheet, try:\r\n??<sheet>",
+        "DEL":"Delete sheet data with prefix [ - ]\r\nTry:\r\n-<sheet> <field> <value>\r\n\r\nOr to learn more about the sheet, try:\r\n??<sheet>",
+        "SYNC":"Sync specific sheets with prefix [ ~ ]\r\nTry:\r\n~<sheet> <guildID>"
+    },
+
     "messages":{
-    	"HELLO":"Hello %s! Welcome to the shit show!",
+        "HELLO":"Hello %s! Welcome to the shit show!",
         "KEYS":"Keys in: ",
         "VALUE":"Value of: ",
         "VALUES":"Values of: ",
         "DETAILS":"Details of: ",
-        "RESULTS":"Result of: ",
-        "CHANNEL_SETTINGS":"Channel settings ",
-        "YOUR_SETTINGS":"Your settings ",
+        "RESULTS":":mag: Result of: ",
+        "CHANNEL_SETTINGS":"Channel settings: ",
+        "YOUR_SETTINGS":"Your settings: ",
         "CONTINUED":"...continued"
     },
     
