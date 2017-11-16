@@ -9,15 +9,14 @@
 
         if( messageParts.length !== 2 ) { 
         	
-        	message.channel.stopTyping(true);
-        	message.react("❌");
+        	message.react(botSettings.reactions.ERROR);
     		return message.reply(botSettings.error.SYNC_HELP); 
 		    
         }
         
         if( isNaN(messageParts[1]) ) { 
         	
-        	message.channel.stopTyping(true);
+        	message.react(botSettings.reactions.ERROR);
 		    return message.reply(botSettings.error.NO_GUILDID); 
 		    
         } 

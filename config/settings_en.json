@@ -4,6 +4,8 @@
 	
 	"master":"YOUR_USER_ID",
 	
+	"v":"LaZBot v2.0",
+		
     "adminRole":"botadmins",
     
     "database":{
@@ -47,7 +49,8 @@
         "RESULTS":":mag: Result of: ",
         "CHANNEL_SETTINGS":"Channel settings: ",
         "YOUR_SETTINGS":"Your settings: ",
-        "CONTINUED":"...continued"
+        "CONTINUED":"...continued",
+        "EVAL":"Evaluation: "
     },
     
     "success":{
@@ -66,12 +69,21 @@
         "NO_PERMISSION":"You do not have permission to use this command",
         "NO_GUILDID":"Your guildID needs to be a number",
         "NO_CONDITIONS":"This command does not use conditions",
-        "RESULTS_TOO_LONG":"The results of this request are too long, try again with more details",
+        "RESULTS_TOO_LONG":"**The results of this request are too long**\r\n**try again with more details**\r\n",
         "GET_HELP":"Your command was malformed\r\nTry:\r\n?<sheet> <field> <value>\r\n\r\nOr to learn more about the sheet, try:\r\n??<sheet>",
         "SET_HELP":"Your command was malformed\r\nTry:\r\n+<sheet> <field> <value>\r\n\r\nOr to learn more about the sheet, try:\r\n??<sheet>",
         "DEL_HELP":"Your command was malformed\r\nTry:\r\n-<sheet> <field> <value>\r\n\r\nOr to learn more about the sheet, try:\r\n??<sheet>",
         "SYNC_HELP":"Your command was malformed\r\nTry:\r\n~<sheet> <guildID>",
         "ERROR_QUERY":"There was an error with your query",
-        "SYNC":"An error occurred while syncing"
+        "SYNC":"An error occurred while syncing",
+        "HIDDEN":"[Hidden]"
+    },
+    
+    "reaction":{
+    	"SUCCESS":"✅",
+    	"ERROR":"❌",
+    	"WARNING":"⚠",
+    	"DENIED":"🚫",
+    	"DM":"📫"    	
     }
 }

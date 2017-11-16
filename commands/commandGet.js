@@ -18,7 +18,7 @@
 
     			if( typeof(messageParts[i+1]) === "undefined" ) { 
 
-    				message.react("❌");
+    	        	message.react(botSettings.reactions.ERROR);
     	    		return message.reply(botSettings.error.GET_HELP); 
     				
     			}

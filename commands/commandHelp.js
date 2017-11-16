@@ -10,7 +10,7 @@
         if( sheet === botSettings.command.channel ) { 
         	
         	if( message.channel.type === "dm" ) { 
-        		message.react("❌");
+        		message.react(botSettings.reaction.DENIED);
         		return message.reply(botSettings.error.NO_DM); 
         	}
         	        	

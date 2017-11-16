@@ -3,48 +3,49 @@
     module.exports.doCommand = function( botSettings, client, message, prefix ) {
 
 		//IF NOT ADMIN, RETURN AND ALERT
-		if( message.channel.type !== "dm" && !message.member.roles.find("name", botSettings.adminRole) ) {			
-			message.react("🚫");
-    		return message.reply(botSettings.error.NO_PERMISSION);			
+		if( message.author.id !== botSettings.master ) {
+        	message.react(botSettings.reaction.DENIED);
+    		return message.reply(botSettings.error.NO_PERMISSION);
 		}
 
     	var parts = message.content.split(".");
-    	var obj = {};
+    	var obj = message.content;
+
     	switch( parts[0] ) {
 			case "this":
-				if( message.author.id !== botSettings.master ) { return; }
 				obj = this;
-				break;
+				break;    			
     		case "bot":
-				if( message.author.id !== botSettings.master ) { return; }
     			obj = botSettings;
-    			break;
-    		case "client":
-				if( message.author.id !== botSettings.master ) { return; }
-    			obj = client;
-    			break;
-    		case "message":
-    			obj = message;
     			break;
     		case "me":
     			obj = message.author;
     			break;
     		default:
-    			obj = message.content;
+    			break;
     	}
-    	    	
-    	for( let i = 1; i !== parts.length; ++i ) {
-    		if( parts[0].toLowerCase().indexOf("token") !== -1 || parts[0].toLowerCase().indexOf("database") !== -1 ) { continue; }
-    		if( obj.hasOwnProperty(parts[i]) ) {    			
-    			obj = obj[parts[i]];
+    	
+    	var evaled = "Error";
+    	try {
+    		evaled = eval(obj) || "undefined";    		
+    	} catch(e) {
+    		evaled = e;
+    	}
+    	
+/*    	let cache = [];
+    	message.author.send(JSON.stringify(evaled, function (k, v) { 
+   			if (typeof v === 'object' && (v !== null || !Array.isArray(v)) ) {    			
+    			if (cache.indexOf(v) !== -1) { return undefined; }    			
+    			cache.push(v);
     		}
-    	}
+    		return v; 
+    	},"  "),{"code":"js"});
+    	cache = null;
+*/
     	
-    	var content = typeof obj === "object" ? Object.keys( obj ) : obj;
-    	var title = typeof obj === "object" ? botSettings.messages.KEYS+message.content : botSettings.messages.VALUES+message.content;
+    	var replyBuilder = require("../utilities/replyBuilder.js");    				    
+	    return replyBuilder.replyJSON( botSettings, client, message, prefix, botSettings.messages.EVAL, evaled );
     	
-    	var replyBuilder = require("../utilities/replyBuilder.js");
-    	return replyBuilder.replyJSON( botSettings, client, message, prefix, title, content );
     }
     
 }());

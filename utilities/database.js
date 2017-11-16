@@ -20,7 +20,7 @@
 	
 				//CANNOT FIND CHANNEL 
 				if (err) { 
-					message.react("❌");
+					message.react(botSettings.reactions.ERROR);
 					return message.reply(botSettings.error.NO_SPREADSHEET); 
 		    	}
 			    
@@ -46,7 +46,7 @@
 					if (err) { throw err; }
 					
 					message.channel.stopTyping(true);
-					message.react("✅");
+					message.react(botSettings.reactions.SUCCESS);
 		    		return message.reply(botSettings.success.UPDATED);
 				});
 			  });
@@ -54,7 +54,7 @@
 
     	} catch (err) {
     		
-    		message.react("❌");
+    		message.react(botSettings.reactions.ERROR);
 			return message.reply(err);
     	}
     	
@@ -75,11 +75,12 @@
     	try {
     		con.connect(function(err) {
     			if (err) { throw err; }
-
-    			var sqlargs = [new Date(), logMessage];
+    			var date = new Date();
+    			var sqlargs = [date, logMessage];
     			var sql = "INSERT INTO `botlog` (`timestamp`, `message`) VALUES (?, ?)";
 				con.query(sql, sqlargs, function (err, result) {
 					if (err) { throw err; }
+					console.warn(logMessage+" - "+date);
 				});
 
     		});
@@ -111,7 +112,7 @@
 	
 				//CANNOT FIND CHANNEL 
 				if (err) { 
-					message.react("❌");
+					message.react(botSettings.reactions.ERROR);
 					return message.reply(botSettings.error.NO_SPREADSHEET); 
 		    	}
 			    
@@ -132,7 +133,7 @@
 			});
 			  
 		} catch (err) {
-			message.react("❌");
+			message.react(botSettings.reactions.ERROR);
 			return err;
 		}
 		

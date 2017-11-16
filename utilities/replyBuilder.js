@@ -10,67 +10,51 @@
     	
 		var cache = [];
 		var reply = JSON.stringify(jsonData, function(key, value) {
-			// Ignore sensitive bot settings
-			if ( (message.author.id !== botSettings.master || message.channel.type !== "dm") && ( key === "database" || key === "botToken" )) { value = "XXXXXXXXXX"; }
-			
       	  	// Filtering out properties
     		if (typeof value === 'object' && value !== null) {
     			if (cache.indexOf(value) !== -1 || value.length > 50) { return undefined; }    			
     			cache.push(value);
     		}    		
-    		return value;
+    		return ( message.channel.type !== "dm" && ( key === "database" || key === "botToken" ) ) ? botSettings.error.HIDDEN : value;
       	}, "  ");				
     	cache = null;  	
     	  
     	reply = typeof reply === "undefined" ? "undefined" : reply;
     	var dm = false;
-    	
-    	if( reply.length > 10000 && message.channel.type !== "dm" ) {  
-    		
-    		message.channel.stopTyping(true);
-			message.react("🚫");
-    		return message.reply(botSettings.error.RESULTS_TOO_LONG);
-    		
-    	}
-    	
-    	var embed = new Discord.RichEmbed();
-		embed.setColor(0x6F9AD3);
-    	
-    	while( reply.length > 1600 ) {
-    		
+      	
+    	const embed = new Discord.RichEmbed();
+    	embed.setColor(0x6F9AD3);
+
+    	while( reply.length >= 2000 ) {
+
     		dm = true;
-    		var n = reply.lastIndexOf(",", 1600);
-
-    		var chunk = reply.slice(0,n+1);		    		
-    		embed.setAuthor(title,"");
-    		embed.setDescription("```js\r\n"+chunk+"```");
-    		message.author.send({embed});
-			message.react("📫");
+    		var n = reply.lastIndexOf(",", 1800);
+    		chunk = reply.slice(0,n+1);		    		
     		
-	    	title += title.indexOf(botSettings.messages.CONTINUED) === -1 ? botSettings.messages.CONTINUED : "";
-    		reply = reply.slice(n+1);
+    		message.author.send(codeBlock(chunk));
+			message.react(botSettings.reaction.DM);
+	    	
+			title += title.indexOf(botSettings.messages.CONTINUED) === -1 ? botSettings.messages.CONTINUED : "";	    	
+			reply = reply.slice(n+1);
 
-    	} 
+    	}     	
     	
-    	embed = new Discord.RichEmbed();
-		embed.setColor(0x6F9AD3);
-
-    	embed.setDescription("```js\r\n"+reply+"```");
+    	embed.setDescription(codeBlock(reply));
 		embed.setTimestamp();
 		embed.setAuthor(title,"");
-		embed.addField(botSettings.messages.RESULTS+"[ "+prefix+" ]", "```js\r\n"+prefix+message+"```");
-		embed.setFooter("LaZBot 2.0");
+		embed.addField(`${botSettings.messages.RESULTS} [ ${prefix} ]`, codeBlock(prefix+message.content));
+		embed.setFooter(botSettings.v, client.user.displyAvatarURL);
 		
     	message.channel.stopTyping(true);
 		
     	//If already sent chunks to DM, send last bit to DM
     	if( dm ) { 
     		message.author.send({embed}); 
-    		message.react("✅");
+    		message.react(botSettings.reaction.SUCCESS);
     		console.log("Replied - QueryJSON - DM");
     	} else { 
     		message.channel.send({embed}); 
-    		message.react("✅");
+    		message.react(botSettings.reaction.SUCCESS);
     		console.log("Replied - QueryJSON - Channel");
     	}
   
@@ -89,15 +73,12 @@
     	var msg = "";
 		var cache = [];
 		var reply = JSON.stringify(jsonData, function(key, value) {
-			// Ignore sensitive bot settings
-			if ( (message.author.id !== botSettings.master || message.channel.type !== "dm") && ( key === "database" || key === "botToken" )) { value = "XXXXXXXXXX"; }
-			
       	  	// Filtering out properties
     		if (typeof value === 'object' && value !== null) {    			
     			if (cache.indexOf(value) !== -1 || value.length > 50) { return undefined; }    			
     			cache.push(value);
     		}
-      		return value;
+    		return ( message.channel.type !== "dm" && ( key === "database" || key === "botToken" ) ) ? botSettings.error.HIDDEN : value;
       	}, "  ");				
     	cache = null;  	
     	  
@@ -116,7 +97,7 @@
     		
     		if( reply.hasOwnProperty(k) ) {
     			
-				if ( (message.author.id !== botSettings.master || message.channel.type !== "dm") && ( k === "database" || k === "botToken" )) { reply[k] = "XXXXXXXXXX"; }
+    			if ( message.channel.type !== "dm" && ( k === "database" || k === "botToken" )) { value = botSettings.error.HIDDEN; }
 
     			msg += k + (new Array((maxResponse - k.length) + 1).join(' '))+" : ";
     			
@@ -127,8 +108,8 @@
     				for( let ks = 0; ks < reply[k].length; ++ks ) {    
 
     					if( msg.length > 1600 ) {
-	    					msg += "\r\n...data too large, try to be more specific\r\n\r\n";
-	    					message.react("⚠");
+	    					msg += botSettings.error.RESULTS_TOO_LONG;
+	    					message.react(botSettings.reaction.ERROR);
 	    					break;
 	    				}
 
@@ -177,16 +158,16 @@
 
     		chunk = msg.slice(0,n+1);		    		
     		
-    		embed.setDescription("```css\r\n"+chunk+"```");
+    		embed.setDescription(codeBlock(chunk));
     		message.author.send({embed});
-			message.react("📫");
+			message.react(botSettings.reaction.DM);
 	    	title += title.indexOf(botSettings.messages.CONTINUED) === -1 ? botSettings.messages.CONTINUED : "";
 	    	
 	    	msg = msg.slice(n+1);
     		
     	} 
     	
-		embed.setDescription("```css\r\n"+msg+"```");
+		embed.setDescription(codeBlock(msg,"css"));
 		embed.setTimestamp();
 		embed.setAuthor(title,message.author.displayAvatarURL);
 		
@@ -196,23 +177,27 @@
 			embed.setThumbnail(message.guild.iconURL);
 		}
 		
-		embed.setFooter("LaZBot 2.0", client.user.displyAvatarURL);
-		embed.addField(botSettings.messages.RESULTS+"[ "+prefix+" ]", "```js\r\n"+prefix+message+"```");
+		embed.setFooter(botSettings.v, client.user.displyAvatarURL);
+		embed.addField(`${botSettings.messages.RESULTS} [ ${prefix} ]`, codeBlock(prefix+message));
 		
     	message.channel.stopTyping(true);
 		
     	//If already sent chunks to DM, send last bit to DM
     	if( dm ) {
     		message.author.send({embed}); 
-    		message.react("✅");
+    		message.react(botSettings.reaction.SUCCESS);
     		console.log("Replied - QueryJSON - DM");
     	} else { 
     		message.channel.send({embed});
-    		message.react("✅");
+    		message.react(botSettings.reaction.SUCCESS);
     		console.log("Replied - QueryJSON - Channel");
     	}
     	
     }
 
+    function codeBlock(str,type) {
+    	type = typeof type !== "undefined" ? type : "js";
+    	return "```"+type+"\r\n"+str+"```";
+    }
     
 }());

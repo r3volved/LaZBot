@@ -117,6 +117,8 @@ client.on('disconnect', () => {
 	
 	//LOGIN WITH TOKEN
 	client.login(botSettings.botToken);
+	botLog.LogBotActivity(botSettings, "Client reconnecting");	
+	
 	if( client.readyAt > dd ) {
 		botLog.LogBotActivity(botSettings, "Client reconnected");
 	}

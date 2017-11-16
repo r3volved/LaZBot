@@ -1,11 +1,12 @@
-
 (function() {
+
+	const Discord = require('discord.js');
 
     module.exports.doCommand = function( botSettings, client, message, prefix ) {
 
 		//IF NOT ADMIN, RETURN AND ALERT
 		if( message.author.id !== botSettings.master ) {
-			message.react("🚫");
+        	message.react(botSettings.reaction.DENIED);
     		return message.reply(botSettings.error.NO_PERMISSION);			
 		}
 
@@ -26,14 +27,27 @@
     			break;
     	}
     	
-    	var evaled = "Error";
+    	var evaled = "undefined";
     	try {
-    		evaled = eval(obj);
+    		evaled = eval(obj) || "undefined";    		
     	} catch(e) {
     		evaled = e;
     	}
     	
-    	message.channel.send(evaled,{"code":"js"});
+    	const embed = new Discord.RichEmbed();
+		embed.setAuthor(botSettings.messages.EVAL,message.author.displayAvatarURL);
+		embed.setDescription(`${codeBlock(evaled)}`);
+		embed.addField(`${botSettings.messages.RESULTS} [ ${prefix} ]`, codeBlock(prefix+message.content));
+		embed.setFooter(botSettings.v, client.user.displyAvatarURL);
+		embed.setTimestamp();
+   	    	
+    	message.author.send({embed});
+    	
+    }
+    
+    function codeBlock(str,type) {
+    	type = type || "js";
+    	return "```"+type+"\r\n"+str+"```";
     }
     
 }());

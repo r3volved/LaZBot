@@ -4,7 +4,7 @@
 
     	if( message.channel.type === "dm" ) {
     	
-    		message.react("❌");
+    		message.react(botSettings.reaction.DENIED);
 			return message.author.send(botSettings.error.NO_DM);
     		
     	}
@@ -27,7 +27,7 @@
 
     			//CANNOT FIND CHANNEL 
     			if (err) { 
-    				message.react("❌");
+    				message.react(botSettings.reaction.ERROR);
     				return message.reply(botSettings.error.NO_SPREADSHEET); 
     			}
     		    
@@ -43,25 +43,25 @@
     			
     			//IF CHANNEL FAILED FOR ANY REASON ESCAPE
     			if( typeof(channel.spreadsheet) === "undefined" || channel.spreadsheet === "" ) {
-    				message.react("❌");
+    				message.react(botSettings.reaction.ERROR);
     				return message.reply(botSettings.error.NO_SPREADSHEET);
     			}
     			
     			// UPDATE - CHECK PERMISSIONS - IF NOT MOD OR ADMIN, RETURN AND ALERT
     			if( cmd === botSettings.prefix.update && !message.member.roles.find("name", botSettings.adminRole) && !message.member.roles.find("name", channel.modrole) ) {			
-    				message.react("🚫");
+    				message.react(botSettings.reaction.DENIED);
     	    		return message.reply(botSettings.error.NO_PERMISSION);			
     			}
 
     			// REMOVE - CHECK PERMISSIONS - IF NOT ADMIN, RETURN AND ALERT
     			if( ( cmd === botSettings.prefix.remove || cmd === botSettings.prefix.sync ) && !message.member.roles.find("name", botSettings.adminRole) ) {			
-    				message.react("🚫");
+    				message.react(botSettings.reaction.DENIED);
     	    		return message.reply(botSettings.error.NO_PERMISSION);			
     			}
  
     	        var sheetURL = channel.spreadsheet;
-    	        var ruleURL = sheetURL+"?"+cmd+"="+encodeURIComponent(JSON.stringify(cmdObj));
-    	        console.log( sheetURL+"?"+cmd+"="+JSON.stringify(cmdObj) );
+    	        var ruleURL = `${sheetURL}?${cmd}=${encodeURIComponent(JSON.stringify(cmdObj))}`;
+    	        console.log( `${sheetURL}?${cmd}=${JSON.stringify(cmdObj)}` );
     	        
     	        var request = require('request');
     	        request(ruleURL, function (error, response, body) {
@@ -84,7 +84,7 @@
     				    //console.error(error);
     					message.channel.stopTyping(true);
     					message.reply(botSettings.error.ERROR_QUERY+"\r\n"+e);
-    					message.react("❌");
+    					message.react(botSettings.reactions.ERROR);
     				    return;
     				}
     			
@@ -93,7 +93,7 @@
     		});
     		  
     	} catch (err) {
-    		message.react("❌");
+    		message.react(botSettings.reactions.ERROR);
 			return message.reply(err);
     	}
  
