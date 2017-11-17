@@ -26,62 +26,93 @@ const botLog = require("./utilities/database.js");
 //ON MESSAGE RECEIVED
 client.on('message', message => {
   
+	//Tell me if someone is DMing the bot...
+	if( message.channel.type === "dm" && message.author.id !== botSettings.master && !message.author.bot ) { 
+		
+		let embed = new Discord.RichEmbed();
+		embed.setAuthor(message.author.tag,message.author.displayAvatarURL);
+		embed.setDescription(message.content);
+		embed.setFooter(botSettings.v);
+		embed.setTimestamp();
+		embed.setColor(0x2A6EBB);
+		
+		const User = client.fetchUser(botSettings.master);
+	    User.then( (user) => { user.send({embed}); } );
+		
+	}
+	
 	// IF AUTHOR IS BOT, IGNORE MESSAGE
 	if( message.author.bot ) { return; }
   	
 	// IF PREFIX IS NOT IN THE PREFIX LIST, IGNORE
 	let prefix = message.content.charAt(0);
-	if( botSettings.prefixList.indexOf(prefix) === -1 && botSettings.prefixList.lastIndexOf(prefix) === -1 ) { return; }
-	
-	// IF COMMAND IS NOT IN THE COMMAND LIST, IGNORE
 	message.content = message.content.slice(1).trim();
 
+	if( botSettings.prefixList.indexOf(prefix) === -1 || message.content.length === 0 ) { return; }	
+
 	// TO GET HERE MEANS PREFIX MATCHES	
+	let commandFile = "";
 	switch( prefix ) {
 		case botSettings.prefix.query:
+			
 			// QUERY OBJECT DETAILS
-			var command = require('./commands/query.js');
+			commandFile = './commands/query.js';
 			break;
+			
 		case botSettings.prefix.eval:
+			
 			// EVALUATE AN EXPRESSION
-			var command = require('./commands/eval.js');
+			commandFile = './commands/eval.js';
 			break;
+			
 		case botSettings.prefix.select:
-			// QUERY AGAINST SPREADSHEET
+			
+			// Check for a doubled up select prefix
 			if( message.content.charAt(0) === botSettings.command.describe ) {
 				// DESCRIBE SHEET
 				prefix += message.content.charAt(0);
 				message.content = message.content.slice(1).trim();
-				var command = require('./commands/commandHelp.js');
-			} else {
-				// GET DATA FROM SPREADSHEET
-				var command = require('./commands/commandGet.js');
-			}
+				commandFile = './commands/commandHelp.js';
+				break;
+			} 
+			
+			// GET DATA FROM SPREADSHEET
+			commandFile = './commands/commandGet.js';
 			break;
+			
 		case botSettings.prefix.update:
+			
 			// SET DATA IN SPREADSHEET
-			var command = require('./commands/commandSet.js');
+			commandFile = './commands/commandSet.js';
 			break;
+			
 		case botSettings.prefix.remove:
+			
 			// DELETE DATA IN SPREADSHEET
-			var command = require('./commands/commandDel.js');
+			commandFile = './commands/commandDel.js';
 			break;
+			
 		case botSettings.prefix.sync:
+			
+			//Check for a doubled up sync prefix
 			if( message.content.charAt(0) === botSettings.command.setup ) {
 				// SETUP
 				prefix += message.content.charAt(0);
 				message.content = message.content.slice(1).trim();
-				var command = require('./commands/commandSetup.js');
-			} else {
-				// SYNC TABLE IN SPREADSHEET
-				var command = require('./commands/commandSync.js');
+				commandFile = './commands/commandSetup.js';
+				break;
 			}
-			break;					
+		
+			// SYNC TABLE IN SPREADSHEET
+			commandFile = './commands/commandSync.js';			
+			break;
+			
 		default:
 			return;
 	}
 	
-	return command.doCommand( botSettings, client, message, prefix );
+	const command = require(commandFile);
+	command.doCommand( botSettings, client, message, prefix );
 
 });
 
@@ -112,7 +143,7 @@ client.on('ready', () => {
 //ON DISCONNECT
 client.on('disconnect', () => {
 	
-	var dd = new Date();
+	let dd = new Date();
 	botLog.LogBotActivity(botSettings, "Client disconnected");
 	
 	//LOGIN WITH TOKEN

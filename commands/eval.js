@@ -10,13 +10,10 @@
     		return message.reply(botSettings.error.NO_PERMISSION);			
 		}
 
-    	var parts = message.content.split(".");
-    	var obj = message.content;
+    	let parts = message.content.split(".");
+    	let obj = message.content;
 
     	switch( parts[0] ) {
-			case "this":
-				obj = this;
-				break;    			
     		case "bot":
     			obj = botSettings;
     			break;
@@ -27,7 +24,7 @@
     			break;
     	}
     	
-    	var evaled = "undefined";
+    	let evaled = "undefined";
     	try {
     		evaled = eval(obj) || "undefined";    		
     	} catch(e) {
@@ -41,7 +38,7 @@
 		embed.setFooter(botSettings.v, client.user.displyAvatarURL);
 		embed.setTimestamp();
    	    	
-    	message.author.send({embed});
+    	message.channel.send({embed});
     	
     }
     
