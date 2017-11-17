@@ -18,7 +18,7 @@
     			
     			if( typeof(messageParts[i+1]) === "undefined" ) { 
     				
-    	        	message.react(botSettings.reactions.ERROR);
+    	        	message.react(botSettings.reaction.ERROR);
     	    		return message.reply(botSettings.error.DEL_HELP); 
     				
     			}
@@ -28,7 +28,7 @@
 	    			case ">=":
 	    			case "<":
 	    			case "<=":
-	    	        	message.react(botSettings.reactions.ERROR);
+	    	        	message.react(botSettings.reaction.ERROR);
 	    	    		return message.reply(botSettings.error.NO_CONDITIONS);
 	    			default:
 				}

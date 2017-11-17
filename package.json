@@ -2,9 +2,11 @@
   "name": "LaZBot",
   "version": "2.0",
   "description": "LaZBot packages",
-  "main": "lazbot.js",
+  "main": "./lazbot.js",
   "dependencies": {
     "discord.js": "^11.2.1",
+    "google-auth-library": "^0.11.0",
+    "googleapis": "^22.2.0",
     "mysql": "^2.15.0",
     "request": "^2.83.0"
   },

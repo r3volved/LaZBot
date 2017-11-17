@@ -6,10 +6,10 @@
     	   	
     	title = typeof(title) !== "undefined" ? title : "";
     	
-    	var jsonData = typeof(data.data) !== "undefined" ? data.data : data;
+    	const jsonData = typeof(data.data) !== "undefined" ? data.data : data;
     	
-		var cache = [];
-		var reply = JSON.stringify(jsonData, function(key, value) {
+		let cache = [];
+		let reply = JSON.stringify(jsonData, function(key, value) {
       	  	// Filtering out properties
     		if (typeof value === 'object' && value !== null) {
     			if (cache.indexOf(value) !== -1 || value.length > 50) { return undefined; }    			
@@ -20,15 +20,15 @@
     	cache = null;  	
     	  
     	reply = typeof reply === "undefined" ? "undefined" : reply;
-    	var dm = false;
+    	let dm = false;
       	
-    	const embed = new Discord.RichEmbed();
+    	let embed = new Discord.RichEmbed();
     	embed.setColor(0x6F9AD3);
 
     	while( reply.length >= 2000 ) {
 
     		dm = true;
-    		var n = reply.lastIndexOf(",", 1800);
+    		const n = reply.lastIndexOf(",", 1800);
     		chunk = reply.slice(0,n+1);		    		
     		
     		message.author.send(codeBlock(chunk));
@@ -44,18 +44,14 @@
 		embed.setAuthor(title,"");
 		embed.addField(`${botSettings.messages.RESULTS} [ ${prefix} ]`, codeBlock(prefix+message.content));
 		embed.setFooter(botSettings.v, client.user.displyAvatarURL);
-		
-    	message.channel.stopTyping(true);
-		
+				
     	//If already sent chunks to DM, send last bit to DM
     	if( dm ) { 
     		message.author.send({embed}); 
     		message.react(botSettings.reaction.SUCCESS);
-    		console.log("Replied - QueryJSON - DM");
     	} else { 
     		message.channel.send({embed}); 
     		message.react(botSettings.reaction.SUCCESS);
-    		console.log("Replied - QueryJSON - Channel");
     	}
   
     }
@@ -65,14 +61,13 @@
     	 	
     	title = typeof(title) !== "undefined" ? title : "";
     	
-    	var jsonData = data;
-    	var dm = false;
+    	const jsonData = data;
+    	let dm = false;
 
-    	const embed = new Discord.RichEmbed();
+    	let embed = new Discord.RichEmbed();
 
-    	var msg = "";
-		var cache = [];
-		var reply = JSON.stringify(jsonData, function(key, value) {
+		let cache = [];
+		let reply = JSON.stringify(jsonData, function(key, value) {
       	  	// Filtering out properties
     		if (typeof value === 'object' && value !== null) {    			
     			if (cache.indexOf(value) !== -1 || value.length > 50) { return undefined; }    			
@@ -85,35 +80,40 @@
     	reply = typeof reply === "undefined" ? "undefined" : reply;
        	reply = JSON.parse(reply);
 
-		var maxData = 0;
-    	var maxResponse = 0;
-    	for( var kr in reply ) {
-    		if( reply.hasOwnProperty(kr) ) {
-	    		if( kr.length > maxResponse ) { maxResponse = kr.length; }
+    	let msg = "";
+		let maxData = 0;
+    	let maxResponse = 0;
+    	for( let k in reply ) {
+    		if( reply.hasOwnProperty(k) ) {
+	    		if( k.length > maxResponse ) { maxResponse = k.length; }
     		}
     	}
     	
-    	for( var k in reply ) {
-    		
+    	for( let k in reply ) {    		
     		if( reply.hasOwnProperty(k) ) {
     			
-    			if ( message.channel.type !== "dm" && ( k === "database" || k === "botToken" )) { value = botSettings.error.HIDDEN; }
+    			if ( message.author.id !== botSettings.master && ( k === "database" || k === "botToken" )) { value = botSettings.error.HIDDEN; }
 
-    			msg += k + (new Array((maxResponse - k.length) + 1).join(' '))+" : ";
+    			const tSpaces = new Array((maxResponse - k.length) + 1).join(' ');
     			
-    			if( typeof(reply[k]) === "object" && Array.isArray(reply[k])) {
+    			msg += `${k}${tSpaces} : `;
+    			
+    			if( typeof(reply[k]) === "object" && Array.isArray(reply[k]) ) {
     				
-					msg += "\r\n"+(new Array((maxResponse*2) + 1).join('-'))+"\r\n";
+    				const divider = new Array((maxResponse*2) + 1).join('-');
+    				
+					msg += `\r\n${divider}\r\n`;
 					
     				for( let ks = 0; ks < reply[k].length; ++ks ) {    
 
     					if( msg.length > 1600 ) {
 	    					msg += botSettings.error.RESULTS_TOO_LONG;
-	    					message.react(botSettings.reaction.ERROR);
+	    					msg += `${divider}\r\n`;
+	    					message.react(botSettings.reaction.WARNING);
 	    					break;
 	    				}
 
-    					var thisObj = reply[k][ks];
+    					const thisObj = reply[k][ks];
     	    			
     					if( ks === 0 ) {
 	    			    	for( let k2 in thisObj ) {
@@ -125,24 +125,26 @@
     					
 	    		    	for( let k2 in thisObj ) {
 	    		    		if( thisObj.hasOwnProperty(k2) ) {
+	    		    			
+	    		    			const spaces = new Array((maxData - k2.length) + 1).join(' ');	    		    			
 	    		    			if( Array.isArray(thisObj[k2]) ) {
-	    		    				msg += "["+k2+(new Array((maxData - k2.length) + 1).join(' '))+"] :\r\n"
-	    		    				for( var x = 0; x < thisObj[k2].length; ++x ) {
-	    		    					msg += JSON.stringify(thisObj[k2][x])+"\r\n";
+	    		    				msg += `[${k2}${spaces}] :\r\n`;
+	    		    				for( let x = 0; x < thisObj[k2].length; ++x ) {
+	    		    					msg += `${JSON.stringify(thisObj[k2][x])}\r\n`;
 	    		    				}
 	    		    			} else {
-	    		    				msg += "["+k2+(new Array((maxData - k2.length) + 1).join(' '))+"] : "+JSON.stringify(thisObj[k2])+"\r\n";
+	    		    				msg += `[${k2}${spaces}] : ${JSON.stringify(thisObj[k2])}\r\n`;
 	    		    			}
 	    		    		}
 	    		    	}
 	    		    	
-	    				msg += (new Array((maxResponse*2) + 1).join('-'))+"\r\n";
-
+	    		    	msg += `${divider}\r\n`;
+	    		    	
     				}	
 
     			} else {
     				
-    				msg += reply[k]+"\r\n";
+    				msg += `${reply[k]}\r\n`;
     			
     			}
     			
@@ -154,7 +156,7 @@
     	while( msg.length > 2000 ) {
     		
     		dm = true;
-    		var n = msg.lastIndexOf(",", 1800);
+    		let n = msg.lastIndexOf(",", 1800);
 
     		chunk = msg.slice(0,n+1);		    		
     		
@@ -180,17 +182,13 @@
 		embed.setFooter(botSettings.v, client.user.displyAvatarURL);
 		embed.addField(`${botSettings.messages.RESULTS} [ ${prefix} ]`, codeBlock(prefix+message));
 		
-    	message.channel.stopTyping(true);
-		
     	//If already sent chunks to DM, send last bit to DM
     	if( dm ) {
     		message.author.send({embed}); 
     		message.react(botSettings.reaction.SUCCESS);
-    		console.log("Replied - QueryJSON - DM");
     	} else { 
     		message.channel.send({embed});
     		message.react(botSettings.reaction.SUCCESS);
-    		console.log("Replied - QueryJSON - Channel");
     	}
     	
     }

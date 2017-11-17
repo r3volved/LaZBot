@@ -1,5 +1,5 @@
-let fs = require("fs");
-let content = fs.readFileSync("./config/settings.json");
+const fs = require("fs");
+const content = fs.readFileSync("./config/settings.json");
 let settings = JSON.parse(content);
 
 //Compile list of prefixes
@@ -16,9 +16,9 @@ for( let k in settings.command ) {
 
 const botSettings = settings;
 const Discord = require('discord.js');
+const botLog = require("./utilities/database.js");
 const client = new Discord.Client();
 
-const botLog = require("./utilities/database.js");
 
 /**
  * MONITOR CHANNEL
@@ -36,13 +36,21 @@ client.on('message', message => {
 		embed.setTimestamp();
 		embed.setColor(0x2A6EBB);
 		
-		const User = client.fetchUser(botSettings.master);
-	    User.then( (user) => { user.send({embed}); } );
+		const master = client.fetchUser(botSettings.master);
+		master.then( (user) => { user.send({embed}); } );
 		
 	}
 	
 	// IF AUTHOR IS BOT, IGNORE MESSAGE
 	if( message.author.bot ) { return; }
+
+/*	const CommandRegistry = require("./commands/command.registry.js");
+	let registry = new CommandRegistry(client, message);
+	
+	registry.registerMentionCommand('help', () => { new HelpCommand(client, message).reply() });
+    registry.registerMentionCommand('!', () => { new EvalCommand(client, message).reply() });
+    registry.registerMentionCommand('$', () => { new ValueCommand(client, message).reply() });
+*/	
   	
 	// IF PREFIX IS NOT IN THE PREFIX LIST, IGNORE
 	let prefix = message.content.charAt(0);
@@ -78,6 +86,7 @@ client.on('message', message => {
 			
 			// GET DATA FROM SPREADSHEET
 			commandFile = './commands/commandGet.js';
+			//commandFile = './utilities/gsAPI.js';
 			break;
 			
 		case botSettings.prefix.update:
@@ -143,7 +152,7 @@ client.on('ready', () => {
 //ON DISCONNECT
 client.on('disconnect', () => {
 	
-	let dd = new Date();
+	const dd = new Date();
 	botLog.LogBotActivity(botSettings, "Client disconnected");
 	
 	//LOGIN WITH TOKEN

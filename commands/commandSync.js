@@ -9,14 +9,14 @@
 
         if( messageParts.length !== 2 ) { 
         	
-        	message.react(botSettings.reactions.ERROR);
+        	message.react(botSettings.reaction.ERROR);
     		return message.reply(botSettings.error.SYNC_HELP); 
 		    
         }
         
         if( isNaN(messageParts[1]) ) { 
         	
-        	message.react(botSettings.reactions.ERROR);
+        	message.react(botSettings.reaction.ERROR);
 		    return message.reply(botSettings.error.NO_GUILDID); 
 		    
         } 
