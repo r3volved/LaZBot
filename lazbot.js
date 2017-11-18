@@ -1,23 +1,17 @@
-const fs = require("fs");
-const content = fs.readFileSync("./config/settings.json");
-let settings = JSON.parse(content);
-
-//Compile list of prefixes
-settings.prefixList = [];
-for( let k in settings.prefix ) {
-	settings.prefixList.push(settings.prefix[k]);
-}
-
-//Compile list of commands
-settings.commandList = [];
-for( let k in settings.command ) {
-	settings.commandList.push(settings.command[k]);
-}
-
-const botSettings = settings;
 const Discord = require('discord.js');
-const botLog = require("./utilities/database.js");
+const LaZBot = require('./config/lazbot.settings.js');
+
 const client = new Discord.Client();
+const config = new LaZBot(client);
+
+const HelpCommand = require('./commands/help.command.js');
+const EvalCommand = require('./commands/eval.command.js');
+const ValueCommand = require('./commands/value.command.js');
+//const SetupCommand = require('./commands/setup.command.js');
+//const SyncCommand = require('./commands/sync.command.js');
+//const GetCommand = require('./commands/get.command.js');
+//const SetCommand = require('./commands/set.command.js');
+//const DelCommand = require('./commands/del.command.js');
 
 
 /**
@@ -27,16 +21,16 @@ const client = new Discord.Client();
 client.on('message', message => {
   
 	//Tell me if someone is DMing the bot...
-	if( message.channel.type === "dm" && message.author.id !== botSettings.master && !message.author.bot ) { 
+	if( message.channel.type === "dm" && message.author.id !== config.settings.master && !message.author.bot ) { 
 		
 		let embed = new Discord.RichEmbed();
 		embed.setAuthor(message.author.tag,message.author.displayAvatarURL);
 		embed.setDescription(message.content);
-		embed.setFooter(botSettings.v);
+		embed.setFooter(config.settings.v);
 		embed.setTimestamp();
 		embed.setColor(0x2A6EBB);
 		
-		const master = client.fetchUser(botSettings.master);
+		const master = config.client.fetchUser(config.settings.master);
 		master.then( (user) => { user.send({embed}); } );
 		
 	}
@@ -44,15 +38,19 @@ client.on('message', message => {
 	// IF AUTHOR IS BOT, IGNORE MESSAGE
 	if( message.author.bot ) { return; }
 
-/*	const CommandRegistry = require("./commands/command.registry.js");
-	let registry = new CommandRegistry(client, message);
+	const CommandRegistry = require("./commands/command.registry.js");
+	let registry = new CommandRegistry(config, message);
 	
-	registry.registerMentionCommand('help', () => { new HelpCommand(client, message).reply() });
-    registry.registerMentionCommand('!', () => { new EvalCommand(client, message).reply() });
-    registry.registerMentionCommand('$', () => { new ValueCommand(client, message).reply() });
-*/	
+	registry.registerCommand('help', () => { new HelpCommand(config, message).reply() });
+    
+	if( message.author.id === config.settings.master ) {
+
+		registry.registerCommand('!', () => { new EvalCommand(config, message).reply() });
+		registry.registerCommand('$', () => { new ValueCommand(config, message).reply() });
+	
+	}
   	
-	// IF PREFIX IS NOT IN THE PREFIX LIST, IGNORE
+/*	// IF PREFIX IS NOT IN THE PREFIX LIST, IGNORE
 	let prefix = message.content.charAt(0);
 	message.content = message.content.slice(1).trim();
 
@@ -122,7 +120,7 @@ client.on('message', message => {
 	
 	const command = require(commandFile);
 	command.doCommand( botSettings, client, message, prefix );
-
+*/
 });
 
 
@@ -133,7 +131,7 @@ client.on('message', message => {
 //LISTEN FOR JOINERS
 client.on('guildMemberAdd', member => {
 
-	member.channel.send(botSettings.messages.HELLO.replace("%s", member.username));
+	member.channel.send(config.settings.messages.HELLO.replace("%s", member.username));
 
 });
 
@@ -145,7 +143,7 @@ client.on('guildMemberAdd', member => {
 //ON READY
 client.on('ready', () => {
 	
-	console.log("Connected with token: "+botSettings.botToken);
+	console.log("Connected with token: "+config.settings.botToken);
 	
 }); 
 
@@ -153,24 +151,24 @@ client.on('ready', () => {
 client.on('disconnect', () => {
 	
 	const dd = new Date();
-	botLog.LogBotActivity(botSettings, "Client disconnected");
+	const botLog = require("./utilities/database.js");
+	botLog.LogBotActivity(config.settings, "Client disconnected");
 	
 	//LOGIN WITH TOKEN
-	client.login(botSettings.botToken);
-	botLog.LogBotActivity(botSettings, "Client reconnecting");	
-	
-	if( client.readyAt > dd ) {
-		botLog.LogBotActivity(botSettings, "Client reconnected");
-	}
-	
+	setTimeout( function() { 
+		botLog.LogBotActivity(config.settings, "Client reconnecting");
+		client.login(config.settings.botToken);
+	}, 1000);
+		
 });
 
 //ON RECONNECTING
 client.on('reconnecting', () => {
 
-	botLog.LogBotActivity(botSettings, "Client reconnecting");	
+	const botLog = require("./utilities/database.js");
+	botLog.LogBotActivity(config.settings, "Client reconnecting");	
 
 });
 
 //LOGIN WITH TOKEN
-client.login(botSettings.botToken);
+client.login(config.settings.botToken);
