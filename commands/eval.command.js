@@ -2,8 +2,12 @@ let Command = require('./command')
 
 class EvalCommand extends Command {
 
-	reply() {
-    	
+	constructor(config, message) {
+		super(config, message);
+	}
+	
+	process() {
+		
 		let content = this.message.content.slice(1).trim();				
     	let evaled = "undefined";
     	
@@ -16,11 +20,18 @@ class EvalCommand extends Command {
     		this.message.react(this.config.settings.reaction.ERROR);
     	}
     	
+    	this.reply( evaled )
+
+	}
+	
+	reply( replyStr ) {
+    		
     	const Discord = require('discord.js');
     	const embed = new Discord.RichEmbed();
-    	embed.addField(this.config.settings.messages.EVAL, this.codeBlock(evaled))
-    	embed.addField(this.config.settings.messages.RESULTS, this.codeBlock(this.message.content));    	
-        this.messageHandler.sendMessage({embed}); 
+    	embed.addField(this.config.settings.messages.EVAL, this.codeBlock( replyStr ))
+    	embed.addField(this.config.settings.messages.RESULTS, this.codeBlock( this.message.content ));    	
+        
+    	this.messageHandler.sendMessage({embed}); 
         
     }
 	

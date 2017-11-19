@@ -74,7 +74,7 @@
     			const sql = "INSERT INTO `botlog` (`timestamp`, `message`) VALUES (?, ?)";
 				con.query(sql, [date, logMessage], function (err, result) {
 					if (err) { throw err; }
-					console.warn(logMessage+" - "+date);
+					console.info(logMessage+" - "+date);
 				});
 
     		});

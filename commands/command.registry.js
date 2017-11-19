@@ -17,7 +17,7 @@ class CommandRegistry {
             let msgArray = this.message.content.match(splittingPattern);
             
             if (msgArray) {
-
+            	
                 let command = msgArray[0];
                 let noCommandsFound = false;
 

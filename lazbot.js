@@ -7,12 +7,11 @@ const config = new LaZBot(client);
 const HelpCommand = require('./commands/help.command.js');
 const EvalCommand = require('./commands/eval.command.js');
 const ValueCommand = require('./commands/value.command.js');
-//const SetupCommand = require('./commands/setup.command.js');
-//const SyncCommand = require('./commands/sync.command.js');
-//const GetCommand = require('./commands/get.command.js');
+const SyncCommand = require('./commands/sync.command.js');
+const GetCommand = require('./commands/get.command.js');
 //const SetCommand = require('./commands/set.command.js');
 //const DelCommand = require('./commands/del.command.js');
-
+const TranslateCommand = require('./commands/translate.command.js');
 
 /**
  * MONITOR CHANNEL
@@ -20,107 +19,60 @@ const ValueCommand = require('./commands/value.command.js');
 //ON MESSAGE RECEIVED
 client.on('message', message => {
   
-	//Tell me if someone is DMing the bot...
-	if( message.channel.type === "dm" && message.author.id !== config.settings.master && !message.author.bot ) { 
-		
-		let embed = new Discord.RichEmbed();
-		embed.setAuthor(message.author.tag,message.author.displayAvatarURL);
-		embed.setDescription(message.content);
-		embed.setFooter(config.settings.v);
-		embed.setTimestamp();
-		embed.setColor(0x2A6EBB);
-		
-		const master = config.client.fetchUser(config.settings.master);
-		master.then( (user) => { user.send({embed}); } );
-		
-	}
-	
 	// IF AUTHOR IS BOT, IGNORE MESSAGE
 	if( message.author.bot ) { return; }
 
-	const CommandRegistry = require("./commands/command.registry.js");
-	let registry = new CommandRegistry(config, message);
-	
-	registry.registerCommand('help', () => { new HelpCommand(config, message).reply() });
-    
-	if( message.author.id === config.settings.master ) {
-
-		registry.registerCommand('!', () => { new EvalCommand(config, message).reply() });
-		registry.registerCommand('$', () => { new ValueCommand(config, message).reply() });
-	
-	}
-  	
-/*	// IF PREFIX IS NOT IN THE PREFIX LIST, IGNORE
-	let prefix = message.content.charAt(0);
-	message.content = message.content.slice(1).trim();
-
-	if( botSettings.prefixList.indexOf(prefix) === -1 || message.content.length === 0 ) { return; }	
-
-	// TO GET HERE MEANS PREFIX MATCHES	
-	let commandFile = "";
-	switch( prefix ) {
-		case botSettings.prefix.query:
-			
-			// QUERY OBJECT DETAILS
-			commandFile = './commands/query.js';
-			break;
-			
-		case botSettings.prefix.eval:
-			
-			// EVALUATE AN EXPRESSION
-			commandFile = './commands/eval.js';
-			break;
-			
-		case botSettings.prefix.select:
-			
-			// Check for a doubled up select prefix
-			if( message.content.charAt(0) === botSettings.command.describe ) {
-				// DESCRIBE SHEET
-				prefix += message.content.charAt(0);
-				message.content = message.content.slice(1).trim();
-				commandFile = './commands/commandHelp.js';
-				break;
-			} 
-			
-			// GET DATA FROM SPREADSHEET
-			commandFile = './commands/commandGet.js';
-			//commandFile = './utilities/gsAPI.js';
-			break;
-			
-		case botSettings.prefix.update:
-			
-			// SET DATA IN SPREADSHEET
-			commandFile = './commands/commandSet.js';
-			break;
-			
-		case botSettings.prefix.remove:
-			
-			// DELETE DATA IN SPREADSHEET
-			commandFile = './commands/commandDel.js';
-			break;
-			
-		case botSettings.prefix.sync:
-			
-			//Check for a doubled up sync prefix
-			if( message.content.charAt(0) === botSettings.command.setup ) {
-				// SETUP
-				prefix += message.content.charAt(0);
-				message.content = message.content.slice(1).trim();
-				commandFile = './commands/commandSetup.js';
-				break;
-			}
+	try {
 		
-			// SYNC TABLE IN SPREADSHEET
-			commandFile = './commands/commandSync.js';			
-			break;
+		//Tell me if someone is DMing the bot...
+		if( message.channel.type === "dm" && message.author.id !== config.settings.master ) { 
 			
-		default:
-			return;
-	}
+			let embed = new Discord.RichEmbed();
+			embed.setAuthor(`Incoming DM:`,message.author.displayAvatarURL);
+			embed.addField(`${message.author.tag} [${message.author.id}]`,`${message.content}\n_`);
+			embed.addField(`Reply back:`,"```js\n"+`! this.config.client.fetchUser("${message.author.id}").then( user => user.send("REPLY TEXT TO USER") )`+"```");
+			embed.setFooter(config.settings.version);
+			embed.setTimestamp();
+			embed.setColor(0x2A6EBB);
+			
+			const master = config.client.fetchUser(config.settings.master);
+			master.then( (user) => { user.send({embed}); } );
+			
+		}
+		
+		const CommandRegistry = require("./commands/command.registry.js");
+		let registry = new CommandRegistry(config, message);
+		
+		//GLOBAL COMMANDS
+		registry.registerCommand('help', () => { new HelpCommand(config, message).process() });
+		
+		if( message.channel.type !== "dm" ) {
 	
-	const command = require(commandFile);
-	command.doCommand( botSettings, client, message, prefix );
-*/
+			//CHANNEL COMMANDS
+			registry.registerCommand(config.settings.prefix.translate, () => { new TranslateCommand(config, message).process() });
+			registry.registerCommand(config.settings.prefix.query, () => { new GetCommand(config, message).process() });
+			registry.registerCommand(config.settings.prefix.query+config.settings.prefix.query, () => { new GetCommand(config, message).process() });
+			
+			if( message.member.roles.find("name", config.settings.adminRole) || message.author.id === config.settings.master ) {			
+		
+				//CHANNEL - ADMIN COMMANDS
+				registry.registerCommand(config.settings.prefix.sync, () => { new SyncCommand(config, message).process() });
+			
+			}
+			
+		}
+			
+		if( message.author.id === config.settings.master ) {
+	
+			//PRIVATE COMMANDS
+			registry.registerCommand(config.settings.prefix.eval, () => { new EvalCommand(config, message).process() });
+			registry.registerCommand(config.settings.prefix.value, () => { new ValueCommand(config, message).process() });
+			
+		}
+		
+	} catch(e) {
+		console.log(e);
+	} 	
 });
 
 
@@ -128,12 +80,25 @@ client.on('message', message => {
  * MONITOR MEMBERS
  */
 
-//LISTEN FOR JOINERS
+//LISTEN FOR GUILD ACTIVITY
 client.on('guildMemberAdd', member => {
-
-	member.channel.send(config.settings.messages.HELLO.replace("%s", member.username));
-
+	let guild = member.guild;
+	const embed = new Discord.RichEmbed()
+	.setColor(0x00AE86)
+	.setTimestamp()
+	.addField('User Update',`:eye: ${member.user} has joined!`)
+	guild.systemChannel.send({embed})
 });
+
+client.on('guildMemberRemove', member => {
+	let guild = member.guild;
+	const embed = new Discord.RichEmbed()
+	.setColor(0x00AE86)
+	.setTimestamp()
+	.addField('User Update',`:eye: ${member.user} has left...`)
+	guild.systemChannel.send({embed})
+});
+
 
 
 /** 
@@ -143,30 +108,61 @@ client.on('guildMemberAdd', member => {
 //ON READY
 client.on('ready', () => {
 	
-	console.log("Connected with token: "+config.settings.botToken);
+	//console.info(`Connected as: ${client.user.username}`);
+	const botLog = require("./utilities/database.js");
+	botLog.LogBotActivity(config.settings, `Connected as: ${client.user.username}`);
 	
 }); 
 
 //ON DISCONNECT
-client.on('disconnect', () => {
+client.on('disconnect', (event) => {
 	
-	const dd = new Date();
+	//console.error(`Client disconnected`,event);
 	const botLog = require("./utilities/database.js");
-	botLog.LogBotActivity(config.settings, "Client disconnected");
+	botLog.LogBotActivity(config.settings, `Client disconnected`);
 	
-	//LOGIN WITH TOKEN
+	//Try login after 10 seconds
 	setTimeout( function() { 
-		botLog.LogBotActivity(config.settings, "Client reconnecting");
+		//console.warn(`Client trying to connect`);
+		botLog.LogBotActivity(config.settings, `Client trying to connect`);
 		client.login(config.settings.botToken);
-	}, 1000);
+	}, 5000);
 		
 });
 
 //ON RECONNECTING
 client.on('reconnecting', () => {
 
+	//console.warn(`Client reconnecting`);	
 	const botLog = require("./utilities/database.js");
-	botLog.LogBotActivity(config.settings, "Client reconnecting");	
+	botLog.LogBotActivity(config.settings, `Client reconnecting`);	
+
+});
+
+//ON RESUME
+client.on('resumed', (replayed) => {
+
+	//console.info(`Client resumed - Replayed: ${replayed}`);
+	const botLog = require("./utilities/database.js");
+	botLog.LogBotActivity(config.settings, `Client resumed - Replayed: ${replayed}`);	
+
+});
+
+//ON ERROR
+client.on('error', (error) => {
+
+	//console.error(`Client connection error: ${error}`);
+	const botLog = require("./utilities/database.js");
+	botLog.LogBotActivity(config.settings, `Client connection error: ${error}`);	
+
+});
+
+//ON WARNING
+client.on('warn', (info) => {
+
+	//console.warn(`Client warning: ${info}`);
+	const botLog = require("./utilities/database.js");
+	botLog.LogBotActivity(config.settings, `Client warning: ${info}`);	
 
 });
 

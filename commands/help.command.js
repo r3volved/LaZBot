@@ -1,16 +1,27 @@
 let Command = require('./command')
 
-const HELP_TEXT = '## Commands\n' +
-    '- help me\n' +
-    '- ! $\n\n\n'+
-    'PS: Use quotes for values with spaces\n';
-
-
 class HelpCommand extends Command {
     
-	reply() {
-    	 	
-        this.messageHandler.sendMessage('```Markdown\n' + HELP_TEXT + '```');        
+	constructor(config, message) {
+		super(config, message);
+	}
+	
+	process() {
+		
+		this.reply( this.config.settings.help.COMMANDS );
+
+	}
+		
+	
+	reply( replyStr ) {
+
+    	const Discord = require('discord.js');
+    	const embed = new Discord.RichEmbed();
+    	embed.addField(this.config.settings.messages.HELP, this.codeBlock( replyStr, "css" ))
+    	embed.addField(this.config.settings.messages.RESULTS, this.codeBlock( this.message.content ));    	
+        
+    	this.messageHandler.sendMessage({embed}); 
+        
     }
 	
 }
