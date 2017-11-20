@@ -72,7 +72,9 @@ class GetCommand extends Command{
 	    			case "<=":
 	    				condition = "le";
 	    				break;
+	    			case "=":
 	    			default:
+	    				condition = "eq";
 				}
 	
 				field += "-"+condition;
@@ -95,8 +97,13 @@ class GetCommand extends Command{
     	
     	this.queryHandler.query( this.config.settings.command.get, get ).then(( response ) => {
         	
-        	this.message.react(this.config.settings.reaction.SUCCESS);
-        	this.reply( response );
+    		const responseObj = JSON.parse(response);
+    		this.message.react(this.config.settings.reaction.SUCCESS);
+    		
+    		if( !Array.isArray(responseObj.data) ) {
+    			responseObj.data = [{"response":responseObj.data}];
+    		}
+        	this.reply( responseObj );
         
         }).catch(( reason ) => {
         	
@@ -131,32 +138,34 @@ class GetCommand extends Command{
 		}
 	}
 	
-	reply( replyStr ) {
+	reply( response ) {
 		
     	let dm = false;
-    	let title = "Value of "
 
         const Discord = require('discord.js');
     	let embed = new Discord.RichEmbed();
     	embed.setColor(0x6F9AD3);
+		
+    	//embed.setTitle(`${response.response}`);
+    	//embed.setDescription(`${response.action} ${response.data.length}`);
+    	//embed.setAuthor(`${this.message}`);
+    	embed.setFooter(`${response.data.length} matches for: ${this.message}`);
+    	
+		for( let i = 0; i !== response.data.length; ++i ) {
 
-    	while( replyStr.length >= 1000 ) {
-
-    		dm = true;
-    		const n = replyStr.lastIndexOf(",", 1000);
-    		let chunk = replyStr.slice(0,n+1);		    		
-    		
-    		this.messageHandler.dmAuthor(this.codeBlock(chunk)); 
-	    	
-			title += title.indexOf(this.config.settings.messages.CONTINUED) === -1 ? this.config.settings.messages.CONTINUED : "";	    	
-			replyStr = replyStr.slice(n+1);
-
-    	}     	
-
-    	//Add results and original command as embed fields
-    	embed.addField(this.config.settings.messages.RESULTS, this.codeBlock(replyStr));
-    	embed.addField(this.config.settings.messages.RESULTS, this.codeBlock(this.message.content));
-
+			let replyStr = "";
+			let data = response.data[i];
+			for( let k in data ) {
+				if( data.hasOwnProperty(k) ) {
+					replyStr += `**${k}**: *${data[k]}*\n`;
+				}
+			}
+			
+			replyStr = replyStr.length < 1000 ? replyStr : "Too much data";
+			embed.addField(`Record ${i+1}`,replyStr,true);
+			
+		}
+		
     	//If already sent chunks to DM, send last bit to DM
     	if( dm ) { 
     		this.messageHandler.dmAuthor({embed}); 

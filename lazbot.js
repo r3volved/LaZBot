@@ -1,17 +1,20 @@
-const Discord = require('discord.js');
-const LaZBot = require('./config/lazbot.settings.js');
+//Build client
+const Discord 			= require('discord.js');
+const client 			= new Discord.Client();
 
-const client = new Discord.Client();
-const config = new LaZBot(client);
+//Build config
+const ConfigHandler 	= require('./utilities/config-handler.js');
+const config 			= new ConfigHandler(client, process.argv[2]);
 
-const HelpCommand = require('./commands/help.command.js');
-const EvalCommand = require('./commands/eval.command.js');
-const ValueCommand = require('./commands/value.command.js');
-const SyncCommand = require('./commands/sync.command.js');
-const GetCommand = require('./commands/get.command.js');
-//const SetCommand = require('./commands/set.command.js');
-//const DelCommand = require('./commands/del.command.js');
-const TranslateCommand = require('./commands/translate.command.js');
+//Build commands
+const HelpCommand 		= require('./commands/help.command.js');
+const EvalCommand 		= require('./commands/eval.command.js');
+const ValueCommand 		= require('./commands/value.command.js');
+const SyncCommand 		= require('./commands/sync.command.js');
+const GetCommand 		= require('./commands/get.command.js');
+const SetCommand 		= require('./commands/set.command.js');
+const DelCommand 		= require('./commands/del.command.js');
+const TranslateCommand 	= require('./commands/translate.command.js');
 
 /**
  * MONITOR CHANNEL
@@ -55,8 +58,11 @@ client.on('message', message => {
 			
 			if( message.member.roles.find("name", config.settings.adminRole) || message.author.id === config.settings.master ) {			
 		
+				registry.registerCommand(config.settings.prefix.set, () => { new SetCommand(config, message).process() });
+				
 				//CHANNEL - ADMIN COMMANDS
 				registry.registerCommand(config.settings.prefix.sync, () => { new SyncCommand(config, message).process() });
+				registry.registerCommand(config.settings.prefix.del, () => { new DelCommand(config, message).process() });
 			
 			}
 			

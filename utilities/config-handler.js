@@ -1,11 +1,12 @@
-class LaZBot {
+class ConfigHandler {
 	
-    constructor(client) {
+    constructor(client, settingsFile) {
 
     	this.client = client;
+    	this.settingsFile = typeof settingsFile !== "undefined" ? settingsFile : "settings.json";
 
     	const fs = require("fs");
-    	const content = fs.readFileSync("./config/settings.json");
+    	const content = fs.readFileSync(`./config/${this.settingsFile}`);
     	
     	this.settings = JSON.parse(content);
 
@@ -25,4 +26,4 @@ class LaZBot {
     
 }
 
-module.exports = LaZBot;
+module.exports = ConfigHandler;

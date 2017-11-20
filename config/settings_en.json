@@ -4,8 +4,8 @@
 	
 	"master":"YOUR_USER_ID",
 	
-	"version":"LaZBot v2.0",
-		
+    "version":"LaZBot v2.0",
+        
     "adminRole":"botadmins",
     
     "database":{
@@ -16,32 +16,36 @@
     },
     
     "prefix":{
-        "query":"$",
+        "value":"$",
         "eval":"!",
-        "select":"?",
-        "update":"+",
-        "remove":"-",
-        "sync":"~"
+        "query":"?",
+        "set":"+",
+        "del":"-",
+        "sync":"~",
+        "translate":"&"
     },
 
     "command":{
-        "describe":"?",
-        "setup":"~",
         "channel":"channel",
         "author":"me",
+        "get":"get",
+        "set":"set",
+        "del":"del",
         "sync":"sync"
     },
     
     "help":{
-        "COMMANDS":"Commands are tied to prefixes [ ?(get), +(set), -(del), ~(sync) ]\r\nSetup your channel settings with ~~<field> <value>\r\nQuery your channel settings with ??channel\r\nGet possible fields in a sheet with ??<sheet>",
-        "GET":"Get sheet data with prefix [ ? ]\r\n?<sheet> <field> <value>\r\n\r\nOr to learn more about the sheet, try:\r\n??<sheet>",
-        "SET":"Add or update sheet data with prefix [ + ]\r\nTry:\r\n+<sheet> <field> <value>\r\n\r\nOr to learn more about the sheet, try:\r\n??<sheet>",
-        "DEL":"Delete sheet data with prefix [ - ]\r\nTry:\r\n-<sheet> <field> <value>\r\n\r\nOr to learn more about the sheet, try:\r\n??<sheet>",
-        "SYNC":"Sync specific sheets with prefix [ ~ ]\r\nTry:\r\n~<sheet> <guildID>"
+        "COMMANDS":"Commands are tied to prefixes\n\n(get)  { ? <sheet> <field> <value> ... }\n(set)  { + <sheet> <field> <value> ... }\n(del)  { - <sheet> <field> <value> ... }\n(sync) { ~ <sheet> <guildID> }\n\n[Setup your channel settings with:]\n~~ <field> <value>\n\n[Query your channel settings with:]\n?? channel\n\n[Get possible fields in a sheet with:]\n?? <sheet>",
+        "GET":"Get sheet data with { ? }\n? <sheet> <field> <value>\n\nOr to learn more about the sheet, try:\n?? <sheet>",
+        "SET":"Add or update sheet data with { + }, try:\n+ <sheet> <field> <value>\n\nOr to learn more about the sheet, try:\n?? <sheet>",
+        "DEL":"Delete sheet data with { - }, try:\n- <sheet> <field> <value>\n\nOr to learn more about the sheet, try:\n?? <sheet>",
+        "SYNC":"Sync specific sheets with { ~ }, try:\n~ <sheet> <guildID>",
+        "TRANSLATE":"\nTranslation starts with { & }, try:\n\n& <languageTag> <userID/mention> <numLastMessagesToTranslate>"
     },
 
     "messages":{
         "HELLO":"Hello %s! Welcome to the shit show!",
+        "HELP":"Help ",
         "KEYS":"Keys in: ",
         "VALUE":"Value of: ",
         "VALUES":"Values of: ",
@@ -53,6 +57,10 @@
         "EVAL":"Evaluation: "
     },
     
+    "reply":{
+        
+    },
+    
     "success":{
         "POSSIBLE_COMMANDS":"Possible commands",
         "POSSIBLE_FIELDS":"Possible fields in ",
@@ -60,30 +68,30 @@
         "DEL_X_RECORDS":"Deleted %s record(s)",
         "SET_X_RECORDS":"Updated %s record(s)",        
         "UPDATED":"Updated successfully",
-        "SYNC":"Synced successfully"        
+        "SYNC":"Synced successfully"
     },
         
     "error":{
-        "NO_DM":"I can't run this query through DM", 
-        "NO_SPREADSHEET":"This channel is not setup with a spreadsheet",
-        "NO_PERMISSION":"You do not have permission to use this command",
-        "NO_GUILDID":"Your guildID needs to be a number",
-        "NO_CONDITIONS":"This command does not use conditions",
-        "RESULTS_TOO_LONG":"**The results of this request are too long**\r\n**try again with more details**\r\n",
-        "GET_HELP":"Your command was malformed\r\nTry:\r\n?<sheet> <field> <value>\r\n\r\nOr to learn more about the sheet, try:\r\n??<sheet>",
-        "SET_HELP":"Your command was malformed\r\nTry:\r\n+<sheet> <field> <value>\r\n\r\nOr to learn more about the sheet, try:\r\n??<sheet>",
-        "DEL_HELP":"Your command was malformed\r\nTry:\r\n-<sheet> <field> <value>\r\n\r\nOr to learn more about the sheet, try:\r\n??<sheet>",
-        "SYNC_HELP":"Your command was malformed\r\nTry:\r\n~<sheet> <guildID>",
-        "ERROR_QUERY":"There was an error with your query",
-        "SYNC":"An error occurred while syncing",
+        "NO_DM":"#Error [I can't run this query through DM]", 
+        "NO_SPREADSHEET":"#Error [This channel is not setup with a spreadsheet]",
+        "NO_PERMISSION":"#Error [You do not have permission to use this command]",
+        "NO_GUILDID":"#Error [Your guildID needs to be a number]",
+        "NO_CONDITIONS":"#Error [This command does not use conditions]",
+        "RESULTS_TOO_LONG":"#Error [The results of this request are too long try again with more details]",
+        "GET_HELP":"#Error [Your command was malformed], try:\n? <sheet> <field> <value>\n\nOr to learn more about the sheet, try:\n?? <sheet>",
+        "SET_HELP":"#Error [Your command was malformed], try:\n+ <sheet> <field> <value>\n\nOr to learn more about the sheet, try:\n?? <sheet>",
+        "DEL_HELP":"#Error [Your command was malformed], try:\n- <sheet> <field> <value>\n\nOr to learn more about the sheet, try:\n?? <sheet>",
+        "SYNC_HELP":"#Error [Your command was malformed], try:\n~ <sheet> <guildID>",
+        "ERROR_QUERY":"#Error [There was an error with your query]",
+        "SYNC":"#Error [An error occurred while syncing]",
         "HIDDEN":"[Hidden]"
     },
     
     "reaction":{
-    	"SUCCESS":"✅",
-    	"ERROR":"❌",
-    	"WARNING":"⚠",
-    	"DENIED":"🚫",
-    	"DM":"📫"    	
+        "SUCCESS":"✅",
+        "ERROR":"❌",
+        "WARNING":"⚠",
+        "DENIED":"🚫",
+        "DM":"📫"       
     }
 }

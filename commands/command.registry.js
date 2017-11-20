@@ -15,7 +15,7 @@ class CommandRegistry {
             //let splittingPattern = /\w+|"[^"]+"|'[^']+'/g;
             let splittingPattern = /\w+|"[^"]+"|'[^']+'|[^\s]+/g;
             let msgArray = this.message.content.match(splittingPattern);
-            
+
             if (msgArray) {
             	
                 let command = msgArray[0];
