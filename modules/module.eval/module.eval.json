@@ -1,0 +1,30 @@
+{
+
+    "id":"eval",
+
+    "name":"Evaluation",
+
+    "version":"0.1",
+    
+    "type":"command",
+    
+    "permission":"master",
+    
+    "help":{
+    
+        "title":"Evaluation help",
+        "text":"%PREFIX%eval <thingToEval>",
+        "example":"%PREFIX%%ID% this.message.id"
+        
+    },
+    
+    "reaction":{
+        "SUCCESS":"✅",
+        "ERROR":"❌",
+        "WARNING":"⚠",
+        "DENIED":"🚫",
+        "DM":"📫"       
+    }
+    
+    
+}

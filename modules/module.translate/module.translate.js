@@ -1,30 +1,31 @@
-let Command = require('./command')
+let Module          = require('../module.js');
 
-class TranslateCommand extends Command{
-    
-	constructor(config, message) {
-		super(config, message);
-		this.helpText = this.config.settings.help.TRANSLATE;
+class Command extends Module {
+
+	constructor(clientConfig, module, message) {
+	    
+	    super(clientConfig, module, message);
+
 	}
 	
 	process() {
 		 
 		try {
 			
-			let messageParts = this.message.content.split(/\s+/g);
+		    let content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.id}`,'').trim();
+
+			let messageParts = content.split(/\s+/g);
 	
-			let language = messageParts[1];
+			let language = messageParts[0];
 			if( language.length !== 2 ) { return this.help(); }
 
-			let author = messageParts[2].match(/(\d+)/g)[0];
+			let author = messageParts[1].match(/(\d+)/g)[0];
 			let authorName = "";
-			this.config.client.fetchUser(author).then( user => {
+			this.clientConfig.client.fetchUser(author).then( user => {
 				authorName = user.username;
-				
-				
 			});
 			
-			let last = messageParts < 4 || isNaN(messageParts[3]) ? 1 : parseInt(messageParts[3]);
+			let last = messageParts < 3 || isNaN(messageParts[2]) ? 1 : parseInt(messageParts[2]);
 			
 			const translate = require('google-translate-api');
 			this.message.channel.fetchMessages({before:this.message.id}).then( messages => {
@@ -38,7 +39,7 @@ class TranslateCommand extends Command{
 				
 			    translate(content, {to: language}).then(res => {
 			    	
-			    	this.message.delete(500);
+			    	this.message.delete(500).catch( console.log(`No permission to delete translation trigger: Server:${this.message.guild.id} | Channel:${this.message.channel.id}`) );
 			    	this.reply(`Translation of ${authorName}'s last ${last} messages`,`${res.text}`,`{ ${res.from.language.iso} => ${language} }` );			    	
 			    	
 			    }).catch(err => {
@@ -52,7 +53,7 @@ class TranslateCommand extends Command{
 		} catch(e) {
 			
 			console.error(e);
-			this.reply(this.config.settings.help.TRANSLATE);
+			this.help();
 		}			
 	}
 	
@@ -62,7 +63,6 @@ class TranslateCommand extends Command{
     	let embed = new Discord.RichEmbed();
     	embed.setColor(0x888888);
     	
-    	let title = this.config.settings.messages.RESULTS;
     	while( replyStr.length >= 2000 ) {
 
     		const n = replyStr.lastIndexOf(/,|./g, 2000);
@@ -70,9 +70,8 @@ class TranslateCommand extends Command{
     		
         	embed.setTitle(replyTitle);
     		embed.setDescription(chunk);
-    		this.messageHandler.sendMessage({embed}); 
+    		this.message.author.send({embed}); 
     		
-			title = "";
     		replyStr = replyStr.slice(n+1);
 
     	}     	
@@ -81,10 +80,10 @@ class TranslateCommand extends Command{
     	embed.setDescription(replyStr);
     	embed.setFooter(replyFooter);
     	
-    	this.messageHandler.sendMessage({embed}); 
+    	this.message.channel.send({embed}); 
     	
 	}
-	
+    
 }
 
-module.exports = TranslateCommand;
+module.exports = Command;

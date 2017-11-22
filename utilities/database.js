@@ -2,14 +2,9 @@
 
 	const mysql = require('mysql');
 
-	module.exports.Setup = function( botSettings, client, message, prefix, messageParts ) {
+	module.exports.Setup = function( config, client, message, prefix, messageParts ) {
 
-		const con = mysql.createConnection({
-	  	  host: botSettings.database.host,
-	  	  user: botSettings.database.user,
-	  	  password: botSettings.database.password,
-	  	  database: botSettings.database.database
-	  	});
+		const con = mysql.createConnection(config.database);
 
     	try {
     		
@@ -54,17 +49,12 @@
 			return message.reply(err);
     	}
     	
-    }
+    };
     
     
-    module.exports.LogBotActivity = function( botSettings, logMessage ) {  		    
+    module.exports.LogBotActivity = function( config, logMessage ) {  		    
 	        	    	
-    	const con = mysql.createConnection({
-      	  host: botSettings.database.host,
-      	  user: botSettings.database.user,
-      	  password: botSettings.database.password,
-      	  database: botSettings.database.database
-      	});
+    	const con = mysql.createConnection(config.database);
 
     	try {
     		con.connect(function(err) {
@@ -74,7 +64,6 @@
     			const sql = "INSERT INTO `botlog` (`timestamp`, `message`) VALUES (?, ?)";
 				con.query(sql, [date, logMessage], function (err, result) {
 					if (err) { throw err; }
-					console.info(logMessage+" - "+date);
 				});
 
     		});
@@ -83,17 +72,13 @@
     		console.error(err);
     	}
     	
-    }
+    };
 
     
-    module.exports.Channel = function( botSettings, client, message, prefix ) {
+    module.exports.Channel = function( config, client, message, prefix ) {
         			    	
-    	const con = mysql.createConnection({
-      	  host: botSettings.database.host,
-      	  user: botSettings.database.user,
-      	  password: botSettings.database.password,
-      	  database: botSettings.database.database
-      	});
+        
+    	const con = mysql.createConnection(config.database);
 
 		try {
 			con.connect(function(err) {
@@ -124,6 +109,6 @@
 			return message.reply(err); 
 		}
 		
-    }
+    };
 
 }());

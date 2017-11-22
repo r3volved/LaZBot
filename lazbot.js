@@ -2,19 +2,13 @@
 const Discord 			= require('discord.js');
 const client 			= new Discord.Client();
 
-//Build config
-const ConfigHandler 	= require('./utilities/config-handler.js');
+//Build configuration
+const ConfigHandler 	= require('./config/config.js');
 const config 			= new ConfigHandler(client, process.argv[2]);
 
-//Build commands
-const HelpCommand 		= require('./commands/help.command.js');
-const EvalCommand 		= require('./commands/eval.command.js');
-const ValueCommand 		= require('./commands/value.command.js');
-const SyncCommand 		= require('./commands/sync.command.js');
-const GetCommand 		= require('./commands/get.command.js');
-const SetCommand 		= require('./commands/set.command.js');
-const DelCommand 		= require('./commands/del.command.js');
-const TranslateCommand 	= require('./commands/translate.command.js');
+//Build module registry
+const ModuleRegistry    = require('./modules/modules.registry.js');
+config.mRegistry        = new ModuleRegistry( config );
 
 /**
  * MONITOR CHANNEL
@@ -27,58 +21,13 @@ client.on('message', message => {
 
 	try {
 		
-		//Tell me if someone is DMing the bot...
-		if( message.channel.type === "dm" && message.author.id !== config.settings.master ) { 
-			
-			let embed = new Discord.RichEmbed();
-			embed.setAuthor(`Incoming DM:`,message.author.displayAvatarURL);
-			embed.addField(`${message.author.tag} [${message.author.id}]`,`${message.content}\n_`);
-			embed.addField(`Reply back:`,"```js\n"+`! this.config.client.fetchUser("${message.author.id}").then( user => user.send("REPLY TEXT TO USER") )`+"```");
-			embed.setFooter(config.settings.version);
-			embed.setTimestamp();
-			embed.setColor(0x2A6EBB);
-			
-			const master = config.client.fetchUser(config.settings.master);
-			master.then( (user) => { user.send({embed}); } );
-			
-		}
-		
-		const CommandRegistry = require("./commands/command.registry.js");
-		let registry = new CommandRegistry(config, message);
-		
-		//GLOBAL COMMANDS
-		registry.registerCommand('help', () => { new HelpCommand(config, message).process() });
-		
-		if( message.channel.type !== "dm" ) {
-	
-			//CHANNEL COMMANDS
-			registry.registerCommand(config.settings.prefix.translate, () => { new TranslateCommand(config, message).process() });
-			registry.registerCommand(config.settings.prefix.query, () => { new GetCommand(config, message).process() });
-			registry.registerCommand(config.settings.prefix.query+config.settings.prefix.query, () => { new GetCommand(config, message).process() });
-			
-			if( message.member.roles.find("name", config.settings.adminRole) || message.author.id === config.settings.master ) {			
-		
-				registry.registerCommand(config.settings.prefix.set, () => { new SetCommand(config, message).process() });
-				
-				//CHANNEL - ADMIN COMMANDS
-				registry.registerCommand(config.settings.prefix.sync, () => { new SyncCommand(config, message).process() });
-				registry.registerCommand(config.settings.prefix.del, () => { new DelCommand(config, message).process() });
-			
-			}
-			
-		}
-			
-		if( message.author.id === config.settings.master ) {
-	
-			//PRIVATE COMMANDS
-			registry.registerCommand(config.settings.prefix.eval, () => { new EvalCommand(config, message).process() });
-			registry.registerCommand(config.settings.prefix.value, () => { new ValueCommand(config, message).process() });
-			
-		}
+		//Register message against modules
+		config.mRegistry.registerMessage( message );
 		
 	} catch(e) {
 		console.log(e);
-	} 	
+	}
+ 	
 });
 
 
@@ -92,8 +41,8 @@ client.on('guildMemberAdd', member => {
 	const embed = new Discord.RichEmbed()
 	.setColor(0x00AE86)
 	.setTimestamp()
-	.addField('User Update',`:eye: ${member.user} has joined!`)
-	guild.systemChannel.send({embed})
+	.addField('User Update',`:eye: ${member.user} has joined!`);
+	guild.systemChannel.send({embed});
 });
 
 client.on('guildMemberRemove', member => {
@@ -101,8 +50,8 @@ client.on('guildMemberRemove', member => {
 	const embed = new Discord.RichEmbed()
 	.setColor(0x00AE86)
 	.setTimestamp()
-	.addField('User Update',`:eye: ${member.user} has left...`)
-	guild.systemChannel.send({embed})
+	.addField('User Update',`:eye: ${member.user} has left...`);
+	guild.systemChannel.send({embed});
 });
 
 
@@ -114,24 +63,37 @@ client.on('guildMemberRemove', member => {
 //ON READY
 client.on('ready', () => {
 	
-	//console.info(`Connected as: ${client.user.username}`);
 	const botLog = require("./utilities/database.js");
-	botLog.LogBotActivity(config.settings, `Connected as: ${client.user.username}`);
+	botLog.LogBotActivity(config, `Connected as: ${client.user.username}`);
+    
+	console.info(`Started with configuration: ${process.argv[2]} => Connected as: ${client.user.username}`);
+	console.info(`Using prefix: ${config.prefix} => Running ${config.mRegistry.modules.size} of ${config.modules.size} available modules:`);
+    console.dir(config.mRegistry.modules.keys());
+    console.info(`==========================================================================`);
+    console.dir(`Preprocessing with ${config.mRegistry.preMonitors.size} monitors: ` + config.mRegistry.preMonitors.keys());
+	console.info(`Active listeners on ${config.mRegistry.commands.size} commands:\t [ ${config.mRegistry.commands} ]`);
+    console.dir(config.mRegistry.commands.keys());
+    console.info(`Postprocessing with ${config.mRegistry.postMonitors.size} monitors:\t [ ${config.mRegistry.postMonitors} ]`);
+    console.dir(config.mRegistry.postMonitors.keys());
+    console.info(`==========================================================================`);
+    
+	console.info(`Currently a member of ${client.guilds.size} guilds`);
+	
 	
 }); 
 
 //ON DISCONNECT
 client.on('disconnect', (event) => {
 	
-	//console.error(`Client disconnected`,event);
+	console.error(`Client disconnected`,event);
 	const botLog = require("./utilities/database.js");
-	botLog.LogBotActivity(config.settings, `Client disconnected`);
+	botLog.LogBotActivity(config, `Client disconnected ${event}`);
 	
 	//Try login after 10 seconds
 	setTimeout( function() { 
-		//console.warn(`Client trying to connect`);
-		botLog.LogBotActivity(config.settings, `Client trying to connect`);
-		client.login(config.settings.botToken);
+		console.warn(`Client trying to connect`);
+		botLog.LogBotActivity(config, `Client trying to connect`);
+		client.login(config.token);
 	}, 5000);
 		
 });
@@ -139,38 +101,38 @@ client.on('disconnect', (event) => {
 //ON RECONNECTING
 client.on('reconnecting', () => {
 
-	//console.warn(`Client reconnecting`);	
+	console.warn(`Client reconnecting`);	
 	const botLog = require("./utilities/database.js");
-	botLog.LogBotActivity(config.settings, `Client reconnecting`);	
-
+	botLog.LogBotActivity(config, `Client reconnecting`);
+	    
 });
 
 //ON RESUME
 client.on('resumed', (replayed) => {
 
-	//console.info(`Client resumed - Replayed: ${replayed}`);
+	console.info(`Client resumed - Replayed: ${replayed}`);
 	const botLog = require("./utilities/database.js");
-	botLog.LogBotActivity(config.settings, `Client resumed - Replayed: ${replayed}`);	
+	botLog.LogBotActivity(config, `Client resumed - Replayed: ${replayed}`);	
 
 });
 
 //ON ERROR
 client.on('error', (error) => {
 
-	//console.error(`Client connection error: ${error}`);
+	console.error(`Client connection error: ${error}`);
 	const botLog = require("./utilities/database.js");
-	botLog.LogBotActivity(config.settings, `Client connection error: ${error}`);	
+	botLog.LogBotActivity(config, `Client connection error: ${error}`);	
 
 });
 
 //ON WARNING
 client.on('warn', (info) => {
 
-	//console.warn(`Client warning: ${info}`);
+	console.warn(`Client warning: ${info}`);
 	const botLog = require("./utilities/database.js");
-	botLog.LogBotActivity(config.settings, `Client warning: ${info}`);	
+	botLog.LogBotActivity(config, `Client warning: ${info}`);	
 
 });
 
 //LOGIN WITH TOKEN
-client.login(config.settings.botToken);
+client.login(config.token);

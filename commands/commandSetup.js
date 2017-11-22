@@ -11,9 +11,9 @@
     	var messageParts = message.content.split(" ");
 
     	var setup = require("../utilities/database.js");
-    	return setup.Setup( botSettings, client, message, prefix, messageParts )
+    	return setup.Setup( botSettings, client, message, prefix, messageParts );
     	
-    }
+    };
     
 }());    
    

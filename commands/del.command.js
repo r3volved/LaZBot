@@ -1,4 +1,4 @@
-let Command = require('./command')
+let Command = require('./command');
 
 class DelCommand extends Command{
     
@@ -100,7 +100,7 @@ class DelCommand extends Command{
 	reply( replyStr ) {
 		
     	let dm = false;
-    	let title = "Value of "
+    	let title = "Value of ";
 
         const Discord = require('discord.js');
     	let embed = new Discord.RichEmbed();

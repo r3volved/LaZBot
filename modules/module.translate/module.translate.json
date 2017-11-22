@@ -1,0 +1,29 @@
+{
+
+    "id":"translate",
+
+    "name":"Evaluation",
+
+    "version":"0.1",
+    
+    "type":"command",
+    
+    "permission":"anyone",
+    
+    "help":{
+    
+        "title":"Translation help",
+        "text":"%PREFIX%translate <languageID> <userID|mention> <lastNumberMessages>",
+        "example":"%PREFIX%%ID% fr @shittybill 4"
+    },
+    
+    "reaction":{
+        "SUCCESS":"✅",
+        "ERROR":"❌",
+        "WARNING":"⚠",
+        "DENIED":"🚫",
+        "DM":"📫"       
+    }
+    
+    
+}

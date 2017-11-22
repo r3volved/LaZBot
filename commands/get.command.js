@@ -1,4 +1,4 @@
-let Command = require('./command')
+let Command = require('./command');
 
 class GetCommand extends Command{
     
@@ -72,7 +72,6 @@ class GetCommand extends Command{
 	    			case "<=":
 	    				condition = "le";
 	    				break;
-	    			case "=":
 	    			default:
 	    				condition = "eq";
 				}
@@ -120,7 +119,7 @@ class GetCommand extends Command{
 		
 			if( messageParts[1] === this.config.settings.command.author ) {
 			
-				let author = ""
+				let author = "";
 		    	author += `ID: ${this.message.author.id}\n`;
 		    	author += `Tag: ${this.message.author.tag}\n`;
 		    	author += `Username: ${this.message.author.username}\n`;

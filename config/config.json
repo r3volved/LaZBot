@@ -1,0 +1,33 @@
+{
+    
+    "token":"YOUR_BOT_TOKEN",
+    
+    "master":"YOUR_USER_ID",
+    
+    "version":"LaZBot v2.0",
+        
+    "adminRole":"botadmins",
+    
+    "database":{
+        "host":"localhost",
+        "user":"lazbot",
+        "password":"lazbot314",
+        "database":"lazbot"
+    },
+    
+    "permissions":[
+        "master",
+        "admin",
+        "mod",
+        "anyone"
+    ],
+    
+    "prefix":"!",
+
+    "modules":[
+        { "id":"help", "type":"command", "active":true },
+        { "id":"eval", "type":"command", "active":true },
+        { "id":"translate", "type":"command", "active":true }
+    ]
+    
+}

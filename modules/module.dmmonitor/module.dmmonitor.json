@@ -1,0 +1,32 @@
+{
+
+    "id":"dmmonitor",
+
+    "name":"DM Monitor",
+
+    "version":"0.1",
+
+    "type":"preMonitor",
+    
+    "permission":"anyone",
+    
+    "help":{
+    
+        "title":"About my command",
+        "text":"My command does stuff",
+        "example":"%PREFIX%%ID% do stuff"
+        
+    },
+    
+    "reaction":{
+    
+        "SUCCESS":"✅",
+        "ERROR":"❌",
+        "WARNING":"⚠",
+        "DENIED":"🚫",
+        "DM":"📫"       
+    
+    }
+    
+    
+}
