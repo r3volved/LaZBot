@@ -9,25 +9,33 @@
     "adminRole":"botadmins",
     
     "database":{
+    	
         "host":"localhost",
         "user":"lazbot",
         "password":"lazbot314",
         "database":"lazbot"
+        	
     },
     
     "permissions":[
-        "master",
+    
+    	"master",
         "admin",
         "mod",
         "anyone"
+    
     ],
     
-    "prefix":"!",
+    "prefix":"?",
 
     "modules":[
-        { "id":"help", "type":"command", "active":true },
-        { "id":"eval", "type":"command", "active":true },
-        { "id":"translate", "type":"command", "active":true }
+
+    	{ "command":"dmm", "id":"dmmonitor", "type":"preMonitor", "active":true },
+    	{ "command":"qm", "id":"qmonitor", "type":"preMonitor", "active":true },
+        { "command":"help", "id":"help", "type":"command", "active":true },
+        { "command":"eval", "id":"eval", "type":"command", "active":true },
+        { "command":"gt", "id":"translate", "type":"command", "active":true }
+    
     ]
     
 }

@@ -4,7 +4,7 @@ const client 			= new Discord.Client();
 
 //Build configuration
 const ConfigHandler 	= require('./config/config.js');
-const config 			= new ConfigHandler(client, process.argv[2]);
+const config 			= new ConfigHandler( client, process.argv[2] );
 
 //Build module registry
 const ModuleRegistry    = require('./modules/modules.registry.js');
@@ -16,16 +16,12 @@ config.mRegistry        = new ModuleRegistry( config );
 //ON MESSAGE RECEIVED
 client.on('message', message => {
   
-	// IF AUTHOR IS BOT, IGNORE MESSAGE
+	// If author is bot, ignore - otherwise register message
 	if( message.author.bot ) { return; }
-
 	try {
-		
-		//Register message against modules
 		config.mRegistry.registerMessage( message );
-		
-	} catch(e) {
-		console.log(e);
+	} catch(e) {	
+		console.log(e);		
 	}
  	
 });
@@ -66,19 +62,20 @@ client.on('ready', () => {
 	const botLog = require("./utilities/database.js");
 	botLog.LogBotActivity(config, `Connected as: ${client.user.username}`);
     
-	console.info(`Started with configuration: ${process.argv[2]} => Connected as: ${client.user.username}`);
-	console.info(`Using prefix: ${config.prefix} => Running ${config.mRegistry.modules.size} of ${config.modules.size} available modules:`);
-    console.dir(config.mRegistry.modules.keys());
+	console.info(`Started with configuration: ${process.argv[2]}`);
     console.info(`==========================================================================`);
-    console.dir(`Preprocessing with ${config.mRegistry.preMonitors.size} monitors: ` + config.mRegistry.preMonitors.keys());
-	console.info(`Active listeners on ${config.mRegistry.commands.size} commands:\t [ ${config.mRegistry.commands} ]`);
-    console.dir(config.mRegistry.commands.keys());
-    console.info(`Postprocessing with ${config.mRegistry.postMonitors.size} monitors:\t [ ${config.mRegistry.postMonitors} ]`);
-    console.dir(config.mRegistry.postMonitors.keys());
+	console.info(`Connected as: ${client.user.username} => Using prefix: ${config.prefix}`);
+	console.info(`Running ${Object.keys(config.mRegistry.modules).length} of ${config.modules.length} available modules:\n  - ${Object.keys(config.mRegistry.commands).toString().replace(/[,]/gi," - ")} -`);
+    console.info(`==========================================================================`);
+    console.info(`Preprocessing with ${Object.keys(config.mRegistry.preMonitors).length} monitors:\t [ ${Object.keys(config.mRegistry.preMonitors).toString().replace(/[,]/gi,", ")} ]`);
+	console.info(`Active listeners on ${Object.keys(config.mRegistry.commands).length} commands:\t [ ${config.prefix}${Object.keys(config.mRegistry.commands).toString().replace(/[,]/gi," | "+config.prefix)} ]`);
+    console.info(`Postprocessing with ${Object.keys(config.mRegistry.postMonitors).length} monitors:\t [ ${Object.keys(config.mRegistry.postMonitors).toString().replace(/[,]/gi,", ")} ]`);
     console.info(`==========================================================================`);
     
-	console.info(`Currently a member of ${client.guilds.size} guilds`);
+	console.info(`Currently a member of ${client.guilds.size} guilds\n`);
 	
+	console.info(`For more information about a specific command, try: ${config.prefix}<command> help`);
+	console.info(`Or, for higher level information, try: ${config.prefix}help `);
 	
 }); 
 

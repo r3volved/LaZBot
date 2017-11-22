@@ -2,9 +2,9 @@ let Module          = require('../module.js');
 
 class Command extends Module {
 
-	constructor(clientConfig, module, message) {
+	constructor(clientConfig, moduleConfig, message) {
 	    
-	    super(clientConfig, module, message);
+	    super(clientConfig, moduleConfig, message);
 
 	}
 	
@@ -12,7 +12,7 @@ class Command extends Module {
 		 
 		try {
 			
-		    let content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.id}`,'').trim();
+		    let content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command}`,'').trim();
 
 			let messageParts = content.split(/\s+/g);
 	

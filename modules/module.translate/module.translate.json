@@ -13,8 +13,8 @@
     "help":{
     
         "title":"Translation help",
-        "text":"%PREFIX%translate <languageID> <userID|mention> <lastNumberMessages>",
-        "example":"%PREFIX%%ID% fr @shittybill 4"
+        "text":"Translate a specified number of users last messages into specified language.\n%PREFIX%%COMMAND% <languageID> <userID|mention> <lastNumberMessages>\n\n**Note:** *This command leverages the google translate api to automatically detect localization before translating.*",
+        "example":"*%PREFIX%%COMMAND% fr @shittybill 4*"
     },
     
     "reaction":{

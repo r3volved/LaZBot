@@ -13,8 +13,8 @@
     "help":{
     
         "title":"About my command",
-        "text":"My command does stuff",
-        "example":"%PREFIX%%ID% do stuff"
+        "text":"My command does stuff\nmulti-line",
+        "example":"*%PREFIX%%%PREFIX%%COMMAND%% do stuff*"
         
     },
     

@@ -2,9 +2,9 @@ let Module          = require('../module.js');
 
 class Command extends Module {
 
-	constructor(clientConfig, module, message) {
+	constructor(clientConfig, moduleConfig, message) {
 	    
-	    super(clientConfig, module, message);
+	    super(clientConfig, moduleConfig, message);
 	    
 	}
 	
@@ -17,7 +17,7 @@ class Command extends Module {
 	    
 	    }
 	    
-	    let prevaled = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.id} `,'');
+	    let prevaled = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command} `,'');
     	let evaled = "undefined";    	
     	
     	if( prevaled === "help" ) { return this.help(); }

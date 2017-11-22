@@ -2,9 +2,9 @@ let Module          = require('../module.js');
 
 class Command extends Module {
 
-    constructor(clientConfig, module, message) {
+    constructor(clientConfig, moduleConfig, message) {
         
-        super(clientConfig, module, message);
+        super(clientConfig, moduleConfig, message);
         
         /**
          * Do extra module init here if necessary
@@ -21,7 +21,7 @@ class Command extends Module {
              */
                         
             //Sanitize message content
-            const content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.id}`,'').trim();
+            const content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command}`,'').trim();
             if( content === this.clientConfig.help ) { return this.help(); }
     
             /**
@@ -40,6 +40,10 @@ class Command extends Module {
             
         }
         
+    }
+    
+    analyze() {
+    	
     }
     
     reply( replyStr ) {

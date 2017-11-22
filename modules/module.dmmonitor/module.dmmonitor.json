@@ -14,7 +14,7 @@
     
         "title":"About my command",
         "text":"My command does stuff",
-        "example":"%PREFIX%%ID% do stuff"
+        "example":"%PREFIX%%COMMAND% do stuff"
         
     },
     
@@ -26,7 +26,10 @@
         "DENIED":"🚫",
         "DM":"📫"       
     
-    }
+    },
     
+    "queries":{
+    	
+    }
     
 }

@@ -13,8 +13,8 @@
     "help":{
     
         "title":"Evaluation help",
-        "text":"%PREFIX%eval <thingToEval>",
-        "example":"%PREFIX%%ID% this.message.id"
+        "text":"Evaluate and view results of an expresssion.\n%PREFIX%%COMMAND% <thingToEval>\n\n**Note:** *This command is restricted to bot master*",
+        "example":"*%PREFIX%%COMMAND% this.message.id*"
         
     },
     

@@ -2,13 +2,13 @@ let Module          = require('../module.js');
 
 class Command extends Module {
 
-    constructor(clientConfig, module, message) {
+    constructor(clientConfig, moduleConfig, message) {
         
-        super(clientConfig, module, message);
+        super(clientConfig, moduleConfig, message);
         
-        this.moduleConfig.help.text = this.moduleConfig.help.text.replace("%NUM%", this.clientConfig.mRegistry.commands.length);
-        this.moduleConfig.help.text = this.moduleConfig.help.text.replace("%COMMANDS%", this.clientConfig.mRegistry.commands);
-        this.moduleConfig.help.example = this.moduleConfig.help.example.replace("%COMMAND%", this.clientConfig.mRegistry.commands[0]);
+        
+        this.moduleConfig.help.text = this.moduleConfig.help.text.replace("%NUM%", Object.keys(this.clientConfig.mRegistry.commands).length);
+        this.moduleConfig.help.text = this.moduleConfig.help.text.replace("%COMMANDS%", Object.keys(this.clientConfig.mRegistry.commands).toString().replace(/[,]/gi,"\n- "));
         
     }
     

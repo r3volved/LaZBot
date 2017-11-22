@@ -2,13 +2,30 @@ let Module          = require('../module.js');
 
 class Monitor extends Module {
 
-    constructor(clientConfig, module, message) {
+    constructor(clientConfig, moduleConfig, message) {
         
-        super(clientConfig, module, message);
+        super(clientConfig, moduleConfig, message);
         
     }
     
-    
+    //Process command
+	process() {
+	    
+	    if( this.message.author.id !== this.clientConfig.master ) { 
+	    
+	        this.message.react(this.moduleConfig.reaction.DENIED);
+	        return; 
+	    
+	    }
+	    
+	    let content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command} `,'');  	
+    	
+	    console.log( this.clientConfig.mRegistry.commands );
+	    if( content === "help" ) { return this.help(); }
+
+	}
+	
+	//Monitor message
     analyze() {
         
         try {
@@ -39,12 +56,7 @@ class Monitor extends Module {
         return true;
         
     }
-    
-    process() {
-                
         
-    }
-    
         
 }
 

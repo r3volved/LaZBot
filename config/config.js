@@ -2,15 +2,23 @@ class ConfigHandler {
 	
     constructor(client, settingsFile) {
 
-    	this.settingsFile = typeof settingsFile !== "undefined" ? settingsFile : "config.json";
-
-    	const fs = require("fs");
-    	const content = fs.readFileSync(`./config/${this.settingsFile}`);
+    	try {
+    		
+	    	this.settingsFile = typeof settingsFile !== "undefined" ? settingsFile : "config.json";
+	 	
+	    	const fs = require("fs");
+	    	const content = fs.readFileSync(`./config/${this.settingsFile}`);
+	    	
+	    	this.config = JSON.parse(content);
+	    	this.config.client = client;
+	    	
+	    	return this.config;
     	
-    	this.config = JSON.parse(content);
-    	this.config.client = client;
-    	return this.config;
-    	
+    	} catch(e) {
+    		
+    		console.error(e);
+    		
+    	}
     }
     
 }

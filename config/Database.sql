@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS `channel` (
   `memberCount` int(11) NOT NULL,
   `spreadsheet` varchar(256) NOT NULL,
   `webhook` varchar(256) NOT NULL,
-  `modrole` varchar(32) DEFAULT NULL
+  `modrole` varchar(32) DEFAULT NULL,
+  `qmonitor` boolean NOT NULL DEFAULT FALSE
 );
 
 CREATE TABLE IF NOT EXISTS `server` (

@@ -1,42 +1,51 @@
 class Module {
     
-    constructor(clientConfig, module, message) {
+    constructor(clientConfig, moduleConfig, message) {
     
         try {
                         
-            const fs = require("fs");
-            const content = fs.readFileSync(`./modules/module.${module}/module.${module}.json`);
-            if( !content ) throw `module.${module}.json not found`;
-                
             this.message = message;
-            this.moduleConfig = JSON.parse(content);
+            this.moduleConfig = moduleConfig;
             this.clientConfig = clientConfig;
             
             this.moduleConfig.help.text = this.moduleConfig.help.text.replace("%PREFIX%", this.clientConfig.prefix);
-            this.moduleConfig.help.example = this.moduleConfig.help.text.replace("%PREFIX%", this.clientConfig.prefix);
-            this.moduleConfig.help.example = this.moduleConfig.help.text.replace("%ID%", this.moduleConfig.id);
+            this.moduleConfig.help.text = this.moduleConfig.help.text.replace("%COMMAND%", this.moduleConfig.command);
+            this.moduleConfig.help.example = this.moduleConfig.help.example.replace("%PREFIX%", this.clientConfig.prefix);
+            this.moduleConfig.help.example = this.moduleConfig.help.example.replace("%COMMAND%", this.moduleConfig.command);
 
         } catch(e) {
+        	
             console.error(e);
+            
         }
         
     }
     
     help() {
 
-        const Discord = require('discord.js');
-        let embed = new Discord.RichEmbed();
-        embed.setColor(0x6F9AD3);
-        embed.setTitle(this.moduleConfig.help.title);
-        embed.setDescription(this.moduleConfig.help.text);
-        embed.addField("Example",this.moduleConfig.help.example);
-        this.message.channel.send({embed}); 
+        try {
+
+        	const Discord = require('discord.js');
+            let embed = new Discord.RichEmbed();
+            embed.setColor(0x6F9AD3);
+            embed.setTitle(this.moduleConfig.help.title);
+            embed.setDescription(this.moduleConfig.help.text);
+            embed.addField("Example",this.moduleConfig.help.example);
+            this.message.channel.send({embed}); 
+        	
+        } catch(e) {
+        	
+        	console.error(e);
+        	
+        }
 
     }
     
     codeBlock(str,type) {
-        type = type || "js";
+
+    	type = type || "js";
         return "```"+type+"\r\n"+str+"```";
+    
     }
 
 }
