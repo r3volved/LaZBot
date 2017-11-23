@@ -1,20 +1,21 @@
 {
-  "name": "LaZBot",
-  "version": "2.0",
-  "description": "LaZBot packages",
-  "main": "./lazbot.js",
+  "name": "lazbot",
+  "version": "1.0.0",
+  "description": "Modularized discord bot",
+  "main": "lazbot.js",
   "dependencies": {
     "discord.js": "^11.2.1",
-    "google-auth-library": "^0.11.0",
     "google-translate-api": "^2.3.0",
-    "googleapis": "^22.2.0",
-    "mysql": "^2.15.0",
-    "request": "^2.83.0"
+    "mysql": "^2.15.0"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "Shittybill",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com:443/r3volved/LaZBot.git"
+  },
+  "author": "shittybill",
   "license": "ISC"
 }

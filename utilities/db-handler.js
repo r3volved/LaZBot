@@ -26,7 +26,9 @@ class DatabaseHandler {
                 con.end();
 
 	    	} catch (err) {
+	    		
 	    		reject(err);
+	    		
 	    	}
 
 		});
@@ -51,7 +53,9 @@ class DatabaseHandler {
                 con.end();
 
             } catch (err) {
+            	
                 reject(err);
+                
             }
 
         });

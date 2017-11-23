@@ -25,7 +25,7 @@ class Command extends Module {
             if( content === "help" || content.length === 0 ) { return this.help(); }
     
             /**
-             * DO STUFF
+             * DO COMMAND STUFF
              */
             
             let replyStr = "Did stuff";
@@ -35,7 +35,7 @@ class Command extends Module {
         } catch(e) {
             
             //On error, log to console and return help
-            console.error(e);
+            this.error("process",e);
             return this.help();
             
         }
@@ -43,6 +43,16 @@ class Command extends Module {
     }
     
     analyze() {
+    	
+    	try {
+    	
+    		/**
+             * DO MONITORING STUFF
+             */
+    		
+    	} catch(e) {
+            this.error("analyse",e);
+    	}
     	
     }
     

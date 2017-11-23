@@ -22,7 +22,8 @@ client.on('message', message => {
 	try {
 		config.mRegistry.registerMessage( message );
 	} catch(e) {	
-		console.log(e);		
+		console.warn("Message listener problem!");
+		console.error(e);		
 	}
  	
 });

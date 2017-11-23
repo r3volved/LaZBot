@@ -42,18 +42,17 @@ class Command extends Module {
 
                 data.setRows().then((result) => {
                     this.message.react(this.clientConfig.reaction.SUCCESS);
-                }).catch((reason) => {
-                    console.log(reason);
+                }).catch((reason) => {                	
                     this.message.react(this.clientConfig.reaction.ERROR);
+                    throw reason;
                 });
             
         	}
         	
         } catch(e) {
             
-            //On error, log to console and return help
-            console.error(e);
-            return this.help();
+            this.error("process",e);
+            this.help();
             
         }
         
@@ -90,11 +89,11 @@ class Command extends Module {
                 }                   
                 
             }).catch((reason) => {
-                console.log(reason);        
+                throw reason;
             });
 
     	} catch(e) {
-            console.log(e);
+            this.error("analyse",e);
         }                
         
         return true;
@@ -123,10 +122,10 @@ class Command extends Module {
                 embed.addField("Status","Inactive");
                 embed.addField("Example",this.moduleConfig.help.example);        
                 this.message.channel.send({embed}); 
-    
+                
             });
         } catch(e) {
-            console.log(e);
+            this.error("status",e);
         }                
     }
             

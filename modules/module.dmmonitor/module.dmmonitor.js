@@ -51,14 +51,15 @@ class Monitor extends Module {
             }
 
         } catch(e) {
-            console.log(e);
+        	
+        	this.error("analyse",e);
+
         }
         
         return true;
         
     }
-        
-        
+                
 }
 
 module.exports = Monitor;

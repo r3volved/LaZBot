@@ -44,17 +44,18 @@ class Command extends Module {
 			    	this.reply(`Translation of ${authorName}'s last ${last} messages`,`${res.text}`,`{ ${res.from.language.iso} => ${language} }` );			    	
 			    	
 			    }).catch(err => {
-				    console.error(err);
+				    throw err;
 				});
 			    
 			}).catch( err => {
-				console.error(err);
+				throw err;
 			});
 			
 		} catch(e) {
 			
-			console.error(e);
+			this.error("process",e);
 			this.help();
+			
 		}			
 	}
 	

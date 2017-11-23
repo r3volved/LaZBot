@@ -6,7 +6,7 @@ class Module {
                         
             this.message = message;
             this.moduleConfig = moduleConfig;
-            this.clientConfig = clientConfig;
+            this.clientConfig = clientConfig;            
             
             this.moduleConfig.help.text = this.moduleConfig.help.text.replace("%PREFIX%", this.clientConfig.prefix);
             this.moduleConfig.help.text = this.moduleConfig.help.text.replace("%COMMAND%", this.moduleConfig.command);
@@ -15,7 +15,7 @@ class Module {
 
         } catch(e) {
         	
-            console.error(e);
+        	this.error("init",e);
             
         }
         
@@ -35,10 +35,18 @@ class Module {
         	
         } catch(e) {
         	
-        	console.error(e);
+        	this.error("help",e);
         	
         }
 
+    }
+    
+    error(process, err) {
+    	
+    	const ErrorHandler = require(`../utilities/error-handler.js`);
+    	const eHandler = new ErrorHandler(this.moduleConfig.id,process,err).log();
+    	return;
+    	
     }
     
     codeBlock(str,type) {
