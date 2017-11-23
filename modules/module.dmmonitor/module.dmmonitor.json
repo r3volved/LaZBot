@@ -4,7 +4,7 @@
 
     "name":"DM Monitor",
 
-    "version":"0.1",
+    "version":"1.0",
 
     "type":"preMonitor",
     
@@ -12,24 +12,10 @@
     
     "help":{
     
-        "title":"About my command",
-        "text":"My command does stuff",
-        "example":"%PREFIX%%COMMAND% do stuff"
+        "title":"DM Monitor",
+        "text":"The DM monitor is a passive monitor",
+        "example":"none"
         
-    },
-    
-    "reaction":{
-    
-        "SUCCESS":"✅",
-        "ERROR":"❌",
-        "WARNING":"⚠",
-        "DENIED":"🚫",
-        "DM":"📫"       
-    
-    },
-    
-    "queries":{
-    	
     }
     
 }

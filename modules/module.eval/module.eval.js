@@ -12,7 +12,7 @@ class Command extends Module {
 			    
 	    if( this.message.author.id !== this.clientConfig.master ) { 
 	    
-	        this.message.react(this.moduleConfig.reaction.DENIED);
+	        this.message.react(this.clientConfig.reaction.DENIED);
 	        return; 
 	    
 	    }
@@ -20,15 +20,15 @@ class Command extends Module {
 	    let prevaled = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command} `,'');
     	let evaled = "undefined";    	
     	
-    	if( prevaled === "help" ) { return this.help(); }
+    	if( prevaled === "help" || prevaled.length === 0 ) { return this.help(); }
 
     	try {
     		evaled = eval(prevaled);
     		if( typeof(evaled) === "undefined" ) { throw evaled; }
-    		this.message.react(this.moduleConfig.reaction.SUCCESS);
+    		this.message.react(this.clientConfig.reaction.SUCCESS);
     	} catch(e) {
     		evaled = e;
-    		this.message.react(this.moduleConfig.reaction.ERROR);
+    		this.message.react(this.clientConfig.reaction.ERROR);
     	}
   
     	if( typeof evaled === "object" && Object.keys(evaled).length > 0 ) {
@@ -96,7 +96,7 @@ class Command extends Module {
         //If already sent chunks to DM, send last bit to DM
         if( dm ) { 
             this.message.author.send({embed}); 
-            this.message.react(this.moduleConfig.reaction.DM);
+            this.message.react(this.clientConfig.reaction.DM);
         } else { 
             this.message.channel.send({embed}); 
         }

@@ -10,6 +10,7 @@ const config 			= new ConfigHandler( client, process.argv[2] );
 const ModuleRegistry    = require('./modules/modules.registry.js');
 config.mRegistry        = new ModuleRegistry( config );
 
+
 /**
  * MONITOR CHANNEL
  */
@@ -59,8 +60,9 @@ client.on('guildMemberRemove', member => {
 //ON READY
 client.on('ready', () => {
 	
-	const botLog = require("./utilities/database.js");
-	botLog.LogBotActivity(config, `Connected as: ${client.user.username}`);
+	const DatabaseHandler = require("./utilities/db-handler.js");
+	botLog = new DatabaseHandler(config.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), `Connected as: ${client.user.username}`]);
+	botLog.setRows();
     
 	console.info(`Started with configuration: ${process.argv[2]}`);
     console.info(`==========================================================================`);
@@ -82,14 +84,14 @@ client.on('ready', () => {
 //ON DISCONNECT
 client.on('disconnect', (event) => {
 	
-	console.error(`Client disconnected`,event);
-	const botLog = require("./utilities/database.js");
-	botLog.LogBotActivity(config, `Client disconnected ${event}`);
+    const DatabaseHandler = require("./utilities/db-handler.js");
+    botLog = new DatabaseHandler(config.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), `Client disconnected ${event}`]);
+    botLog.setRows();
+
+    console.error(`Client disconnected`,event);
 	
 	//Try login after 10 seconds
 	setTimeout( function() { 
-		console.warn(`Client trying to connect`);
-		botLog.LogBotActivity(config, `Client trying to connect`);
 		client.login(config.token);
 	}, 5000);
 		
@@ -98,36 +100,36 @@ client.on('disconnect', (event) => {
 //ON RECONNECTING
 client.on('reconnecting', () => {
 
-	console.warn(`Client reconnecting`);	
-	const botLog = require("./utilities/database.js");
-	botLog.LogBotActivity(config, `Client reconnecting`);
+    const DatabaseHandler = require("./utilities/db-handler.js");
+    botLog = new DatabaseHandler(config.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), `Client reconnecting`]);
+    console.warn(`Client reconnecting`);	
 	    
 });
 
 //ON RESUME
 client.on('resumed', (replayed) => {
 
-	console.info(`Client resumed - Replayed: ${replayed}`);
-	const botLog = require("./utilities/database.js");
-	botLog.LogBotActivity(config, `Client resumed - Replayed: ${replayed}`);	
+    const DatabaseHandler = require("./utilities/db-handler.js");
+    botLog = new DatabaseHandler(config.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), `Client resumed - Replayed: ${replayed}`]);
+    console.info(`Client resumed - Replayed: ${replayed}`);
 
 });
 
 //ON ERROR
 client.on('error', (error) => {
 
-	console.error(`Client connection error: ${error}`);
-	const botLog = require("./utilities/database.js");
-	botLog.LogBotActivity(config, `Client connection error: ${error}`);	
+    const DatabaseHandler = require("./utilities/db-handler.js");
+    botLog = new DatabaseHandler(config.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), `Client connection error: ${error}`]);
+    console.error(`Client connection error: ${error}`);
 
 });
 
 //ON WARNING
 client.on('warn', (info) => {
 
+    const DatabaseHandler = require("./utilities/db-handler.js");
+    botLog = new DatabaseHandler(config.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), `Client warning: ${info}`]);
 	console.warn(`Client warning: ${info}`);
-	const botLog = require("./utilities/database.js");
-	botLog.LogBotActivity(config, `Client warning: ${info}`);	
 
 });
 

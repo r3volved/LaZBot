@@ -4,7 +4,7 @@
 
     "name":"Evaluation",
 
-    "version":"0.1",
+    "version":"1.0",
     
     "type":"command",
     
@@ -16,15 +16,6 @@
         "text":"Evaluate and view results of an expresssion.\n%PREFIX%%COMMAND% <thingToEval>\n\n**Note:** *This command is restricted to bot master*",
         "example":"*%PREFIX%%COMMAND% this.message.id*"
         
-    },
-    
-    "reaction":{
-        "SUCCESS":"✅",
-        "ERROR":"❌",
-        "WARNING":"⚠",
-        "DENIED":"🚫",
-        "DM":"📫"       
     }
-    
     
 }

@@ -13,6 +13,7 @@ class Command extends Module {
 		try {
 			
 		    let content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command}`,'').trim();
+            if( content === "help" || content.length === 0 ) { return this.help(); }
 
 			let messageParts = content.split(/\s+/g);
 	

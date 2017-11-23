@@ -13,15 +13,14 @@ class Monitor extends Module {
 	    
 	    if( this.message.author.id !== this.clientConfig.master ) { 
 	    
-	        this.message.react(this.moduleConfig.reaction.DENIED);
+	        this.message.react(this.clientConfig.reaction.DENIED);
 	        return; 
 	    
 	    }
 	    
 	    let content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command} `,'');  	
     	
-	    console.log( this.clientConfig.mRegistry.commands );
-	    if( content === "help" ) { return this.help(); }
+	    return this.help();
 
 	}
 	
@@ -32,6 +31,7 @@ class Monitor extends Module {
 
             //Tell master if someone is DMing the bot...
             if( this.message.channel.type === "dm" && this.message.author.id !== this.clientConfig.master ) { 
+
                 const Discord = require('discord.js');
                 const embed = new Discord.RichEmbed();
                 
@@ -47,6 +47,7 @@ class Monitor extends Module {
                 const master = this.clientConfig.client.fetchUser(this.clientConfig.master);
                 master.then( (user) => { user.send({embed}); } );
                 return false;
+            
             }
 
         } catch(e) {

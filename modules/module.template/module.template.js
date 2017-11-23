@@ -22,7 +22,7 @@ class Command extends Module {
                         
             //Sanitize message content
             const content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command}`,'').trim();
-            if( content === this.clientConfig.help ) { return this.help(); }
+            if( content === "help" || content.length === 0 ) { return this.help(); }
     
             /**
              * DO STUFF
