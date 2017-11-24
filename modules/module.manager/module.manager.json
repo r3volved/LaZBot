@@ -1,0 +1,21 @@
+{
+
+    "id":"manager",
+
+    "name":"Module manager",
+
+    "version":"0.1",
+    
+    "type":"command",
+    
+    "permission":"master",
+    
+    "help":{
+    
+        "title":"Module manager",
+        "text":"This module allows bot master to manage module configurations during runtime",
+        "example":"*%PREFIX%%COMMAND% <moduleID> <settings>*"
+        
+    }    
+    
+}

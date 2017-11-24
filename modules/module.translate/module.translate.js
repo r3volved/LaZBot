@@ -40,7 +40,6 @@ class Command extends Module {
 				
 			    translate(content, {to: language}).then(res => {
 			    	
-			    	this.message.delete(500).catch( console.log(`No permission to delete translation trigger: Server:${this.message.guild.id} | Channel:${this.message.channel.id}`) );
 			    	this.reply(`Translation of ${authorName}'s last ${last} messages`,`${res.text}`,`{ ${res.from.language.iso} => ${language} }` );			    	
 			    	
 			    }).catch(err => {

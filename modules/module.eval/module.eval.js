@@ -43,6 +43,12 @@ class Command extends Module {
 
 	}
 	
+	modules() {
+	    
+	    return JSON.stringify(this.clientConfig.modules,""," ");
+	    
+	}
+	
 	replyEval( replyStr ) {
     		
     	const Discord = require('discord.js');

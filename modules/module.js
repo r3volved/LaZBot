@@ -8,11 +8,6 @@ class Module {
             this.moduleConfig = moduleConfig;
             this.clientConfig = clientConfig;            
             
-            this.moduleConfig.help.text = this.moduleConfig.help.text.replace("%PREFIX%", this.clientConfig.prefix);
-            this.moduleConfig.help.text = this.moduleConfig.help.text.replace("%COMMAND%", this.moduleConfig.command);
-            this.moduleConfig.help.example = this.moduleConfig.help.example.replace("%PREFIX%", this.clientConfig.prefix);
-            this.moduleConfig.help.example = this.moduleConfig.help.example.replace("%COMMAND%", this.moduleConfig.command);
-
         } catch(e) {
         	
         	this.error("init",e);
@@ -25,12 +20,20 @@ class Module {
 
         try {
 
+            let helpText = this.moduleConfig.help.text;
+            helpText = helpText.replace("%PREFIX%", this.clientConfig.prefix);
+            helpText = helpText.replace("%COMMAND%", this.moduleConfig.command);
+            
+            let helpExample = this.moduleConfig.help.example;
+            helpExample = helpExample.replace("%PREFIX%", this.clientConfig.prefix);
+            helpExample = helpExample.replace("%COMMAND%", this.moduleConfig.command);
+
         	const Discord = require('discord.js');
             let embed = new Discord.RichEmbed();
             embed.setColor(0x6F9AD3);
             embed.setTitle(this.moduleConfig.help.title);
-            embed.setDescription(this.moduleConfig.help.text);
-            embed.addField("Example",this.moduleConfig.help.example);
+            embed.setDescription(helpText);
+            embed.addField("Example",helpExample);
             this.message.channel.send({embed}); 
         	
         } catch(e) {

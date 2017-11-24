@@ -16,43 +16,36 @@ class ModuleRegistry {
 
     	if( typeof module !== "undefined" ) {
     		
-    		//Reload specific module
-    		//Build commands
-            for( let m = 0; m < this.clientConfig.modules.length; ++m ) {
+    	    module.active = [true,"yes","true","on","start","activate"].includes(module.active) ? true : false;
+    	    
+    	    for( let m = 0; m < this.clientConfig.modules.length; ++m ) {
             	
                 if( this.clientConfig.modules[m].id === module.id ) {
                 	
-            		//Remove original settings
-                    delete this.commands[this.clientConfig.modules[m].command];
-                    delete this.preMonitors[this.clientConfig.modules[m].command];
-                    delete this.postMonitors[this.clientConfig.modules[m].command];
-                    delete this.modules[this.clientConfig.modules[m].id];
-                    
-                    //Overwrite the clientConfig module
-            		this.clientConfig.modules[m] = module;
-            		                	
-                	if( module.active ) {
+                    if( typeof this.commands[this.clientConfig.modules[m].command] !== "undefined" )        { delete this.commands[this.clientConfig.modules[m].command]; }
+                    if( typeof this.preMonitors[this.clientConfig.modules[m].command] !== "undefined" )     { delete this.preMonitors[this.clientConfig.modules[m].command]; }
+                    if( typeof this.postMonitors[this.clientConfig.modules[m].command] !== "undefined" )    { delete this.postMonitors[this.clientConfig.modules[m].command]; }
+                    if( typeof this.modules[this.clientConfig.modules[m].id] !== "undefined" )              { delete this.modules[this.clientConfig.modules[m].id]; }
 
-                		//Overwrite/add with new settings
-                		this.modules[module.id] = require(`./module.${module.id}/module.${module.id}.json`);
+                    if( module.active ) { 
+
+                        this.modules[module.id] = require(`./module.${module.id}/module.${module.id}.json`);
                         this.modules[module.id].command = module.command;
                         this.commands[module.command] = this.modules[module.id];
-                        switch( module.type ) {
-	                        case "preMonitor":
-	                            this.preMonitors[module.command] = this.modules[module.id];
-	                            break;
-	                        case "postMonitor":
-	                            this.postMonitors[module.command] = this.modules[module.id];
-	                            break;
-	                        default:
-	                    }
+                        if( module.type === "preMonitor" ) { this.preMonitors[module.command] = this.modules[module.id]; }
+                        if( module.type === "postMonitor" ) { this.postMonitors[module.command] = this.modules[module.id]; }
+                        
+                        console.log( JSON.stringify(this.clientConfig.modules[m]) +"=>"+ JSON.stringify(module) );
+                        this.clientConfig.modules[m] = module;
+                        this.clientConfig.mRegistry = this;
                         
                         return `Module '${module.id}' has been reloaded`;
-                        
-                	} 
-                	
+                    }
+
+                    this.clientConfig.modules[m] = module;
+                    this.clientConfig.mRegistry = this;
+                    
                 	return `Module '${module.id}' has been unloaded`;
-                	
                 }
             	
             }
@@ -60,13 +53,17 @@ class ModuleRegistry {
     	} else {
     		
     		//Reload all modules
-        	this.modules = {};
+    	    delete this.modules;
+    	    delete this.commands;
+    	    delete this.preMonitors;
+    	    delete this.postMonitors;
+            
+            this.modules = {};
             this.commands = {};
             this.preMonitors = {};
             this.postMonitors = {};
             
-            this.load();        
-            console.info(`All modules have been reloaded`);
+            return this.load();
     		    		
     	}
     	
@@ -99,6 +96,9 @@ class ModuleRegistry {
                 }
                 
             }
+            
+            this.clientConfig.mRegistry = this;
+            return `All modules have been loaded`;
             
         } catch(e) {
             console.error(e);

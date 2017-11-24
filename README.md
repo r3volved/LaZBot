@@ -1,64 +1,66 @@
 # LaZBot
 
-Interact with your google spreadsheet through discord
+Modular discord bot with command processing and event monitoring
 
 
 ## Installation
 
 ### Setup
 
+* node.js 8+
+* db-handler - requires npm mysql
+* translation module - requires npm google-translate-api
+
 Setup your mySQL database with config/Database.sql
+
 This database holds channel-specific settings for the bot's reference
 
-Add your bot token to the botToken in settings.json
-Add your own user id as the bot's master in settings.json
+Make a copy of config/config.json as your new profile.
+
+In your new profile, 
+
+* Add your bot token 
+* Add your own user id as the bot's master
+* Add your prefix
+
 This json file is your bot's global settings and references
 
-### Localization
-
-Set the bot's language by translating the settings.json command and message values into your native language 
-
-### Finally
-
-Remove the language tag from the settings.json filename - resulting final file should be "settings.json"
+Include modules in your profile.json, in the form: { "id":"moduleID", "command":"cmd", "type":"preMonitor|command|postMonitor", "active":true } 
 
 
-## Usage
+## Module Usage
 
-### Prefixes
+### Help
 
-Spreadsheet commands are tied to prefixed specified in settings.json. 
+The help module will provide some global information about the bot. 
 
-The Default prefixes are [ ?(get), +(set), -(del), ~(sync) ]
+Usage: ?help
 
+### Module Manager
 
-Some prefixes can be doubled up for special purpose, example:
+This module ties into the module registry to get status details, reload, toggle and adjust modules during runtime.
 
-Setup channel settings with [ ~~ ]:
+**Bot master only**
 
-~~spreadsheet <spreadsheetURL>
+### DM Monitor
 
-~~webhook <webhookURL>
+Passive monitor to alert bot-master that someone is trying to talk to the bot over direct message.
 
-~~modrole <botModeratorRole>
+### Question Monitor
 
+Monitor a channel and remove comments that are not in the form of questions. Alert author of comment removed.
 
-Query the channel settings, or your own settings, 
-or describe the fields in a sheet with [ ?? ]:
+Channel owners can toggle this option on/off within their own channels
 
-??<sheet>
+**Channel admin**
 
-??channel       (editable in settings.json)
+Usage: ?qm <on|off>
 
-??me            (editable in settings.json)
+### Translation Module
 
+Uses google translate apit to translate a user's last message into requested language
 
-### Conditions
+**Anyone**
 
-Query spreadsheet against specific conditions such as:
+Usage: ?gt <languageCode> <mention|userID> <numMessages>
 
-?warning player "Dr Play"
-
-?player score < 10
-
-?characters power >= 1000000
