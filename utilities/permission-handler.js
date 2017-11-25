@@ -29,14 +29,14 @@ class PermissionHandler {
         return !!this.message.member.roles.find("name", role);
     }
     
-    clientHasRole( role ) {
-        return !!this.message.channel.members.find("id", this.clientConfig.client.user.id).roles.find("name", role);
-    }
-    
     authorHasPermission( permission ) {
         
         return this.message.member.hasPermission(permission);
         
+    }
+    
+    clientHasRole( role ) {
+        return !!this.message.channel.members.find("id", this.clientConfig.client.user.id).roles.find("name", role);
     }
     
     clientHas( permission ) {

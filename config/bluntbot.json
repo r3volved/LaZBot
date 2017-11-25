@@ -1,0 +1,55 @@
+{
+	
+	"token":"Mzg0MDg2OTU0MDkyMDAzMzI4.DPtsYg.Vy-eDfg1v3gY93VI0ar13fI2k-c",
+	
+	"master":"305465187799007232",
+	
+	"version":"LaZBot v2.0",
+		
+    "adminRole":"Leader",
+    
+    "modRole":"Bluntforce Officer",
+    
+    "database":{
+
+        "host":"localhost",
+        "user":"lazbot",
+        "password":"lazbot314",
+        "database":"lazbot"
+
+    },
+    
+    "permissions":[
+
+        "master",
+        "admin",
+        "moderator",
+        "anyone"
+
+    ],
+    
+    "prefix":"!",
+    
+    "modules":[
+
+        { "command":"dmm",  "id":"dmmonitor", "type":"preMonitor",  "active":true },
+        { "command":"qm",   "id":"qmonitor",  "type":"preMonitor",  "active":false },
+        { "command":"help", "id":"help",      "type":"command",     "active":true },
+        { "command":"eval", "id":"eval",      "type":"command",     "active":false },
+        { "command":"gt",   "id":"translate", "type":"command",     "active":true },
+        { "command":"mm",   "id":"manager",   "type":"command",     "active":true },
+        { "command":"alert","id":"reminder",  "type":"command",     "active":true }
+
+    ],
+        
+    "reaction":{
+        
+        "SUCCESS":"✅",
+        "ERROR":"❌",
+        "WARNING":"⚠",
+        "DENIED":"🚫",
+        "DM":"📫"
+            
+    }
+    
+}

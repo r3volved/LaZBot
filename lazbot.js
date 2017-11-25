@@ -6,11 +6,6 @@ const client 			= new Discord.Client();
 const ConfigHandler 	= require('./config/config.js');
 const config 			= new ConfigHandler( client, process.argv[2] );
 
-//Build module registry
-const ModuleRegistry    = require('./modules/modules.registry.js');
-config.mRegistry        = new ModuleRegistry( config );
-
-
 /**
  * MONITOR CHANNEL
  */
@@ -61,26 +56,18 @@ client.on('guildMemberRemove', member => {
 //ON READY
 client.on('ready', () => {
 	
-	const DatabaseHandler = require("./utilities/db-handler.js");
-	botLog = new DatabaseHandler(config.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), `Connected as: ${client.user.username}`]);
-	botLog.setRows();
+    console.info(`Started successfully with configuration: ${process.argv[2]}`);
+
+    const DatabaseHandler = require("./utilities/db-handler.js");
+    botLog = new DatabaseHandler(config.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), `Connected as: ${client.user.username}`]);
+    botLog.setRows();
     
-	console.info(`Started with configuration: ${process.argv[2]}`);
-    console.info(`==========================================================================`);
-	console.info(`Connected as: ${client.user.username} => Using prefix: ${config.prefix}`);
-	console.info(`Running ${Object.keys(config.mRegistry.modules).length} of ${config.modules.length} available modules:\n  - ${Object.keys(config.mRegistry.commands).toString().replace(/[,]/gi," - ")} -`);
-    console.info(`==========================================================================`);
-    console.info(`Preprocessing with ${Object.keys(config.mRegistry.preMonitors).length} monitors:\t [ ${Object.keys(config.mRegistry.preMonitors).toString().replace(/[,]/gi,", ")} ]`);
-	console.info(`Active listeners on ${Object.keys(config.mRegistry.commands).length} commands:\t [ ${config.prefix}${Object.keys(config.mRegistry.commands).toString().replace(/[,]/gi," | "+config.prefix)} ]`);
-    console.info(`Postprocessing with ${Object.keys(config.mRegistry.postMonitors).length} monitors:\t [ ${Object.keys(config.mRegistry.postMonitors).toString().replace(/[,]/gi,", ")} ]`);
-    console.info(`==========================================================================`);
+    /**
+     * Once connected, build module registry
+     */
+    const ModuleRegistry    = require('./modules/modules.registry.js');
+    config.mRegistry        = new ModuleRegistry( config ).catch();	
     
-    console.info(`${config.mRegistry.scheduler.jobs.size} alerts scheduled`);
-	console.info(`Currently a member of ${client.guilds.size} guilds\n`);
-	
-	console.info(`For more information about a specific command, try: ${config.prefix}<command> help`);
-	console.info(`Or, for higher level information, try: ${config.prefix}help `);
-	
 }); 
 
 //ON DISCONNECT

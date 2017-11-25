@@ -2,17 +2,24 @@ class ModuleRegistry {
 
     constructor( clientConfig ) {
         
-        const ScheduleHandler = require(`../utilities/schedule-handler.js`);
-        
-        this.scheduler = new ScheduleHandler(clientConfig);
-        
-        this.clientConfig = clientConfig;
-        this.modules = {};
-        this.commands = {};
-        this.preMonitors = {};
-        this.postMonitors = {};
-        
-        this.load();
+        return new Promise((resolve, reject) => {
+            
+            this.clientConfig = clientConfig;
+            this.modules = {};
+            this.commands = {};
+            this.preMonitors = {};
+            this.postMonitors = {};
+            const ScheduleHandler = require(`../utilities/schedule-handler.js`);        
+            
+            this.scheduler = new ScheduleHandler(clientConfig);
+            this.scheduler.initJobs().then( () => {
+
+                this.load();
+                resolve(this);
+                
+            }).catch((reason) => reject(reason));
+            
+        });
         
     }
     
@@ -102,6 +109,23 @@ class ModuleRegistry {
             }
             
             this.clientConfig.mRegistry = this;
+            
+            console.info(`All modules have been loaded`);
+            console.info(`==========================================================================`);
+            console.info(`Connected as: ${this.clientConfig.client.user.username} => Using prefix: ${this.clientConfig.prefix}`);
+            console.info(`Running ${Object.keys(this.modules).length} of ${this.clientConfig.modules.length} available modules:\n  - ${Object.keys(this.commands).toString().replace(/[,]/gi," - ")} -`);
+            console.info(`==========================================================================`);
+            console.info(`Preprocessing with ${Object.keys(this.preMonitors).length} monitors:\t [ ${Object.keys(this.preMonitors).toString().replace(/[,]/gi,", ")} ]`);
+            console.info(`Active listeners on ${Object.keys(this.commands).length} commands:\t [ ${this.clientConfig.prefix}${Object.keys(this.commands).toString().replace(/[,]/gi," | "+this.clientConfig.prefix)} ]`);
+            console.info(`Postprocessing with ${Object.keys(this.postMonitors).length} monitors:\t [ ${Object.keys(this.postMonitors).toString().replace(/[,]/gi,", ")} ]`);
+            console.info(`==========================================================================`);
+            
+            console.info(`${this.scheduler.jobs.size} alerts scheduled`);
+            console.info(`Currently a member of ${this.clientConfig.client.guilds.size} guilds\n`);
+            
+            console.info(`For more information about a specific command, try: ${this.clientConfig.prefix}<command> help`);
+            console.info(`Or, for higher level information, try: ${this.clientConfig.prefix}help `);
+            
             return `All modules have been loaded`;
             
         } catch(e) {

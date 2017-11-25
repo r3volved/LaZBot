@@ -4,40 +4,49 @@ class ScheduleHandler {
         
         this.clientConfig = clientConfig;
         this.jobs = new Map();
-        this.initJobs();
         
     }
     
     initJobs() {
+       
+        return new Promise((resolve, reject) => {
         
-        const sql = "SELECT * FROM reminder WHERE active = ?";
-        const args = [true];
-        
-        const DatabaseHandler = require(`./db-handler.js`);
-        const dbHandler = new DatabaseHandler(this.clientConfig.database, sql, args);
-        
-        dbHandler.getRows().then( (rows) => {
-           
-            const today = new Date();
+            const sql = "SELECT * FROM reminder WHERE active = ?";
+            const args = [true];
             
-            for( let i = 0; i < rows.length; ++i ) {
+            const DatabaseHandler = require(`./db-handler.js`);
+            const dbHandler = new DatabaseHandler(this.clientConfig.database, sql, args);
+            
+            dbHandler.getRows().then( (rows) => {
+               
+                const today = new Date();
                 
-                if( rows[i].dateTime < today && ( rows[i].cadence !== "weekly" && rows[i].cadence !== "daily" ) ) { 
-                    let remSql = "DELETE FROM reminder WHERE channelID = ? and name = ?";                    
-                    const remHandler = new DatabaseHandler(this.clientConfig.database, remSql, [ rows[i].channelID, rows[i].name ]);
-                    remHandler.setRows().catch( (reason) => {
-                        throw reason;
-                    });
-                    continue; 
+                for( let i = 0; i < rows.length; ++i ) {
+                    
+                    if( rows[i].dateTime < today && ( rows[i].cadence !== "weekly" && rows[i].cadence !== "daily" ) ) { 
+                        let remSql = "DELETE FROM reminder WHERE channelID = ? and name = ?";                    
+                        const remHandler = new DatabaseHandler(this.clientConfig.database, remSql, [ rows[i].channelID, rows[i].name ]);
+                        remHandler.setRows().catch( (reason) => {
+                            throw reason;
+                        });
+                        continue; 
+                    }
+                    if( this.clientConfig.client.channels.get(rows[i].channelID) ) {
+                        this.setSchedule( rows[i].channelID, rows[i].name, rows[i].dateTime, rows[i].cadence );            
+                    }
+                    
+                    resolve(this);
+                    
                 }
-                this.setSchedule( rows[i].channelID, rows[i].name, rows[i].dateTime, rows[i].cadence );            
                 
-            }
-            
-        }).catch( (reason) => {
-            
+            }).catch( (reason) => {
+                
+                reject(reason);
+                
+            });
+                
         });
-        
+                
     }
     
     
