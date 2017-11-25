@@ -75,6 +75,7 @@ client.on('ready', () => {
     console.info(`Postprocessing with ${Object.keys(config.mRegistry.postMonitors).length} monitors:\t [ ${Object.keys(config.mRegistry.postMonitors).toString().replace(/[,]/gi,", ")} ]`);
     console.info(`==========================================================================`);
     
+    console.info(`${config.mRegistry.scheduler.jobs.size} alerts scheduled`);
 	console.info(`Currently a member of ${client.guilds.size} guilds\n`);
 	
 	console.info(`For more information about a specific command, try: ${config.prefix}<command> help`);

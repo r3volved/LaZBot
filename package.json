@@ -6,7 +6,8 @@
   "dependencies": {
     "discord.js": "^11.2.1",
     "google-translate-api": "^2.3.0",
-    "mysql": "^2.15.0"
+    "mysql": "^2.15.0",
+    "node-schedule": "^1.2.5"
   },
   "devDependencies": {},
   "scripts": {

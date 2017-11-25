@@ -40,14 +40,14 @@ class Command extends Module {
             }
     
             let helpText = this.moduleConfig.help.text;
-            helpText = helpText.replace("%NUM%", Object.keys(commands).length);
-            helpText = helpText.replace("%COMMANDS%", Object.keys(commands).toString().replace(/[,]/gi,"\n- "));
-            helpText = helpText.replace("%PREFIX%", this.clientConfig.prefix);
-            helpText = helpText.replace("%COMMAND%", this.moduleConfig.command);
+            helpText = helpText.replace(/%NUM%/g, Object.keys(commands).length);
+            helpText = helpText.replace(/%COMMANDS%/g, Object.keys(commands).toString().replace(/[,]/gi,"\n- "));
+            helpText = helpText.replace(/%PREFIX%/g, this.clientConfig.prefix);
+            helpText = helpText.replace(/%COMMAND%/g, this.moduleConfig.command);
             
             let example = this.moduleConfig.help.example;
-            example = example.replace("%PREFIX%", this.clientConfig.prefix);
-            example = example.replace("%COMMAND%", this.moduleConfig.command);
+            example = example.replace(/%PREFIX%/g, this.clientConfig.prefix);
+            example = example.replace(/%COMMAND%/g, this.moduleConfig.command);
 
             const Discord = require('discord.js');
             let embed = new Discord.RichEmbed();

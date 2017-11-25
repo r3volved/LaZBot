@@ -2,6 +2,10 @@ class ModuleRegistry {
 
     constructor( clientConfig ) {
         
+        const ScheduleHandler = require(`../utilities/schedule-handler.js`);
+        
+        this.scheduler = new ScheduleHandler(clientConfig);
+        
         this.clientConfig = clientConfig;
         this.modules = {};
         this.commands = {};

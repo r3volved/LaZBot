@@ -17,10 +17,10 @@ class DatabaseHandler {
 		        const mysql = require('mysql');
 		        const con = mysql.createConnection(this.database);
 				con.connect();
-                con.query(this.sqlStatement, this.sqlArgs, function (err, result, rows) {
-						
-					if (err) { throw err; }
-		    		resolve(rows);
+                con.query(this.sqlStatement, this.sqlArgs, function (err, result) {
+
+                    if (err) { throw err; }
+					resolve(result);
 
 				});
                 con.end();

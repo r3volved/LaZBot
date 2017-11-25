@@ -21,12 +21,12 @@ class Module {
         try {
 
             let helpText = this.moduleConfig.help.text;
-            helpText = helpText.replace("%PREFIX%", this.clientConfig.prefix);
-            helpText = helpText.replace("%COMMAND%", this.moduleConfig.command);
+            helpText = helpText.replace(/%PREFIX%/g, this.clientConfig.prefix);
+            helpText = helpText.replace(/%COMMAND%/g, this.moduleConfig.command);
             
             let helpExample = this.moduleConfig.help.example;
-            helpExample = helpExample.replace("%PREFIX%", this.clientConfig.prefix);
-            helpExample = helpExample.replace("%COMMAND%", this.moduleConfig.command);
+            helpExample = helpExample.replace(/%PREFIX%/g, this.clientConfig.prefix);
+            helpExample = helpExample.replace(/%COMMAND%/g, this.moduleConfig.command);
 
         	const Discord = require('discord.js');
             let embed = new Discord.RichEmbed();
