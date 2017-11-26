@@ -9,6 +9,7 @@ const config 			= new ConfigHandler( client, process.argv[2] );
 /**
  * MONITOR CHANNEL
  */
+
 //ON MESSAGE RECEIVED
 client.on('message', message => {
   
@@ -64,6 +65,7 @@ client.on('ready', () => {
     
     /**
      * Once connected, build module registry
+     * The module registry is the core of the bot and ties all the module configurations together and organizes scheduling
      */
     const ModuleRegistry    = require('./modules/modules.registry.js');
     config.mRegistry        = new ModuleRegistry( config ).catch();	
@@ -122,5 +124,8 @@ client.on('warn', (info) => {
 
 });
 
-//LOGIN WITH TOKEN
+
+/**
+ * LOGIN WITH TOKEN
+ */
 client.login(config.token);

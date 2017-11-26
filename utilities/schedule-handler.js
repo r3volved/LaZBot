@@ -55,12 +55,6 @@ class ScheduleHandler {
         return this.jobs;
         
     }
-    
-    addSchedule( name, job ) {
-        
-        this.jobs.set(name, job);
-        
-    }
 
     setSchedule( channelID, name, dateTime, cadence ) {
         
@@ -73,15 +67,14 @@ class ScheduleHandler {
         if( !!cadence && cadence === "weekly" ) { rule.dayOfWeek = dateTime.getDay(); } 
         else if( !!cadence && cadence === "daily" ) { rule.dayOfWeek = [new schedule.Range(0, 6)]; } 
         else { rule = dateTime; }
-        
-        var j = schedule.scheduleJob(rule, function(scheduler, channelID, name) {
+
+        this.jobs.set(`${channelID}-${name}`, schedule.scheduleJob(rule, function(scheduler, channelID, name) {
           
             scheduler.alert(channelID, name);
             
-        }.bind(null, this, channelID, name));
+        }.bind(null, this, channelID, name)));
         
-        this.jobs.set(`${channelID}-${name}`, j);
-        
+        return this;
     }
     
     reschedule( name, dateTime ) {
@@ -99,8 +92,9 @@ class ScheduleHandler {
     
     cancelSchedule( name ) {
         
-        this.jobs.get(name).cancel();
-        this.jobs.delete(name);
+        let job = this.jobs.get(name);
+        if (!!job) job.cancel();
+        this.jobs.delete(name);        
         
     }
     

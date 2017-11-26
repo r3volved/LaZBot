@@ -179,7 +179,7 @@ class Command extends Module {
 
             return dbHandler.setRows().then( (result) => { 
             
-                this.clientConfig.mRegistry.scheduler.setSchedule( this, name, dateTime, cadence );
+                this.clientConfig.mRegistry.scheduler.setSchedule( this.message.channel.id, name, dateTime, cadence );
                 
                 this.message.channel.send(`Reminders for this channel have been updated`);
                 this.message.react(this.clientConfig.reaction.SUCCESS);
@@ -221,6 +221,7 @@ class Command extends Module {
             const dbHandler = new DatabaseHandler(this.clientConfig.database, this.moduleConfig.queries.deleteReminder, [ this.message.channel.id, content ]);
             return dbHandler.setRows().then( (result) => { 
             
+                this.clientConfig.mRegistry.scheduler.cancelSchedule(`${this.message.channel.id}-${content}`);
                 this.message.react(this.clientConfig.reaction.SUCCESS);
                 this.message.reply(`${content} has been removed from reminders`);
                 return;
@@ -342,7 +343,7 @@ class Command extends Module {
         const Discord = require('discord.js');
         const embed = new Discord.RichEmbed();
         
-        embed.setColor(0xAAFF00);
+        embed.setColor(0xFF9900);
         
         embed.setTitle(replyTitle);
         embed.setDescription(replyStr);
