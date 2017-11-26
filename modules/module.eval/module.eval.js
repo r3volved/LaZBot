@@ -10,12 +10,7 @@ class Command extends Module {
 	
 	process() {
 			    
-	    if( this.message.author.id !== this.clientConfig.master ) { 
-	    
-	        this.message.react(this.clientConfig.reaction.DENIED);
-	        return; 
-	    
-	    }
+        if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
 	    
 	    let prevaled = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command} `,'');
     	let evaled = "undefined";    	
@@ -31,7 +26,7 @@ class Command extends Module {
     		this.message.react(this.clientConfig.reaction.ERROR);
     	}
   
-    	if( typeof evaled === "object" && Object.keys(evaled).length > 0 ) {
+    	if( !!evaled && typeof evaled === "object" && Object.keys(evaled).length > 0 ) {
     	    
     	    this.replyValue( evaled );
     	    
@@ -51,6 +46,8 @@ class Command extends Module {
 	
 	replyEval( replyStr ) {
     		
+	    replyStr = !replyStr ? "undefined" : replyStr;
+	    
     	const Discord = require('discord.js');
     	const embed = new Discord.RichEmbed();
     	embed.addField("Evaluated", this.codeBlock( replyStr ));
@@ -62,6 +59,8 @@ class Command extends Module {
 	
     replyValue( replyStr ) {
 
+        replyStr = !replyStr ? { "result":"undefined" } : replyStr;
+        
         let cache = [];
         replyStr = JSON.stringify(replyStr, function(key, value) {
             // Filtering out properties
@@ -73,7 +72,7 @@ class Command extends Module {
         }, "  ");               
         cache = null;   
           
-        replyStr = typeof replyStr === "undefined" ? "undefined" : replyStr;
+        replyStr = !replyStr ? "undefined" : replyStr;
 
         let dm = false;
         let title = "Value of ";

@@ -8,7 +8,7 @@
     
     "type":"preMonitor",
     
-    "permission":"anyone",
+    "permission":"admin",
     
     "help":{
     

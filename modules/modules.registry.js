@@ -118,13 +118,14 @@ class ModuleRegistry {
             console.info(`Preprocessing with ${Object.keys(this.preMonitors).length} monitors:\t [ ${Object.keys(this.preMonitors).toString().replace(/[,]/gi,", ")} ]`);
             console.info(`Active listeners on ${Object.keys(this.commands).length} commands:\t [ ${this.clientConfig.prefix}${Object.keys(this.commands).toString().replace(/[,]/gi," | "+this.clientConfig.prefix)} ]`);
             console.info(`Postprocessing with ${Object.keys(this.postMonitors).length} monitors:\t [ ${Object.keys(this.postMonitors).toString().replace(/[,]/gi,", ")} ]`);
-            console.info(`==========================================================================`);
+            console.info(`==========================================================================`);            
+            console.info(`${this.scheduler.jobs.size} alerts scheduled\n`);
             
-            console.info(`${this.scheduler.jobs.size} alerts scheduled`);
-            console.info(`Currently a member of ${this.clientConfig.client.guilds.size} guilds\n`);
-            
+            console.info(`Currently a member of ${this.clientConfig.client.guilds.size} guilds`);
+            console.info(`Monitoring ${this.clientConfig.client.channels.size} channels\n`);
+
             console.info(`For more information about a specific command, try: ${this.clientConfig.prefix}<command> help`);
-            console.info(`Or, for higher level information, try: ${this.clientConfig.prefix}help `);
+            console.info(`Or, for higher level information, try: ${this.clientConfig.prefix}help\n`);
             
             return `All modules have been loaded`;
             
@@ -144,8 +145,8 @@ class ModuleRegistry {
         			
         			const monitorConfig = this.preMonitors[k];
                     const Monitor = require(`./module.${monitorConfig.id}/module.${monitorConfig.id}.js`);                    
-                    const thisMonitor = new Monitor(this.clientConfig, monitorConfig, message);
-                    if( !thisMonitor.analyze() ) { return; }
+                    const thisMonitor = new Monitor(this.clientConfig, monitorConfig, message).analyze();
+                    //if( !thisMonitor.analyze() ) { return; }
 
         		}
         	}
@@ -171,8 +172,8 @@ class ModuleRegistry {
         			
         			const monitorConfig = this.postMonitors[k];
                     const Monitor = require(`./module.${monitorConfig.id}/module.${monitorConfig.id}.js`);
-                    const thisMonitor = new Monitor(this.clientConfig, monitorConfig, message);
-                    if( !thisMonitor.analyze() ) { return; }
+                    const thisMonitor = new Monitor(this.clientConfig, monitorConfig, message).analyze();
+                    //if( !thisMonitor.analyze() ) { return; }
                     
         		}
         	}

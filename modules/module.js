@@ -1,13 +1,17 @@
+const PermissionHandler = require(`../utilities/permission-handler.js`);
+
 class Module {
     
     constructor(clientConfig, moduleConfig, message) {
     
         try {
                         
-            this.message = message;
+            this.clientConfig = clientConfig;
             this.moduleConfig = moduleConfig;
-            this.clientConfig = clientConfig;            
-            
+            this.message = message;
+                        
+            this.authorized = new PermissionHandler(this.clientConfig, this.moduleConfig, this.message).isAuthorized();
+
         } catch(e) {
         	
         	this.error("init",e);

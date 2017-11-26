@@ -84,6 +84,8 @@ class Command extends Module {
         
         try {
             
+            if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+            
             let splittingPattern = (" ");                    
             let test = content.split(splittingPattern)[0];
             let alertName = content.replace(test,'').trim();            
@@ -115,7 +117,9 @@ class Command extends Module {
     status( content ) {
         
         try {
-
+            
+            if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+            
             const DatabaseHandler = require('../../utilities/db-handler.js');
             let args = [];
             let dbHandler = null;
@@ -157,9 +161,7 @@ class Command extends Module {
         
         try{
             
-            const PermissionHandler = require('../../utilities/permission-handler.js');
-            const pHandler = new PermissionHandler(this.clientConfig, this.moduleConfig, this.message).authorIs("moderator");
-            if( !pHandler ) { return; }
+            if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
             
             let cadence = content.split(/\s/)[0];
 
@@ -204,14 +206,8 @@ class Command extends Module {
         
         try {
 
-            /**
-             * Check permissions first
-             */
-            const PermissionHandler = require('../../utilities/permission-handler.js');
-            const pHandler = new PermissionHandler(this.clientConfig, this.moduleConfig, this.message).authorIs("moderator");
-            if( !pHandler ) { return; }
+            if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
             
-
             let splittingPattern = " ";                    
             let subcommand = content.split(splittingPattern)[0];
             content = content.replace(subcommand,'').trim();            

@@ -12,17 +12,13 @@ class Command extends Module {
                 
         try {
             
+            if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+
             /** Sanitize message content */
             const content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command}`,'').trim();
             if( content === "help" || content.length === 0 )   { return this.help(); }
             if( content === "status" ) { return this.status(); }
     
-            /** Check permissions first */
-        	if( !this.message.member.roles.find("name", this.clientConfig.adminRole) && this.message.author.id !== this.clientConfig.master ) {			
-        		this.message.react(this.clientConfig.reaction.DENIED);
-        		return;
-    		}
-        	                        
             const messageParts = content.split(/\s+/g);
             if( messageParts.length !== 1 ) { return this.help(); }
 
@@ -61,10 +57,10 @@ class Command extends Module {
     analyze() {
 
     	try {
-            
+                	    
             //Ignore admin or master
-        	if( this.message.channel.type === "dm" || this.message.member.roles.find("name", this.clientConfig.adminRole) || this.message.author.id === this.clientConfig.master ) { return true; }
-                        
+            if( this.authorized ) { return true; }
+
             const DatabaseHandler = require('../../utilities/db-handler.js');
             const dbHandler = new DatabaseHandler(this.clientConfig.database, this.moduleConfig.queries.GET_SETTINGS, [this.message.channel.id]);
             dbHandler.getRows().then((result) => {

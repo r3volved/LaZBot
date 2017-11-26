@@ -81,7 +81,7 @@ class Command extends Module {
     	embed.setDescription(replyStr);
     	embed.setFooter(replyFooter);
     	
-    	this.message.channel.send({embed}); 
+    	this.message.channel.send({embed});
     	
 	}
     

@@ -12,14 +12,8 @@ class Command extends Module {
                 
         try {
             
-            /** Check permissions first */
-            if( this.message.author.id !== this.clientConfig.master ) { 
-                
-                this.message.react(this.clientConfig.reaction.DENIED);
-                return; 
-            
-            }
-            
+            if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+                        
             //Sanitize message content
             const content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command}`,'').trim();
             if( content === "help" || content.length === 0 ) { return this.help(); }

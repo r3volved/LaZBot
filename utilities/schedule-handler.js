@@ -1,3 +1,5 @@
+const schedule = require('node-schedule'); 
+
 class ScheduleHandler {
 
     constructor(clientConfig) {
@@ -11,6 +13,11 @@ class ScheduleHandler {
        
         return new Promise((resolve, reject) => {
         
+            //If the module is off, don't look for alerts
+            for(let m = 0; m < this.clientConfig.modules.length; ++m ) {
+                if( this.clientConfig.modules[m].id === "reminder" && !this.clientConfig.modules[m].active ) { resolve(this); }                
+            }
+            
             const sql = "SELECT * FROM reminder WHERE active = ?";
             const args = [true];
             
@@ -23,6 +30,7 @@ class ScheduleHandler {
                 
                 for( let i = 0; i < rows.length; ++i ) {
                     
+                    //If the alert is expired, remove from db
                     if( rows[i].dateTime < today && ( rows[i].cadence !== "weekly" && rows[i].cadence !== "daily" ) ) { 
                         let remSql = "DELETE FROM reminder WHERE channelID = ? and name = ?";                    
                         const remHandler = new DatabaseHandler(this.clientConfig.database, remSql, [ rows[i].channelID, rows[i].name ]);
@@ -31,7 +39,9 @@ class ScheduleHandler {
                         });
                         continue; 
                     }
-                    if( this.clientConfig.client.channels.get(rows[i].channelID) ) {
+
+                    //If client is a member of channel, schedule
+                    if( !!this.clientConfig.client.channels.get(rows[i].channelID).members.find("id", this.clientConfig.client.user.id) ) {
                         this.setSchedule( rows[i].channelID, rows[i].name, rows[i].dateTime, rows[i].cadence );            
                     }
                     
@@ -58,7 +68,6 @@ class ScheduleHandler {
 
     setSchedule( channelID, name, dateTime, cadence ) {
         
-        const schedule = require('node-schedule'); 
         let rule = new schedule.RecurrenceRule();
         
         rule.hour = dateTime.getHours();
@@ -75,19 +84,7 @@ class ScheduleHandler {
         }.bind(null, this, channelID, name)));
         
         return this;
-    }
     
-    reschedule( name, dateTime ) {
-        
-        //Reschedule 
-        var rule = new schedule.RecurrenceRule();
-        
-        rule.dayOfWeek = dateTime.getDay();
-        rule.hour = dateTime.getHours();
-        rule.minute = dateTime.getMinutes();
-
-        this.jobs.get(name).reschedule(rule);
-        
     }
     
     cancelSchedule( name ) {

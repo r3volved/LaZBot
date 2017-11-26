@@ -25,31 +25,6 @@ client.on('message', message => {
 });
 
 
-/**
- * MONITOR MEMBERS
- */
-
-//LISTEN FOR GUILD ACTIVITY
-client.on('guildMemberAdd', member => {
-	let guild = member.guild;
-	const embed = new Discord.RichEmbed()
-	.setColor(0x00AE86)
-	.setTimestamp()
-	.addField('User Update',`:eye: ${member.user} has joined!`);
-	guild.systemChannel.send({embed});
-});
-
-client.on('guildMemberRemove', member => {
-	let guild = member.guild;
-	const embed = new Discord.RichEmbed()
-	.setColor(0x00AE86)
-	.setTimestamp()
-	.addField('User Update',`:eye: ${member.user} has left...`);
-	guild.systemChannel.send({embed});
-});
-
-
-
 /** 
  * MONITOR CLIENT CONNECTION 
  */

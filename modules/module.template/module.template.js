@@ -19,16 +19,21 @@ class Command extends Module {
             /**
              * Check permissions first
              */
+            if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+            
                         
-            //Sanitize message content
+            /**
+             * Sanitize message content
+             */
             const content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command}`,'').trim();
             if( content === "help" || content.length === 0 ) { return this.help(); }
     
+            let replyStr = "Doing stuff";
             /**
              * DO COMMAND STUFF
              */
             
-            let replyStr = "Did stuff";
+            replyStr = "Did stuff";
 
             this.reply( replyStr );
             
@@ -49,7 +54,9 @@ class Command extends Module {
     		/**
              * DO MONITORING STUFF
              */
-    		
+    	    if( this.authorized ) { return true; }
+
+    	    
     	} catch(e) {
             this.error("analyse",e);
     	}

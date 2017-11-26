@@ -30,7 +30,6 @@ class Command extends Module {
             //Hide master-only modules from main help 
             let commands = Object.assign({}, this.clientConfig.mRegistry.commands);
     
-            console.log(Object.keys(commands), Object.keys(this.clientConfig.mRegistry.commands));
             for( let k in commands ) {
                 if( commands.hasOwnProperty(k) ) {
                     if( commands[k].permission === "master" ) {
