@@ -1,22 +1,20 @@
 class QueryHandler {
 
-    constructor(config, message) {
+    constructor(clientConfig, message) {
     	
-    	this.config = config;
+    	this.clientConfig = clientConfig;
         this.message = message;
 
     }
 
     
     query( cmd, args ) {
-    	
-    	let error = this.config.settings.error;
-    	
+    	    	
     	return new Promise((resolve, reject) => {
         	
 	    	if( this.message.channel.type === "dm" ) {	        	
 	    		
-	    		reject(error.NO_DM);
+	    		reject( "dm" );
 	    	
 	    	}
 	    	
@@ -45,33 +43,31 @@ class QueryHandler {
 
     prepareQuery( cmd, args ) {
     	
-    	let settings = this.config.settings;
-
     	return new Promise((resolve, reject) => {
     		
     		let message = this.message; 
     		
 	    	//LOOK FOR CHANNEL SETTINGS AND DO COMMAND
 	    	const mysql = require('mysql');
-	    	const con = mysql.createConnection( settings.database );
+	    	const con = mysql.createConnection( this.clientConfig.database );
 	    	
 	    	try {
 	    		con.connect(function(err) {
 	    			if (err) throw err;
 	    		  
-	    			const sql = "SELECT `spreadsheet` FROM `channel` WHERE `channelID`=?";
+	    			const sql = "SELECT spreadsheet FROM channel WHERE channelID = ?";
 	    			con.query(sql, [message.channel.id], function (err, result, fields) {
 		
 						//CANNOT FIND CHANNEL 
 						if (err) { 
-							reject(settings.error.NO_SPREADSHEET);
+							reject("No spreadsheet");
 						}
 		    		    
 		    			let spreadsheet = typeof(result[0]) !== "undefined" && typeof(result[0].spreadsheet) !== "undefined" ? result[0].spreadsheet : "";
 						
 		    			//IF CHANNEL FAILED FOR ANY REASON ESCAPE
 		    			if( typeof spreadsheet === "undefined" || spreadsheet === "" ) {
-		    				reject(settings.error.NO_SPREADSHEET);
+		    				reject("No spreadsheet");
 		    			}
 		    			
 		    	        const queryURL = `${spreadsheet}?${cmd}=${encodeURIComponent(JSON.stringify(args))}`;
@@ -90,11 +86,9 @@ class QueryHandler {
     
     sendQuery( cmd, queryURL ) {
   
-    	let settings = this.config.settings;
-
     	return new Promise((resolve, reject) => {
 	    	
-    		console.log( decodeURIComponent(queryURL) );
+    		//console.log( decodeURIComponent(queryURL) );
     		
 	        const request = require('request');
 	        request(queryURL, function (err, response, body) {

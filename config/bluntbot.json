@@ -28,7 +28,7 @@
 
     ],
     
-    "prefix":"!",
+    "prefix":"$",
     
     "modules":[
 
@@ -38,7 +38,8 @@
         { "command":"eval", "id":"eval",      "type":"command",     "active":false },
         { "command":"gt",   "id":"translate", "type":"command",     "active":true },
         { "command":"mm",   "id":"manager",   "type":"command",     "active":true },
-        { "command":"alert","id":"reminder",  "type":"command",     "active":true }
+        { "command":"alert","id":"reminder",  "type":"command",     "active":true },
+        { "command":"orders",   "id":"platoons",  "type":"command",     "active":true }
 
     ],
         
