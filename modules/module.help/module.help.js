@@ -23,6 +23,15 @@ class Command extends Module {
     }
     
     
+    analyze() {
+    	
+    	if( !!this.message.content.match(this.clientConfig.client.user.id) ) {
+    		return this.help();
+    	}
+    	
+    }
+    
+    
     help() {
 
         try {
