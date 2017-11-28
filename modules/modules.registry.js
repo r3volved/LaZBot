@@ -110,17 +110,14 @@ class ModuleRegistry {
             
             this.clientConfig.mRegistry = this;
             
+            console.info(`==========================================================================`);
             console.info(`All modules have been loaded`);
+            console.info(`Running ${Object.keys(this.modules).length} of ${this.clientConfig.modules.length} available modules:\n- ${Object.keys(this.commands).toString().replace(/[,]/gi," - ")} -`);
             console.info(`==========================================================================`);
-            console.info(`Connected as: ${this.clientConfig.client.user.username} => Using prefix: ${this.clientConfig.prefix}`);
-            console.info(`Running ${Object.keys(this.modules).length} of ${this.clientConfig.modules.length} available modules:\n  - ${Object.keys(this.commands).toString().replace(/[,]/gi," - ")} -`);
-            console.info(`==========================================================================`);
-            console.info(`Preprocessing with ${Object.keys(this.preMonitors).length} monitors:\t [ ${Object.keys(this.preMonitors).toString().replace(/[,]/gi,", ")} ]`);
-            console.info(`Active listeners on ${Object.keys(this.commands).length} commands:\t [ ${this.clientConfig.prefix}${Object.keys(this.commands).toString().replace(/[,]/gi," | "+this.clientConfig.prefix)} ]`);
-            console.info(`Postprocessing with ${Object.keys(this.postMonitors).length} monitors:\t [ ${Object.keys(this.postMonitors).toString().replace(/[,]/gi,", ")} ]`);
+            console.info(`Preprocessing with ${Object.keys(this.preMonitors).length} monitors:   [ ${Object.keys(this.preMonitors).toString().replace(/[,]/gi,", ")} ]`);
+            console.info(`Active listeners on ${Object.keys(this.commands).length} commands: [ ${this.clientConfig.prefix}${Object.keys(this.commands).toString().replace(/[,]/gi," | "+this.clientConfig.prefix)} ]`);
+            console.info(`Postprocessing with ${Object.keys(this.postMonitors).length} monitors:  [ ${Object.keys(this.postMonitors).toString().replace(/[,]/gi,", ")} ]`);
             console.info(`==========================================================================`);            
-            console.info(`${this.scheduler.jobs.size} alerts scheduled\n`);
-            
             console.info(`Currently a member of ${this.clientConfig.client.guilds.size} guilds`);
             console.info(`Monitoring ${this.clientConfig.client.channels.size} channels\n`);
 

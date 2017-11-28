@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `channel` (
   `webhook` varchar(256) NOT NULL DEFAULT '',
   `modrole` varchar(32) NOT NULL DEFAULT 'modrole',
   `qmonitor` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY(`channelID`, `serverID`)
+  PRIMARY KEY(`channelID` )
 );
 
 

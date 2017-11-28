@@ -32,7 +32,9 @@ client.on('message', message => {
 //ON READY
 client.on('ready', () => {
 	
+    console.info(`==========================================================================`);
     console.info(`Started successfully with configuration: ${process.argv[2]}`);
+    console.info(`Connected as: ${client.user.username} => Using prefix: ${config.prefix}`);
 
     const DatabaseHandler = require("./utilities/db-handler.js");
     botLog = new DatabaseHandler(config.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), `Connected as: ${client.user.username}`]);

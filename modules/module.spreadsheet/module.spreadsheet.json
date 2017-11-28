@@ -1,0 +1,28 @@
+{
+
+    "id":"spreadsheet",
+
+    "name":"Google Spreadsheeet Module",
+
+    "version":"0.1",
+    
+    "type":"command",
+    
+    "permission":"admin",
+    
+    "help":{
+    
+        "title":"Google Spreadsheeet Module",
+        "text":"Tie a google spreadsheet to this channel for modules to query.\n\n**Note**: *Spreadsheet requires apps script from: *",
+        "example":"*%PREFIX%%COMMAND% <spreadsheetURL>\n%PREFIX%%COMMAND% <spreadsheetURL> (to remove)*"
+        
+    },
+    
+    "queries":{
+        
+        "GET_SETTINGS":"SELECT `spreadsheet` FROM `channel` WHERE `channelID` = ?",
+        "SET_SETTINGS":"INSERT INTO `channel` (`channelID`, `spreadsheet`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `spreadsheet` = ?"
+        
+    }    
+    
+}

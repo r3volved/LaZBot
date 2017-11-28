@@ -18,12 +18,12 @@ class Command extends Module {
             
             if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
             
-            let content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command}`,'').trim();
+            let content = this.message.content.split(" ").splice(1);
             if( content === "help" ) { return this.help(); }
     
             content = content.length > 0 ? content : this.message.author.username; 
 
-            let get = {}
+            let get = {};
             get.orders = { "player-eq":content };
             get.on = "player-eq";
             
@@ -35,7 +35,10 @@ class Command extends Module {
                 this.reply( response );
                  
             }).catch(reason => {                
-                throw reason;             
+                
+                this.message.react(this.clientConfig.reaction.ERROR);
+                this.message.channel.send( reason );
+           
             });
             
         } catch(e) {
@@ -108,7 +111,7 @@ class Command extends Module {
         embed.setTitle(`No platoon orders`);
         embed.setDescription(response.data);                
         this.message.author.send({embed}); 
-        return this.message.react(this.clientConfig.reaction.DM);
+        this.message.react(this.clientConfig.reaction.DM);
         
     }
         

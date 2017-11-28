@@ -27,6 +27,7 @@ class ScheduleHandler {
             dbHandler.getRows().then( (rows) => {
                
                 const today = new Date();
+                let channels = [];
                 
                 for( let i = 0; i < rows.length; ++i ) {
                     
@@ -42,13 +43,17 @@ class ScheduleHandler {
 
                     //If client is a member of channel, schedule
                     if( !!this.clientConfig.client.channels.get(rows[i].channelID).members.find("id", this.clientConfig.client.user.id) ) {
-                        this.setSchedule( rows[i].channelID, rows[i].name, rows[i].dateTime, rows[i].cadence );            
+                        this.setSchedule( rows[i].channelID, rows[i].name, rows[i].dateTime, rows[i].cadence );
+                        if( !channels.includes(rows[i].channelID) ) { channels.push(rows[i].channelID); }
                     }
                     
-                    resolve(this);
-                    
                 }
+
+                console.info(`==========================================================================`);            
+                console.info(`${this.jobs.size} alerts scheduled across ${channels.length} channels`);
                 
+                resolve(this);
+
             }).catch( (reason) => {
                 
                 reject(reason);

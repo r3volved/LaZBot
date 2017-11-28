@@ -8,6 +8,8 @@
         
     "adminRole":"botadmins",
     
+    "modRole":"botmods",
+    
     "database":{
     	
         "host":"localhost",
