@@ -1,0 +1,21 @@
+{
+
+    "id":"google",
+
+    "name":"Google query",
+
+    "version":"0.1",
+    
+    "type":"command",
+    
+    "permission":"anyone",
+    
+    "help":{
+    
+        "title":"Quicksearch Google",
+        "text":"Quicksearch Google",
+        "example":"*%PREFIX%%COMMAND% <stuff to google>*"
+        
+    }    
+    
+}

@@ -1,0 +1,26 @@
+{
+
+    "id":"wiki",
+
+    "name":"Wiki tab on spreadsheet",
+
+    "version":"0.1",
+    
+    "type":"command",
+    
+    "permission":"anyone",
+    
+    "help":{
+    
+        "title":"LaZ Wiki",
+        "text":"Related Star Wars stuff around the current SWGOH characters",
+        "example":"*%PREFIX%%COMMAND% <characterName>*"
+        
+    },    
+    
+    "queries":{
+    
+        "getSpreadsheet":"SELECT spreadsheet FROM channel WHERE channelID = ?"
+        
+    }
+}

@@ -4,10 +4,12 @@
   "description": "Modularized discord bot",
   "main": "lazbot.js",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
     "discord.js": "^11.2.1",
     "google-translate-api": "^2.3.0",
     "mysql": "^2.15.0",
-    "node-schedule": "^1.2.5"
+    "node-schedule": "^1.2.5",
+    "querystring": "^0.2.0"
   },
   "devDependencies": {},
   "scripts": {
