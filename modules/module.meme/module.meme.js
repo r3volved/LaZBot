@@ -65,7 +65,9 @@ class Command extends Module {
 
                 //Slap zarriss
                 if(this.message.content.match(/((z|b)(arris|ariss)|(\soffee))/gmi)) {
-                	this.message.channel.sendFile("https://media.discordapp.net/attachments/381890989838827521/401137312999669760/image.png");	    	
+                	this.message.channel.send("Special message from CFH", {
+                	    file: "https://media.discordapp.net/attachments/381890989838827521/401137312999669760/image.png"
+                	});
                 }
                 
             }).catch((reason) => {
