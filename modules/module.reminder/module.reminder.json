@@ -14,7 +14,7 @@
     
         "title":"Reminder module help",
         "text":"Set repeatable automated reminder alerts tied to your channel.\nRemove an alert with: `%PREFIX%%COMMAND% remove <alertName>`\nTest an alert with: `%PREFIX%%COMMAND% test <alertName>`\n\nTo get a personal notifiaction on an alert, you can register for a mention with:\n`%PREFIX%%COMMAND% me [on|off] <alertName|all>`\n\n**Note:** *When adding an alert, use backticks around your values like shown in the example below.*",
-        "example":"```\n%PREFIX%%COMMAND% add `My alert` `2017-11-24T06:00:00` `weekly` `This is *my* reminder! **Don't forget**`\n```"
+        "example":"```\n%PREFIX%%COMMAND% add `My alert` `2017-11-24T06:00:00` `This is *my* reminder! **Don't forget**`\n\n%PREFIX%%COMMAND% `weekly` `My alert` `2018-01-26T18:45:00` `This is *my* weekly reminder! **Don't forget**`\n```"
         
     }, 
     

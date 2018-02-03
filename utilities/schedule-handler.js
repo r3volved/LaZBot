@@ -35,16 +35,19 @@ class ScheduleHandler {
                     if( rows[i].dateTime < today && ( rows[i].cadence !== "weekly" && rows[i].cadence !== "daily" ) ) { 
                         let remSql = "DELETE FROM reminder WHERE channelID = ? and name = ?";                    
                         const remHandler = new DatabaseHandler(this.clientConfig.database, remSql, [ rows[i].channelID, rows[i].name ]);
-                        remHandler.setRows().catch( (reason) => {
-                            throw reason;
+                        remHandler.setRows().then((response) => {
+                        	
+                            //If client is a member of channel, schedule
+                            if( !!this.clientConfig.client.channels.get(rows[i].channelID).members.find("id", this.clientConfig.client.user.id) ) {
+                                this.setSchedule( rows[i].channelID, rows[i].name, rows[i].dateTime, rows[i].cadence );
+                                if( !channels.includes(rows[i].channelID) ) { channels.push(rows[i].channelID); }
+                            }
+                        	
+                        	
+                        }).catch( (reason) => {
+                            reject(reason);
                         });
                         continue; 
-                    }
-
-                    //If client is a member of channel, schedule
-                    if( !!this.clientConfig.client.channels.get(rows[i].channelID).members.find("id", this.clientConfig.client.user.id) ) {
-                        this.setSchedule( rows[i].channelID, rows[i].name, rows[i].dateTime, rows[i].cadence );
-                        if( !channels.includes(rows[i].channelID) ) { channels.push(rows[i].channelID); }
                     }
                     
                 }
