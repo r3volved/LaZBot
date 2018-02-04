@@ -1,0 +1,28 @@
+{
+
+    "id":"swgohRegistration",
+
+    "name":"SWGOH Registration",
+
+    "version":"0.1",
+    
+    "type":"command",
+    
+    "permission":"anyone",
+    
+    "help":{
+    
+        "title":"SWGOH Registration",
+        "text":"Register your Discord profile agaist your SWGOH profile for game-related commands",
+        "example":"*%PREFIX%%COMMAND% add me <allyCode>*\n*%PREFIX%%COMMAND% add <mention|discordId> <allyCode>*\n\nIn the case that someone else registers on your allycode, the real accound owner can remove the existing registration with their playerId\n(**Use direct message to bot in order to keep your playerId private**)\n*%PREFIX%%COMMAND% remove <allyCode> <playerId>*"
+        
+    },
+    
+    "queries":{
+    	
+    	"GET_REGISTER":"SELECT * FROM `swgoh` WHERE `discordID` = ?",
+    	"SET_REGISTER":"INSERT INTO `swgoh` (`discordId`, `playerId`, `playerName`, `allyCode`, `playerGuild`) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE `updated` = CURRENT_TIMESTAMP",
+    	"DEL_REGISTER":"DELETE FROM `swgoh` WHERE `playerId` = ? AND `allyCode` = ?"
+    }
+    
+}

@@ -48,7 +48,10 @@
         "ERROR":"❌",
         "WARNING":"⚠",
         "DENIED":"🚫",
-        "DM":"📫"
+        "DM":"📫",
+        "THINKING":"🤔",
+        "WORK":"⏳",
+        "WORKING":"⌛"
             
     }
     
