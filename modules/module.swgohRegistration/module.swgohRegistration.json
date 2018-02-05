@@ -14,7 +14,7 @@
     
         "title":"SWGOH Registration",
         "text":"Register your Discord profile agaist your SWGOH profile for game-related commands",
-        "example":"*%PREFIX%%COMMAND% add me <allyCode>*\n*%PREFIX%%COMMAND% add <mention|discordId> <allyCode>*\n\nIn the case that someone else registers on your allycode, the real accound owner can remove the existing registration with their playerId\n(**Use direct message to bot in order to keep your playerId private**)\n*%PREFIX%%COMMAND% remove <allyCode> <playerId>*"
+        "example":"*%PREFIX%%COMMAND% add me <allyCode>*\n*%PREFIX%%COMMAND% add <mention|discordId> <allyCode>*\n\n*%PREFIX%%COMMAND% sync me*\n*%PREFIX%%COMMAND% sync <mention|discordId>\n\nIn the case that someone else registers on your allycode, the real accound owner can remove the existing registration with their playerId\n(**Use direct message to bot in order to keep your playerId private**)\n*%PREFIX%%COMMAND% remove <allyCode> <playerId>*"
         
     },
     

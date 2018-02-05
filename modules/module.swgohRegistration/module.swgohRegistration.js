@@ -23,9 +23,13 @@ class Command extends Module {
             
             const messageParts = content.split(/\s+/g);
             
-            if( messageParts[0] === 'add' || messageParts[0] === 'sync' ) {
+            if( messageParts[0] === 'add' ) {
             	
             	return this.add( messageParts );
+            	
+            } else if( messageParts[0] === 'sync' ) { 
+            	
+            	return this.sync( messageParts );
             	
             } else if( messageParts[0] === 'remove' ) {
             	
@@ -49,11 +53,63 @@ class Command extends Module {
         
     }
     
+
+    sync( messageParts ) {
+    	
+    	let discordId, playerId, playerName, allyCode, playerGuild = null;
+        let replyStr = 'Not Found!';
+
+        discordId = messageParts[1] === 'me' ? this.message.author.id : messageParts[1].replace(/[<|@|!]*(\d{18})[>]*/g,'$1');
+        
+    	//find discordID in lazbot db
+        const DatabaseHandler = require('../../utilities/db-handler.js');
+        const data = new DatabaseHandler(this.clientConfig.database, this.moduleConfig.queries.GET_REGISTER, [discordId]);
+        
+        data.getRows().then((result) => {
+            if( result.length === 0 ) { 
+            	this.message.react(this.clientConfig.reaction.ERROR);
+            	replyStr = "The requested discord user is not registered.\nSee help for registration use.";
+            	return this.reply( replyStr, "Not found" );
+            
+        	} else {
+        		
+            	let allyCode = result[0].allyCode.toString();
+            	
+            	//fetch player by allycode -s
+            	this.fetchPlayer( allyCode ).then((result) => {
+            		
+            		this.message.react(this.clientConfig.reaction.WORKING);
+                	
+            		playerId 	= result[0].playerId;
+                	playerName 	= result[0].name;
+                	playerGuild = result[0].guildName;
+                	
+                	//insert into lazbot db
+                	const DatabaseHandler = require('../../utilities/db-handler.js');
+                    const data = new DatabaseHandler(this.clientConfig.database, this.moduleConfig.queries.SET_REGISTER, [discordId, playerId, playerName, allyCode, playerGuild]);
+                    data.setRows().then((result) => {
+                        return this.message.react(this.clientConfig.reaction.SUCCESS);
+                    }).catch((reason) => {    
+                        this.message.react(this.clientConfig.reaction.ERROR);
+                        return this.reply( reason );
+                    });
+
+            	}).catch((err) => {
+            		return this.reply( err );
+            	});
+            	
+            }
+        }).catch((reason) => {                	
+            this.message.react(this.clientConfig.reaction.ERROR);                    
+            return this.reply( reason );
+        });
+        
+    }
+
+    
     add( messageParts ) {
     	
-    	this.message.react(this.clientConfig.reaction.THINKING);
-    	
-        let discordId, playerId, playerName, allyCode, playerGuild = null;
+    	let discordId, playerId, playerName, allyCode, playerGuild = null;
         let replyStr = 'Not Found!';
 
         if( messageParts[1] === 'me' ) { discordId = this.message.author.id; } 
@@ -132,10 +188,10 @@ class Command extends Module {
             
         	} else {
             	this.message.react(this.clientConfig.reaction.SUCCESS);
-                replyStr = `Player: ${result[0].playerName}\nGuild: ${result[0].playerGuild}\nAllyCode: ${result[0].allyCode}\nLast updated: ${result[0].updated}`;
+                replyStr = `Player: ${result[0].playerName}\nGuild: ${result[0].playerGuild}\nAllyCode: ${result[0].allyCode}`;
    	            let replyTitle = 'Results for ';
    	            replyTitle += messageParts[0] === 'me' ? this.message.author.username : discordId;
-                return this.reply( replyStr, replyTitle );
+                return this.reply( replyStr, replyTitle, `Last updated: ${result[0].updated}` );
    	            
             }
         }).catch((reason) => {                	
@@ -155,6 +211,9 @@ class Command extends Module {
     	    let fpp = new FetchPP(); 
     	    
     	    try {
+    	    	
+    	    	this.message.react(this.clientConfig.reaction.WORK);
+            	
     	    	fpp.run( [allyCode], '-sq' ).then((result) => {
         	    	
     	    		resolve(result);
@@ -186,7 +245,7 @@ class Command extends Module {
     	
     }
     
-    reply( replyStr, replyTitle ) {
+    reply( replyStr, replyTitle, replyFooter ) {
             
         const Discord = require('discord.js');
         const embed = new Discord.RichEmbed();
@@ -197,7 +256,10 @@ class Command extends Module {
             embed.setTitle(replyTitle);        	
         }
         embed.setDescription(replyStr);
-	                
+        if( replyFooter ) {
+            embed.setFooter(replyFooter);        	
+        }
+	    
         this.message.channel.send({embed}); 
         return true;
         

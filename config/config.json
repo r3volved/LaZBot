@@ -19,6 +19,15 @@
         	
     },
     
+    "datadb":{
+    	
+        "host":"localhost",
+        "user":"lazbot",
+        "password":"lazbot314",
+        "database":"lazbot"
+    	
+    },
+    
     "permissions":[
     
     	"master",
