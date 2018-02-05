@@ -1,0 +1,28 @@
+{
+
+    "id":"swgohZetas",
+
+    "name":"SWGOH Zetas",
+
+    "version":"0.1",
+    
+    "type":"command",
+    
+    "permission":"anyone",
+    
+    "help":{
+    
+        "title":"SWGOH Zetas",
+        "text":"Show a player's zeta'd characters and abilities",
+        "example":"*%PREFIX%%COMMAND% me*\n*%PREFIX%%COMMAND% <mention|discordId>*"
+        
+    },
+    
+    "queries":{
+    	
+    	"GET_REGISTRATION":"SELECT `allyCode`, `playerName`, `updated` FROM `swgoh` WHERE `discordID` = ?",
+    	"GET_ZETAS":"SELECT PlayerProfile.name, udn.text as 'unitName', abn.text as 'abilityName', abd.text as 'abilityDesc', Unit.currentRarity as 'unitRarity', Unit.currentLevel as 'unitLevel', Unit.currentXp as 'unitXp', Unit.currentTier as 'unitGear' FROM Skill JOIN SkillDefinition ON SkillDefinition.id = Skill.id JOIN SkillTierDefinition ON SkillTierDefinition.skillDefinitionId = Skill.id JOIN Unit ON Unit.id = Skill.unitId JOIN UnitDef ON UnitDef.id = Unit.definitionId JOIN PlayerProfile ON PlayerProfile.playerId = Unit.playerProfilePlayerId  JOIN AbilityReference ON AbilityReference.abilityId = SkillDefinition.abilityReference JOIN Ability ON Ability.id = AbilityReference.abilityId JOIN Localization sdn ON sdn.id = SkillDefinition.nameKey AND sdn.language = 'ENG_US' JOIN Localization abn ON abn.id = Ability.nameKey AND abn.language = 'ENG_US' JOIN Localization abd ON abd.id = Ability.descKey AND abd.language = 'ENG_US' JOIN Localization udn ON udn.id = UnitDef.nameKey AND udn.language = 'ENG_US' JOIN Localization udd ON udd.id = UnitDef.descKey AND udd.language = 'ENG_US' WHERE SkillTierDefinition.powerOverrideTag = 'zeta' AND PlayerProfile.allyCode = ? AND (Skill.tier+2) = 8 GROUP BY abn.text ORDER BY udn.text ASC, abn.text ASC"
+
+    }
+        
+}

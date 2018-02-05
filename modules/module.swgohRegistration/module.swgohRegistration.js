@@ -16,8 +16,6 @@ class Command extends Module {
                 
         try {
             
-            if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
-            
             const content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command}`,'').trim();
             if( content === "help" || content.length === 0 ) { return this.help(); }
             
@@ -124,8 +122,6 @@ class Command extends Module {
     	//fetch player by allycode -s
     	this.fetchPlayer( allyCode ).then((result) => {
     		
-    		this.message.react(this.clientConfig.reaction.WORKING);
-        	
     		playerId 	= result[0].playerId;
         	playerName 	= result[0].name;
         	playerGuild = result[0].guildName;
@@ -134,7 +130,8 @@ class Command extends Module {
         	const DatabaseHandler = require('../../utilities/db-handler.js');
             const data = new DatabaseHandler(this.clientConfig.database, this.moduleConfig.queries.SET_REGISTER, [discordId, playerId, playerName, allyCode, playerGuild]);
             data.setRows().then((result) => {
-                return this.message.react(this.clientConfig.reaction.SUCCESS);
+	            this.message.react(this.clientConfig.reaction.SUCCESS);
+	            return true;
             }).catch((reason) => {    
                 this.message.react(this.clientConfig.reaction.ERROR);
                 return this.reply( reason );
@@ -161,7 +158,8 @@ class Command extends Module {
     	const DatabaseHandler = require('../../utilities/db-handler.js');
         const data = new DatabaseHandler(this.clientConfig.database, this.moduleConfig.queries.DEL_REGISTER, [playerId, allyCode]);
         data.setRows().then((result) => {
-        	return this.message.react(this.clientConfig.reaction.SUCCESS);
+        	this.message.react(this.clientConfig.reaction.SUCCESS);
+        	return true;
         }).catch((reason) => {                	
             this.message.react(this.clientConfig.reaction.ERROR);
             return this.reply( reason );
@@ -204,27 +202,39 @@ class Command extends Module {
     
     fetchPlayer( allyCode ) {
     	
-    	return new Promise( (resolve, reject) => {
+    	this.message.react(this.clientConfig.reaction.WORK);
+            
+    	return new Promise( async (resolve, reject) => {
     		
-    		allyCode = allyCode.replace(/\-/g,'');
-    	    let FetchPP = require('./compiled/fetchPlayerProfile.js');
-    	    let fpp = new FetchPP(); 
+    		let settings = {};
+                settings.path       = process.cwd()+'/compiled';
+                settings.hush       = true;
+                settings.sql        = true;
+                settings.force      = false;
+                
+    		const RpcService = require(process.cwd()+'/compiled/services/service.rpc.js');
+            let rpc = await new RpcService(settings);
+                
+		    allyCode = allyCode.replace(/\-/g,'');
     	    
-    	    try {
-    	    	
-    	    	this.message.react(this.clientConfig.reaction.WORK);
-            	
-    	    	fpp.run( [allyCode], '-sq' ).then((result) => {
-        	    	
-    	    		resolve(result);
-    	    		
-    	    	}).catch((err) => {
-    	    		reject(err);
-    	    	});
-    	    } catch(e) {
-    	    	reject(e);
-    	    }
-    		
+	        /** Start the RPC Service - with no logging**/
+	        await rpc.start(`Fetching ${allyCode}...\n`, false);
+	        
+	        let profile = null;
+            try {
+                profile = await rpc.Player( 'GetPlayerProfile', { "identifier":allyCode } );
+                this.message.react(this.clientConfig.reaction.WORKING);
+                
+                /** End the RPC Service **/
+	            await rpc.end("All data fetched");
+	            resolve([profile]);
+	            
+            } catch(e) {
+                await rpc.end(e.message);
+                this.message.react(this.clientConfig.reaction.ERROR);
+                reject(e);
+            } 
+            
     	});
     	
     }
@@ -260,8 +270,13 @@ class Command extends Module {
             embed.setFooter(replyFooter);        	
         }
 	    
-        this.message.channel.send({embed}); 
-        return true;
+        try {
+            this.message.channel.send({embed});
+            return true;
+        } catch(e) {
+            console.error(e);
+            return false;
+        } 
         
     }
         

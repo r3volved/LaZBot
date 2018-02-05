@@ -10,12 +10,14 @@ GRANT ALL ON `lazbot`.* TO 'lazbot'@'localhost';
 USE `lazbot`;
 
 
+DROP TABLE IF EXISTS `botlog`;
 CREATE TABLE IF NOT EXISTS `botlog` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `message` text
 );
 
 
+DROP TABLE IF EXISTS `channel`;
 CREATE TABLE IF NOT EXISTS `channel` (
   `channelID` varchar(50) NOT NULL,
   `serverID` varchar(50) NOT NULL,
@@ -30,6 +32,7 @@ CREATE TABLE IF NOT EXISTS `channel` (
 );
 
 
+DROP TABLE IF EXISTS `reminder`;
 CREATE TABLE IF NOT EXISTS `reminder` (
   `channelID` varchar(50) NOT NULL,
   `name` varchar(50) NOT NULL,
@@ -42,6 +45,7 @@ CREATE TABLE IF NOT EXISTS `reminder` (
 );
 
 
+DROP TABLE IF EXISTS `server`;
 CREATE TABLE `server` (
   `serverID` varchar(50) NOT NULL PRIMARY KEY,
   `region` varchar(50) NOT NULL,
@@ -52,3 +56,14 @@ CREATE TABLE `server` (
   `botRoles` text NOT NULL
 );
 
+
+DROP TABLE IF EXISTS `swgoh`;
+CREATE TABLE IF NOT EXISTS `swgoh` (
+  `discordId` varchar(64) NOT NULL,
+  `playerId` varchar(64) NOT NULL,
+  `playerName` varchar(128) NOT NULL,
+  `allyCode` int(9) NOT NULL,
+  `playerGuild` varchar(128) DEFAULT NULL,
+  `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY( `discordId`, `playerId`, `allyCode`)
+);
