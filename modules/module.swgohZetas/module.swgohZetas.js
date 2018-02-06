@@ -19,9 +19,9 @@ class Command extends Module {
             
             const content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command}`,'').trim();
             if( content === 'help' ) { return this.help(); }
-            if( content === 'me' || content.length === 0 || content.match(/[<|@|!]*(\d{18})[>]*/g) ) {
+            if( content === 'me' || content.length === 0 || content.match(/[<|@|\!]*(\d{18})[>]*/g) ) {
 
-            	let discordId = content === 'me' || content.length === 0 ? this.message.author.id : content.replace(/[<|@|!]*(\d{18})[>]*/g,'$1');
+            	let discordId = content === 'me' || content.length === 0 ? this.message.author.id : content.replace(/[<|@|\!]*(\d{18})[>]*/g,'$1');
 
                 this.findAllyCode( discordId ).then((result) => {
                 	
@@ -34,25 +34,23 @@ class Command extends Module {
                 		let toons = {};
                         let toon  = null;
 
-                		for( let row of zresult ) {
+                        for( let row of zresult ) {
                 			
                 			let toon   = await JSON.parse(row.unitName);
                             let aName  = await JSON.parse(row.abilityName);
                             
-                			if( !toons[toon] ) { toons[toon] = { "details":{}, "zetas":[] }; }
+                			if( !toons[toon] ) { toons[toon] = []; }
                 			
-//                			toons[toon].details.name     = toons[toon].details.name      || toon;
-//                			toons[toon].details.rarity   = toons[toon].details.rarity    || this.rarity[row.unitRarity];
-//                			toons[toon].details.level    = toons[toon].details.level     || row.unitLevel;
-//                			toons[toon].details.xp       = toons[toon].details.xp        || row.unitXp;
-//                			toons[toon].details.gear     = toons[toon].details.gear      || this.gear[row.unitGear];
-                			
-                			toons[toon].zetas.push(aName);
+                			toons[toon].push(aName);
                 			
                 	    }
-                		
-                		await this.message.react(this.clientConfig.reaction.SUCCESS);
-                		this.reply( toons, playerName, updated );
+
+                        let order = Object.keys(toons).sort((a,b) => {
+                        	return toons[b].length-toons[a].length; 
+                        });
+                        
+                        await this.message.react(this.clientConfig.reaction.SUCCESS);
+                		this.reply( toons, order, playerName, updated );
                 		
                 	}).catch((err) => {
                         return console.log(err);
@@ -143,24 +141,25 @@ class Command extends Module {
     	
     }
     
-    reply( toons, playerName, updated ) {
+    reply( toons, order, playerName, updated ) {
           
         const Discord = require('discord.js');
         const embed = new Discord.RichEmbed();
         
         embed.setColor(0x6F9AD3);
         embed.setTitle(`Zeta\'d characters and abilities for ${playerName}`);         
-        embed.setDescription(`Requested by ${this.message.author.username}`);
-        embed.setFooter(`Last updated: ${updated}`);           
+        embed.setDescription(`Requested by ${this.message.author.username}\n------------------------------`);
+        embed.setFooter(`\n${playerName} last updated: \n${updated}`);           
         
-        for( let k in toons ) {
+        for( let k of order ) {
             
-            let fieldStr = '';
-            for( let i = 0; i < toons[k].zetas.length; ++i ) {
-                fieldStr += `- ${toons[k].zetas[i]}\n`;
+        	let fieldStr = '';
+            for( let i = 0; i < toons[k].length; ++i ) {
+                fieldStr += '` - '+toons[k][i]+'`\n';
             }
-           
-            embed.addField(k+' ('+toons[k].zetas.length+')', fieldStr);
+            fieldStr += '`------------------------------`\n';
+            
+            embed.addField('('+toons[k].length+') '+k, fieldStr, true);
         
         } 
                 

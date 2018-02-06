@@ -47,7 +47,10 @@
         { "command":"eval", 	"id":"eval", 		"type":"command", 		"active":true },
         { "command":"gt", 		"id":"translate", 	"type":"command", 		"active":true },
         { "command":"alert",	"id":"reminder", 	"type":"command", 		"active":true },
-        { "command":"orders", 	"id":"platoons", 	"type":"command", 		"active":true }
+        { "command":"orders", 	"id":"platoons", 	"type":"command", 		"active":true },
+        { "command":"swgoh",	"id":"swgohRegistration", "type":"command", "active":true },
+        { "command":"mods",		"id":"swgohMods", 	"type":"command", 		"active":true },	
+        { "command":"zeta",		"id":"swgohZetas", 	"type":"command", 		"active":true }	
     
     ],
     
