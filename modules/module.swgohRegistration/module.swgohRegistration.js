@@ -121,7 +121,8 @@ class Command extends Module {
 
     	//fetch player by allycode -s
     	this.fetchPlayer( allyCode ).then((result) => {
-    		
+            this.message.react(this.clientConfig.reaction.WORKING);
+
     		playerId 	= result[0].playerId;
         	playerName 	= result[0].name;
         	playerGuild = result[0].guildName;
@@ -202,38 +203,58 @@ class Command extends Module {
     
     fetchPlayer( allyCode ) {
     	
-    	this.message.react(this.clientConfig.reaction.WORK);
-            
     	return new Promise( async (resolve, reject) => {
     		
     		let settings = {};
                 settings.path       = process.cwd()+'/compiled';
                 settings.hush       = true;
-                settings.sql        = true;
+                settings.verbose    = false;
                 settings.force      = false;
-                
-    		const RpcService = require(process.cwd()+'/compiled/services/service.rpc.js');
-            let rpc = await new RpcService(settings);
                 
 		    allyCode = allyCode.replace(/\-/g,'');
     	    
-	        /** Start the RPC Service - with no logging**/
-	        await rpc.start(`Fetching ${allyCode}...\n`, false);
-	        
 	        let profile = null;
             try {
-                profile = await rpc.Player( 'GetPlayerProfile', { "identifier":allyCode } );
-                this.message.react(this.clientConfig.reaction.WORKING);
+                this.message.react(this.clientConfig.reaction.THINKING);
+        		const RpcService = require(settings.path+'/services/service.rpc.js');
+                let rpc = await new RpcService(settings);
+
+                /** Start the RPC Service - with no logging**/
+    	        await rpc.start(`Fetching ${allyCode}...\n`, false);
+    	        
+    	        profile = await rpc.Player( 'GetPlayerProfile', { "identifier":allyCode } );
                 
                 /** End the RPC Service **/
 	            await rpc.end("All data fetched");
-	            resolve([profile]);
-	            
+
             } catch(e) {
                 await rpc.end(e.message);
                 this.message.react(this.clientConfig.reaction.ERROR);
                 reject(e);
-            } 
+            }
+            
+            try {
+                this.message.react(this.clientConfig.reaction.WORK);
+	    		const SqlService = require(settings.path+'/services/service.sql.js');
+	            let sql = await new SqlService(settings);
+
+		        /** Start the SQL Service - with no logging**/
+		        await sql.start(`Saving ${allyCode}...\n`, false);
+		        
+		        await sql.query( 'SET FOREIGN_KEY_CHECKS = 0;' );
+		        await sql.query( 'insert', 'PlayerProfile', [profile] );
+	            await sql.query( 'SET FOREIGN_KEY_CHECKS = 1;' );
+		        
+                /** End the RPC Service **/
+	            await sql.end("Saved");
+
+	            resolve([profile]);
+	            
+            } catch(e) {
+                await sql.end(e.message);
+                this.message.react(this.clientConfig.reaction.ERROR);
+                reject(e);
+            }
             
     	});
     	

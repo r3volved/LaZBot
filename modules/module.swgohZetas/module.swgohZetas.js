@@ -38,17 +38,16 @@ class Command extends Module {
                 			
                 			let toon   = await JSON.parse(row.unitName);
                             let aName  = await JSON.parse(row.abilityName);
-                            let aDesc  = await JSON.parse(row.abilityDesc);
                             
                 			if( !toons[toon] ) { toons[toon] = { "details":{}, "zetas":[] }; }
                 			
-                			toons[toon].details.name     = toons[toon].details.name      || toon;
-                			toons[toon].details.rarity   = toons[toon].details.rarity    || this.rarity[row.unitRarity];
-                			toons[toon].details.level    = toons[toon].details.level     || row.unitLevel;
-                			toons[toon].details.xp       = toons[toon].details.xp        || row.unitXp;
-                			toons[toon].details.gear     = toons[toon].details.gear      || this.gear[row.unitGear];
+//                			toons[toon].details.name     = toons[toon].details.name      || toon;
+//                			toons[toon].details.rarity   = toons[toon].details.rarity    || this.rarity[row.unitRarity];
+//                			toons[toon].details.level    = toons[toon].details.level     || row.unitLevel;
+//                			toons[toon].details.xp       = toons[toon].details.xp        || row.unitXp;
+//                			toons[toon].details.gear     = toons[toon].details.gear      || this.gear[row.unitGear];
                 			
-                			toons[toon].zetas.push([ aName, aDesc ]);
+                			toons[toon].zetas.push(aName);
                 			
                 	    }
                 		
@@ -158,7 +157,7 @@ class Command extends Module {
             
             let fieldStr = '';
             for( let i = 0; i < toons[k].zetas.length; ++i ) {
-                fieldStr += `- ${toons[k].zetas[i][0]}\n`;
+                fieldStr += `- ${toons[k].zetas[i]}\n`;
             }
            
             embed.addField(k+' ('+toons[k].zetas.length+')', fieldStr);

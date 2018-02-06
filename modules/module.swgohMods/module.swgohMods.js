@@ -58,7 +58,7 @@ class Command extends Module {
                 				mod = {};
                 				mod.mod_uid = result[i].mod_uid;
                 				mod.slot    = result[i].slot;
-                				mod.set    	= result[i].set;
+                				mod.set    	= result[i].set.replace(/\s/,'');
                 				mod.level   = parseInt(result[i].level);
                 				mod.pips    = parseInt(result[i].pips);
                 				mod.primaryBonusType  = result[i].type;
