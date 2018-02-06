@@ -1,0 +1,28 @@
+{
+
+    "id":"swgohArena",
+
+    "name":"SWGOH Arena",
+
+    "version":"0.1",
+    
+    "type":"command",
+    
+    "permission":"anyone",
+    
+    "help":{
+    
+        "title":"SWGOH Arena details by player",
+        "text":"Check a player's current arena rank and squads",
+        "example":"*%PREFIX%%COMMAND% me*\n*%PREFIX%%COMMAND% <mention|discordId>*"
+        
+    },
+    
+    "queries":{
+    	
+    	"GET_REGISTRATION":"SELECT `allyCode`, `playerName`, `updated` FROM `swgoh` WHERE `discordID` = ?",
+    	"GET_UNITNAMES":"SELECT REPLACE(udn.text,'\"','') as 'name' FROM UnitDef JOIN Localization udn ON udn.id = UnitDef.nameKey AND udn.language = 'ENG_US' WHERE UnitDef.id IN ( ? )"
+    
+    }
+
+}

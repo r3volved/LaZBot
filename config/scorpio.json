@@ -1,0 +1,71 @@
+{
+	
+	"token":"NDEwNDUxNzkzNzUxODM0NjI1.DVtWlA.cy-adeJIVVrJHqtN7nygnpgS4q0",
+	
+	"master":"305465187799007232",
+		
+    "version":"LaZBot v2.0",
+        
+    "adminRole":"botadmins",
+    
+    "database":{
+    	
+        "host":"localhost",
+        "user":"lazbot",
+        "password":"lazbot314",
+        "database":"lazbot"
+        	
+    },
+    
+    "datadb":{
+    	
+        "host":"localhost",
+        "user":"livedata",
+        "password":"datalive",
+        "database":"livedata"
+    	
+    },
+    
+    "permissions":[
+    
+    	"master",
+        "admin",
+        "mod",
+        "anyone"
+    
+    ],
+    
+    "prefix":"$",
+
+    "modules":[
+
+        { "command":"dmm", 		"id":"dmmonitor", 	"type":"preMonitor", 	"active":true },
+        { "command":"qm", 		"id":"qmonitor", 	"type":"preMonitor", 	"active":true },
+        { "command":"help", 	"id":"help", 		"type":"command", 		"active":true },
+        { "command":"eval", 	"id":"eval", 		"type":"command", 		"active":true },
+        { "command":"gt", 		"id":"translate", 	"type":"command", 		"active":true },
+        { "command":"alert",	"id":"reminder", 	"type":"command", 		"active":true },
+        { "command":"orders", 	"id":"platoons", 	"type":"command", 		"active":true },
+        { "command":"platoons", "id":"platoons", 	"type":"command", 		"active":true },
+        { "command":"swgoh",	"id":"swgohRegistration", "type":"command", "active":true },
+        { "command":"mods",		"id":"swgohMods", 	"type":"command", 		"active":true },
+        { "command":"zeta",		"id":"swgohZetas", 	"type":"command", 		"active":true },
+        { "command":"heist",	"id":"swgohHeist", 	"type":"command", 		"active":true },
+        { "command":"arena",	"id":"swgohArena", 	"type":"command", 		"active":true }
+            
+    ],
+    
+    "reaction":{
+        
+        "SUCCESS":"✅",
+        "ERROR":"❌",
+        "WARNING":"⚠",
+        "DENIED":"🚫",
+        "DM":"📫",
+        "THINKING":"🤔",
+        "WORK":"⏳",
+        "WORKING":"⌛"
+            
+    }
+    
+}

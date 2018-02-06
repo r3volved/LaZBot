@@ -149,7 +149,11 @@ class Command extends Module {
         embed.setColor(0x6F9AD3);
         embed.setTitle(`Zeta\'d characters and abilities for ${playerName}`);         
         embed.setDescription(`Requested by ${this.message.author.username}\n------------------------------`);
-        embed.setFooter(`\n${playerName} last updated: \n${updated}`);           
+        
+        let ud = new Date();
+        ud.setTime(updated);
+        ud = ud.toISOString().replace(/T/g,' ').replace(/\..*/g,'');
+        embed.setFooter(`Fetched at: \n${ud}`);           
         
         for( let k of order ) {
             

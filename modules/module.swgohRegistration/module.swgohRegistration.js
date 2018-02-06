@@ -158,6 +158,7 @@ class Command extends Module {
     	//delete where allycode and playerid
     	const DatabaseHandler = require('../../utilities/db-handler.js');
         const data = new DatabaseHandler(this.clientConfig.database, this.moduleConfig.queries.DEL_REGISTER, [playerId, allyCode]);
+        
         data.setRows().then((result) => {
         	this.message.react(this.clientConfig.reaction.SUCCESS);
         	return true;
@@ -179,9 +180,10 @@ class Command extends Module {
     	//find discordID in lazbot db
         const DatabaseHandler = require('../../utilities/db-handler.js');
         const data = new DatabaseHandler(this.clientConfig.database, this.moduleConfig.queries.GET_REGISTER, [discordId]);
-        data.getRows().then((result) => {
+        
+        data.getRows().then( async (result) => {
             if( result.length === 0 ) { 
-            	this.message.react(this.clientConfig.reaction.ERROR);
+            	await this.message.react(this.clientConfig.reaction.ERROR);
             	replyStr = "The requested discord user is not registered.\nSee help for registration use.";
             	return this.reply( replyStr, "Not found" );
             
@@ -190,11 +192,15 @@ class Command extends Module {
                 replyStr = `Player: ${result[0].playerName}\nGuild: ${result[0].playerGuild}\nAllyCode: ${result[0].allyCode}`;
    	            let replyTitle = 'Results for ';
    	            replyTitle += messageParts[0] === 'me' ? this.message.author.username : discordId;
-                return this.reply( replyStr, replyTitle, `Last updated: ${result[0].updated}` );
+   	            
+   	            let ud = new Date();
+		        ud.setTime(updated);
+		        ud = ud.toISOString().replace(/T/g,' ').replace(/\..*/g,'');
+		        return this.reply( replyStr, replyTitle, `Last updated: \n${ud}` );
    	            
             }
-        }).catch((reason) => {                	
-            this.message.react(this.clientConfig.reaction.ERROR);                    
+        }).catch( async (reason) => {                	
+            await this.message.react(this.clientConfig.reaction.ERROR);                    
             return this.reply( reason );
         });
     	
@@ -206,18 +212,20 @@ class Command extends Module {
     	return new Promise( async (resolve, reject) => {
     		
     		let settings = {};
-                settings.path       = process.cwd()+'/compiled';
+                settings.path       = process.cwd();
+                settings.path       = settings.path.replace(/\\/g,'\/')+'/compiled';
                 settings.hush       = true;
                 settings.verbose    = false;
                 settings.force      = false;
                 
 		    allyCode = allyCode.replace(/\-/g,'');
     	    
-	        let profile = null;
+	        let profile, rpc, sql = null;
+	                
             try {
-                this.message.react(this.clientConfig.reaction.THINKING);
+                await this.message.react(this.clientConfig.reaction.THINKING);
         		const RpcService = require(settings.path+'/services/service.rpc.js');
-                let rpc = await new RpcService(settings);
+                rpc = await new RpcService(settings);
 
                 /** Start the RPC Service - with no logging**/
     	        await rpc.start(`Fetching ${allyCode}...\n`, false);
@@ -229,14 +237,14 @@ class Command extends Module {
 
             } catch(e) {
                 await rpc.end(e.message);
-                this.message.react(this.clientConfig.reaction.ERROR);
+                await this.message.react(this.clientConfig.reaction.ERROR);
                 reject(e);
             }
             
             try {
-                this.message.react(this.clientConfig.reaction.WORK);
+                await this.message.react(this.clientConfig.reaction.WORK);
 	    		const SqlService = require(settings.path+'/services/service.sql.js');
-	            let sql = await new SqlService(settings);
+	            sql = await new SqlService(settings);
 
 		        /** Start the SQL Service - with no logging**/
 		        await sql.start(`Saving ${allyCode}...\n`, false);
@@ -252,7 +260,7 @@ class Command extends Module {
 	            
             } catch(e) {
                 await sql.end(e.message);
-                this.message.react(this.clientConfig.reaction.ERROR);
+                await this.message.react(this.clientConfig.reaction.ERROR);
                 reject(e);
             }
             
