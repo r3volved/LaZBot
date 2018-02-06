@@ -91,7 +91,7 @@ class Command extends Module {
             data.getRows().then((result) => {
                 if( result.length === 0 ) { 
                     this.message.react(this.clientConfig.reaction.ERROR);
-                    replyStr = "There was an error retriving your units";
+                    let replyStr = "There was an error retriving your units";
                     reject(replyStr);
                 
                 } else {

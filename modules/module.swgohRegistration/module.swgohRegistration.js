@@ -71,10 +71,10 @@ class Command extends Module {
             
         	} else {
         		
-            	let allyCode = result[0].allyCode.toString();
+            	allyCode = result[0].allyCode.toString();
             	
             	//fetch player by allycode -s
-            	this.fetchPlayer( allyCode ).then((result) => {
+            	this.fetchPlayer( allyCode, discordId, playerId, playerName, playerGuild ).then((result) => {
             		
             		this.message.react(this.clientConfig.reaction.WORKING);
                 	
@@ -85,8 +85,10 @@ class Command extends Module {
                 	//insert into lazbot db
                 	const DatabaseHandler = require('../../utilities/db-handler.js');
                     const data = new DatabaseHandler(this.clientConfig.database, this.moduleConfig.queries.SET_REGISTER, [discordId, playerId, playerName, allyCode, playerGuild]);
-                    data.setRows().then((result) => {
-                        return this.message.react(this.clientConfig.reaction.SUCCESS);
+                    
+                    data.setRows().then((rows) => {
+                        this.message.react(this.clientConfig.reaction.SUCCESS);
+                        return true;
                     }).catch((reason) => {    
                         this.message.react(this.clientConfig.reaction.ERROR);
                         return this.reply( reason );
@@ -107,7 +109,7 @@ class Command extends Module {
     
     add( messageParts ) {
     	
-    	let discordId, playerId, playerName, allyCode, playerGuild = null;
+        let discordId, playerId, playerName, allyCode, playerGuild = null;
         let replyStr = 'Not Found!';
 
         if( messageParts[1] === 'me' ) { discordId = this.message.author.id; } 
@@ -120,7 +122,7 @@ class Command extends Module {
     	}
 
     	//fetch player by allycode -s
-    	this.fetchPlayer( allyCode ).then((result) => {
+    	this.fetchPlayer( allyCode, discordId, playerId, playerName, playerGuild ).then((result) => {
             this.message.react(this.clientConfig.reaction.WORKING);
 
     		playerId 	= result[0].playerId;
@@ -188,6 +190,9 @@ class Command extends Module {
             	return this.reply( replyStr, "Not found" );
             
         	} else {
+        	
+        	    let updated = result[0].updated; 
+        	    
             	this.message.react(this.clientConfig.reaction.SUCCESS);
                 replyStr = `Player: ${result[0].playerName}\nGuild: ${result[0].playerGuild}\nAllyCode: ${result[0].allyCode}`;
    	            let replyTitle = 'Results for ';
@@ -238,6 +243,7 @@ class Command extends Module {
             } catch(e) {
                 await rpc.end(e.message);
                 await this.message.react(this.clientConfig.reaction.ERROR);
+                console.error(e);
                 reject(e);
             }
             
@@ -250,8 +256,10 @@ class Command extends Module {
 		        await sql.start(`Saving ${allyCode}...\n`, false);
 		        
 		        await sql.query( 'SET FOREIGN_KEY_CHECKS = 0;' );
-		        await sql.query( 'insert', 'PlayerProfile', [profile] );
+		        let sqlresult = await sql.query( 'insert', 'PlayerProfile', [profile] );
 	            await sql.query( 'SET FOREIGN_KEY_CHECKS = 1;' );
+		        
+		        console.log( sqlresult );
 		        
                 /** End the RPC Service **/
 	            await sql.end("Saved");
@@ -261,6 +269,7 @@ class Command extends Module {
             } catch(e) {
                 await sql.end(e.message);
                 await this.message.react(this.clientConfig.reaction.ERROR);
+                console.error(e);
                 reject(e);
             }
             

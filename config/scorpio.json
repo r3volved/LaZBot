@@ -19,10 +19,10 @@
     
     "datadb":{
     	
-        "host":"localhost",
-        "user":"livedata",
-        "password":"datalive",
-        "database":"livedata"
+		"host":"localhost", 
+		"user":"livedata", 
+		"password":"datalive", 
+		"database":"livedata" 
     	
     },
     

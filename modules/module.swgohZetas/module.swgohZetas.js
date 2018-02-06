@@ -11,7 +11,7 @@ class Command extends Module {
         
     }
     
-    process() {
+    async process() {
                 
         try {
             
@@ -23,45 +23,39 @@ class Command extends Module {
 
             	let discordId = content === 'me' || content.length === 0 ? this.message.author.id : content.replace(/[<|@|\!]*(\d{18})[>]*/g,'$1');
 
-                this.findAllyCode( discordId ).then((result) => {
-                	
-                	let allyCode 	= result[0].allyCode;
-                	let playerName  = result[0].playerName;
-                	let updated     = result[0].updated;
-                	
-                	this.findZetas( allyCode, playerName, updated ).then( async (zresult) => {
-                		
-                		let toons = {};
-                        let toon  = null;
-
-                        for( let row of zresult ) {
-                			
-                			let toon   = await JSON.parse(row.unitName);
-                            let aName  = await JSON.parse(row.abilityName);
-                            
-                			if( !toons[toon] ) { toons[toon] = []; }
-                			
-                			toons[toon].push(aName);
-                			
-                	    }
-
-                        let order = Object.keys(toons).sort((a,b) => {
-                        	return toons[b].length-toons[a].length; 
-                        });
-                        
-                        await this.message.react(this.clientConfig.reaction.SUCCESS);
-                		this.reply( toons, order, playerName, updated );
-                		
-                	}).catch((err) => {
-                        return console.log(err);
-                	});
-
-                }).catch((err) => {
-                	
-                    return this.message.channel.send("The requested discord user is not registered with a swgoh account.\nSee help for registration use.");
+                try {
+                
+                    let player = await this.findAllyCode( discordId );
+                    let allyCode    = player[0].allyCode;
+                    let playerName  = player[0].playerName;
+                    let updated     = player[0].updated;
                     
-                });
-            	
+                    let zresult = await this.findZetas( allyCode );
+                    
+                    let toons = {};
+                    let toon  = null;
+
+                    for( let row of zresult ) {
+                        
+                        let toon   = await JSON.parse(row.unitName);
+                        let aName  = await JSON.parse(row.abilityName);
+                        
+                        if( !toons[toon] ) { toons[toon] = []; }
+                        toons[toon].push(aName);
+                        
+                    }
+
+                    let order = await Object.keys(toons).sort((a,b) => {
+                        return toons[b].length-toons[a].length; 
+                    });
+                    
+                    await this.message.react(this.clientConfig.reaction.SUCCESS);
+                    this.reply( toons, order, playerName, updated );
+                    
+                } catch(e) {
+                    return console.log(e);
+                }
+                
             } 
             	
         } catch(e) {
@@ -84,7 +78,7 @@ class Command extends Module {
             data.getRows().then((result) => {
                 if( result.length === 0 ) { 
                 	this.message.react(this.clientConfig.reaction.ERROR);
-                	replyStr = "The requested discord user is not registered with a swgoh account.\nSee help for registration use.";
+                	let replyStr = "The requested user does not have any zetas.";
                 	reject(replyStr);
                 
             	} else {
@@ -110,7 +104,7 @@ class Command extends Module {
             data.getRows().then((result) => {
                 if( result.length === 0 ) { 
                 	this.message.react(this.clientConfig.reaction.ERROR);
-                	replyStr = "The requested discord user is not registered with a swgoh account.\nSee help for registration use.";
+                	let replyStr = "The requested discord user is not registered with a swgoh account.\nSee help for registration use.";
                 	reject(replyStr);
                 
             	} else {
