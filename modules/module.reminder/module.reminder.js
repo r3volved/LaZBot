@@ -323,6 +323,9 @@ class Command extends Module {
         
     }
     
+    async analyze() {
+    }
+
     reply( replyTitle, replyStr, mentions, fields ) {
             
         fields = !fields ? [] : fields;

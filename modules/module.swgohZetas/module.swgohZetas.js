@@ -117,7 +117,9 @@ class Command extends Module {
     	
     }
     
-        
+    async analyze() {
+    }
+    
     reply( toons, order, playerName, updated ) {
           
         const Discord = require('discord.js');

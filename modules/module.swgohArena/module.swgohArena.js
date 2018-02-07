@@ -169,7 +169,9 @@ class Command extends Module {
         
     }
  
-            
+    async analyze() {
+    }
+        
     reply( squads, playerName, allyCode ) {
           
         const Discord = require('discord.js');

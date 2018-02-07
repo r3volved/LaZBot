@@ -78,7 +78,9 @@ class Command extends Module {
         
     }
     
-    
+    async analyze() {
+    }
+
     reply( replyStr ) {
             
         const Discord = require('discord.js');

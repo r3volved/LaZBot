@@ -277,6 +277,8 @@ class Command extends Module {
     	
     }
     
+    async analyze() {
+    }
 
     reply( replyStr, replyTitle, replyFooter ) {
             

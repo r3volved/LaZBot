@@ -58,7 +58,10 @@ class Command extends Module {
 		}			
 	}
 	
-	reply( replyTitle, replyStr, replyFooter ) {
+    async analyze() {
+    }
+
+    reply( replyTitle, replyStr, replyFooter ) {
 		
         const Discord = require('discord.js');
     	let embed = new Discord.RichEmbed();

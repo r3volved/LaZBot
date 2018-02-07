@@ -100,7 +100,9 @@ class Command extends Module {
         
     }
  
-            
+    async analyze() {
+    }
+        
     reply( heists ) {
           
         const Discord = require('discord.js');

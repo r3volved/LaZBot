@@ -39,7 +39,10 @@ class Command extends Module {
 
 	}
 	
-	modules() {
+    async analyze() {
+    }
+
+    modules() {
 	    
 	    return JSON.stringify(this.clientConfig.modules,""," ");
 	    

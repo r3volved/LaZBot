@@ -55,7 +55,9 @@ class Command extends Module {
         
     }
     
-    
+    async analyze() {
+    }
+
     reply( response ) {
 
         const Discord = require('discord.js');
