@@ -54,7 +54,7 @@ class Command extends Module {
     	try {
     	
         	let auth = await this.authorized.isAuthorized();
-            if( !auth ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+            if( auth ) { return true; }
 
             const DatabaseHandler = require('../../utilities/db-handler.js');
             const dbHandler = new DatabaseHandler(this.clientConfig.database, this.moduleConfig.queries.GET_SETTINGS, [this.message.channel.id]);

@@ -21,14 +21,15 @@ class Monitor extends Module {
 	}
 	
 	//Monitor message
-    analyze() {
+    async analyze() {
         
         try {
 
             //If not DM, ignore
             if( this.message.channel.type !== "dm" ) { return true; } 
 
-            if( this.authorized ) { return true; }
+            let auth = await this.authorized.isAuthorized();
+            if( auth ) { return true; }
 
             //Tell master if someone is DMing the bot...
             const Discord = require('discord.js');

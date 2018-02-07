@@ -1,6 +1,6 @@
 {
 	
-	"token":"NDEwNDUxNzkzNzUxODM0NjI1.DVtWlA.cy-adeJIVVrJHqtN7nygnpgS4q0",
+	"token":"NDEwNDUxNzkzNzUxODM0NjI1.DVu7fQ.7YpXm-URVfkbk9cE-iV_58q9hmg",
 	
 	"master":"305465187799007232",
 		
@@ -39,19 +39,15 @@
 
     "modules":[
 
-        { "command":"dmm", 		"id":"dmmonitor", 	"type":"preMonitor", 	"active":true },
-        { "command":"qm", 		"id":"qmonitor", 	"type":"preMonitor", 	"active":true },
-        { "command":"help", 	"id":"help", 		"type":"command", 		"active":true },
-        { "command":"eval", 	"id":"eval", 		"type":"command", 		"active":true },
-        { "command":"gt", 		"id":"translate", 	"type":"command", 		"active":true },
-        { "command":"alert",	"id":"reminder", 	"type":"command", 		"active":true },
-        { "command":"orders", 	"id":"platoons", 	"type":"command", 		"active":true },
-        { "command":"platoons", "id":"platoons", 	"type":"command", 		"active":true },
-        { "command":"swgoh",	"id":"swgohRegistration", "type":"command", "active":true },
-        { "command":"mods",		"id":"swgohMods", 	"type":"command", 		"active":true },
-        { "command":"zeta",		"id":"swgohZetas", 	"type":"command", 		"active":true },
-        { "command":"heist",	"id":"swgohHeist", 	"type":"command", 		"active":true },
-        { "command":"arena",	"id":"swgohArena", 	"type":"command", 		"active":true }
+        { "command":"dmm", 		"id":"dmmonitor", 			"type":"preMonitor", 	"active":true },
+        { "command":"eval", 	"id":"eval", 				"type":"command", 		"active":true },
+        { "command":"gt", 		"id":"translate", 			"type":"command", 		"active":true },
+        { "command":"help", 	"id":"help", 				"type":"command", 		"active":true },
+        { "command":"swgoh",	"id":"swgohRegistration", 	"type":"command", 		"active":true },
+        { "command":"mods",		"id":"swgohMods", 			"type":"command", 		"active":true },
+        { "command":"zeta",		"id":"swgohZetas", 			"type":"command", 		"active":true },
+        { "command":"heist",	"id":"swgohHeist", 			"type":"command", 		"active":true },
+        { "command":"arena",	"id":"swgohArena", 			"type":"command", 		"active":true }
             
     ],
     
