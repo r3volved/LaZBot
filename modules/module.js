@@ -10,7 +10,7 @@ class Module {
             this.moduleConfig = moduleConfig;
             this.message = message;
                         
-            this.authorized = new PermissionHandler(this.clientConfig, this.moduleConfig, this.message).isAuthorized();
+            this.authorized = new PermissionHandler(this.clientConfig, this.moduleConfig, this.message);
 
         } catch(e) {
         	

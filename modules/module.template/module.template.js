@@ -12,14 +12,12 @@ class Command extends Module {
         
     }
     
-    process() {
+    async process() {
                 
         try {
             
-            /**
-             * Check permissions first
-             */
-            if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+        	let auth = await this.authorized.isAuthorized();
+            if( !auth ) { return this.message.react(this.clientConfig.reaction.DENIED); }
             
                         
             /**
@@ -47,14 +45,12 @@ class Command extends Module {
         
     }
     
-    analyze() {
+    async analyze() {
     	
     	try {
     	
-    		/**
-             * DO MONITORING STUFF
-             */
-    	    if( this.authorized ) { return true; }
+        	let auth = await this.authorized.isAuthorized();
+            if( !auth ) { return this.message.react(this.clientConfig.reaction.DENIED); }
 
     	    
     	} catch(e) {

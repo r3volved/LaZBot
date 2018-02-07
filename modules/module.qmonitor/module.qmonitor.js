@@ -8,11 +8,12 @@ class Command extends Module {
        
     }
     
-    process() {
+    async process() {
                 
         try {
             
-            if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+        	let auth = await this.authorized.isAuthorized();
+            if( !auth ) { return this.message.react(this.clientConfig.reaction.DENIED); }
 
             /** Sanitize message content */
             const content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command}`,'').trim();
@@ -28,7 +29,7 @@ class Command extends Module {
             let bot = this.message.channel.members.filter(m => m.id === this.clientConfig.client.user.id).first().permissionsIn(this.message.channel.id);
         	if( !bot.has("MANAGE_MESSAGES") ) { 
         	
-        	    this.message.react(`${this.moduleConfig.reaction.DENIED}`);
+        	    this.message.react(`${this.clientConfig.reaction.DENIED}`);
         		return this.message.reply("Sorry, I need 'manage message' permissions on this channel to be able to monitor it");            		
         	
         	} else {
@@ -54,40 +55,37 @@ class Command extends Module {
         
     }
     
-    analyze() {
+    async analyze() {
 
     	try {
                 	    
             //Ignore admin or master
-            if( this.authorized ) { return true; }
+        	let auth = await this.authorized.isAuthorized();
+            if( auth ) { return true; }
 
             const DatabaseHandler = require('../../utilities/db-handler.js');
             const dbHandler = new DatabaseHandler(this.clientConfig.database, this.moduleConfig.queries.GET_SETTINGS, [this.message.channel.id]);
-            dbHandler.getRows().then((result) => {
+            let result = await dbHandler.getRows();
                 
-                if( typeof(result) === "undefined" || typeof(result[0]) === "undefined" || !result[0].qmonitor ) { return true; }
+            if( typeof(result) === "undefined" || typeof(result[0]) === "undefined" || !result[0].qmonitor ) { return true; }
 
-                //ANALYZE MESSAGE
-                if( !self.message.content.match(/(.*(?:\w*|\s*)(?:\?))/gi) ) {
-                    
-                    const Discord = require('discord.js');
-                    const embed = new Discord.RichEmbed();
-                    
-                    embed.setColor(0x6F9AD3);
-                    embed.setTitle(`Sorry, this message has been deleted`);
-                    embed.setDescription(`The channel '${self.message.channel.name}' is currently only accepting questions. Please reformat your comment into the form of a question and feel free to try again.`);
-                    embed.addField(`Removed:`, self.message.content);
-                    self.message.author.send({embed});
-                    self.message.delete(500);
-                    
-                    return false;
-                    
-                }                   
+            //ANALYZE MESSAGE
+            if( !this.message.content.match(/(.*(?:\w*|\s*)(?:\?))/gi) ) {
                 
-            }).catch((reason) => {
-                throw reason;
-            });
-
+                const Discord = require('discord.js');
+                const embed = new Discord.RichEmbed();
+                
+                embed.setColor(0x6F9AD3);
+                embed.setTitle(`Sorry, this message has been deleted`);
+                embed.setDescription(`The channel '${this.message.channel.name}' is currently only accepting questions. Please reformat your comment into the form of a question and feel free to try again.`);
+                embed.addField(`Removed:`, this.message.content);
+                this.message.author.send({embed});
+                this.message.delete(500);
+                
+                return false;
+                
+            }                   
+        
     	} catch(e) {
             this.error("analyse",e);
         }                

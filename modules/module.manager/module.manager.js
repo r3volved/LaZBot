@@ -8,12 +8,13 @@ class Command extends Module {
         
     }
     
-    process() {
+    async process() {
                 
         try {
             
-            if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
-                        
+        	let auth = await this.authorized.isAuthorized();
+            if( !auth ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+            
             //Sanitize message content
             const content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command}`,'').trim();
             if( content === "help" || content.length === 0 ) { return this.help(); }
@@ -56,19 +57,6 @@ class Command extends Module {
         
     }
     
-    analyze() {
-    	
-    	try {
-    	
-    		/**
-             * DO MONITORING STUFF
-             */
-    		
-    	} catch(e) {
-            this.error("analyse",e);
-    	}
-    	
-    }
     
     reply( replyStr ) {
             

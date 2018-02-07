@@ -12,12 +12,10 @@ class Command extends Module {
         
     }
     
-    process() {
+    async process() {
                 
         try {
-            
-            if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
-            
+                        
             const content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command}`,'').trim();
             if( content === 'help' ) { return this.help(); }
             if( content === 'me' || content.length === 0 || content.match(/[<|@|!]*(\d{18})[>]*/g) ) {
@@ -151,21 +149,6 @@ class Command extends Module {
     	
     }
         
-    analyze() {
-    	
-    	try {
-    	
-    		/**
-             * DO MONITORING STUFF
-             */
-    	    if( this.authorized ) { return true; }
-
-    	    
-    	} catch(e) {
-            this.error("analyse",e);
-    	}
-    	
-    }
     
     reply( mods, playerName, updated ) {
             

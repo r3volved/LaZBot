@@ -12,11 +12,12 @@ class Command extends Module {
         
     }
     
-    process() {
+    async process() {
                 
         try {
             
-            if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+        	let auth = await this.authorized.isAuthorized();
+            if( !auth ) { return this.message.react(this.clientConfig.reaction.DENIED); }
 
             /** Sanitize message content */
             const content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command}`,'').trim();
@@ -48,15 +49,13 @@ class Command extends Module {
         
     }
     
-    analyze() {
+    async analyze() {
     	
     	try {
     	
-    		/**
-             * DO MONITORING STUFF
-             */
-    	    if( this.authorized ) { return true; }
-    	    
+        	let auth = await this.authorized.isAuthorized();
+            if( !auth ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+
             const DatabaseHandler = require('../../utilities/db-handler.js');
             const dbHandler = new DatabaseHandler(this.clientConfig.database, this.moduleConfig.queries.GET_SETTINGS, [this.message.channel.id]);
             dbHandler.getRows().then((result) => {

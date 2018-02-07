@@ -20,8 +20,6 @@ class Command extends Module {
                 
         try {
             
-            if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
-            
             let content = this.message.content.split(" ").splice(1);
             if( !content || content.length === 0 || content === "help" ) { return this.help(); }
     
@@ -55,17 +53,6 @@ class Command extends Module {
         
     }
     
-    analyze() {
-    	
-    	try {
-
-    	    if( this.authorized ) { return true; }
-    	    
-    	} catch(e) {
-            this.error("analyse",e);
-    	}
-    	
-    }
     
     reply( response ) {
 

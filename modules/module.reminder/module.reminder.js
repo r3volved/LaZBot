@@ -66,26 +66,14 @@ class Command extends Module {
         
     }
     
-    analyze() {
-    	
-    	try {
-    	
-    		/**
-             * DO MONITORING STUFF
-             */
-    		
-    	} catch(e) {
-            this.error("analyse",e);
-    	}
-    	
-    }
     
-    test( content ) {
+    async test( content ) {
         
         try {
             
-            if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
-            
+        	let auth = await this.authorized.isAuthorized();
+            if( !auth ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+
             let splittingPattern = (" ");                    
             let test = content.split(splittingPattern)[0];
             let alertName = content.replace(test,'').trim();            
@@ -114,12 +102,13 @@ class Command extends Module {
     }
 
 
-    status( content ) {
+    async status( content ) {
         
         try {
             
-            if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
-            
+        	let auth = await this.authorized.isAuthorized();
+            if( !auth ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+
             const DatabaseHandler = require('../../utilities/db-handler.js');
             let args = [];
             let dbHandler = null;
@@ -157,12 +146,13 @@ class Command extends Module {
         
     }
 
-    addReminder( content ) {
+    async addReminder( content ) {
         
         try{
             
-            if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
-            
+        	let auth = await this.authorized.isAuthorized();
+            if( !auth ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+
             let cadence = content.split(/\s/)[0];
 
             let splittingPattern = (/`([^`])+`/g);
@@ -202,12 +192,13 @@ class Command extends Module {
         
     }
     
-    removeReminder( content ) {
+    async removeReminder( content ) {
         
         try {
 
-            if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
-            
+        	let auth = await this.authorized.isAuthorized();
+            if( !auth ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+
             let splittingPattern = " ";                    
             let subcommand = content.split(splittingPattern)[0];
             content = content.replace(subcommand,'').trim();            

@@ -78,21 +78,6 @@ class Command extends Module {
         
     }
     
-    analyze() {
-    	
-    	try {
-    	
-    		/**
-             * DO MONITORING STUFF
-             */
-    	    if( this.authorized ) { return true; }
-
-    	    
-    	} catch(e) {
-            this.error("analyse",e);
-    	}
-    	
-    }
     
     reply( replyStr ) {
             

@@ -8,10 +8,11 @@ class Command extends Module {
 	    
 	}
 	
-	process() {
+	async process() {
 			    
-        if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
-	    
+    	let auth = await this.authorized.isAuthorized();
+        if( !auth ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+
 	    let prevaled = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command} `,'');
     	let evaled = "undefined";    	
     	

@@ -9,10 +9,11 @@ class Monitor extends Module {
     }
     
     //Process command
-	process() {
+	async process() {
 	    	    
-	    if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
-	    
+    	let auth = await this.authorized.isAuthorized();
+        if( !auth ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+
 	    let content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command} `,'');  	
     	
 	    return this.help();

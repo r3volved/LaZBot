@@ -8,11 +8,9 @@ class Command extends Module {
         
     }
     
-    process() {
+    async process() {
                 
         try {
-            
-            if( !this.authorized ) { return this.message.react(this.clientConfig.reaction.DENIED); }
             
             const content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command}`,'').trim();
             if( content === 'help' ) { return this.help(); }
@@ -102,23 +100,7 @@ class Command extends Module {
         
     }
  
-        
-    analyze() {
-    	
-    	try {
-    	
-    		/**
-             * DO MONITORING STUFF
-             */
-    	    if( this.authorized ) { return true; }
-
-    	    
-    	} catch(e) {
-            this.error("analyse",e);
-    	}
-    	
-    }
-    
+            
     reply( heists ) {
           
         const Discord = require('discord.js');
