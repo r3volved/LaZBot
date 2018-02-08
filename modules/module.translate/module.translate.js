@@ -2,28 +2,30 @@ let Module          = require('../module.js');
 
 class Command extends Module {
 
-	constructor(clientConfig, moduleConfig, message) {
-	    
-	    super(clientConfig, moduleConfig, message);
+	constructor(config, reqModule, reqCommand, message) {
+        
+        super(config, reqModule, reqCommand, message);
 
-	}
-	
+    }
+    
 	process() {
 		 
 		try {
 			
-		    let content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command}`,'').trim();
-            if( content === "help" || content.length === 0 ) { return this.help(); }
+		    let content = this.message.content.replace(this.message.content.split(/\s+/)[0],'').trim();
+            if( content === "help" || content.length === 0 ) { return this.help( this.moduleConfig.help.translate ); }
 
 			let messageParts = content.split(/\s+/g);
 	
 			let language = messageParts[0];
-			if( language.length !== 2 ) { return this.help(); }
+			if( language.length !== 2 ) { return this.help( this.moduleConfig.help.translate ); }
 
 			let author = messageParts[1].match(/(\d+)/g)[0];
 			let authorName = "";
 			this.clientConfig.client.fetchUser(author).then( user => {
-				authorName = user.username;
+				 authorName = user.username;
+			}).catch((err) => {
+			     this.error('process -> fetchUser',err);
 			});
 			
 			let last = messageParts < 3 || isNaN(messageParts[2]) ? 1 : parseInt(messageParts[2]);
@@ -38,17 +40,40 @@ class Command extends Module {
 					content += `${filteredMessages[x].content}\n`;
 				}
 				
-			    translate(content, {to: language}).then(res => {
+			    translate(content, {to: language}).then((res) => {
 			    	
-			    	this.reply(`Translation of ${authorName}'s last ${last} messages`,`${res.text}`,`{ ${res.from.language.iso} => ${language} }` );			    	
+			    	let replyStr = res.text;
+			        
+			        const Discord = require('discord.js');
+			        let embed = new Discord.RichEmbed();
+			        embed.setColor(0x888888);
+			        
+			        while( replyStr.length >= 2000 ) {
+			
+			            const n = replyStr.lastIndexOf(/,|./g, 2000);
+			            let chunk = replyStr.slice(0,n+1);                  
+			            
+			            embed.setTitle(`Translation of ${authorName}'s last ${last} messages`);
+			            embed.setDescription(chunk);
+			            this.message.author.send({embed}); 
+			            
+			            replyStr = replyStr.slice(n+1);
+			
+			        }       
+			
+			        embed.setTitle(`Translation of ${authorName}'s last ${last} messages`);
+			        embed.setDescription(replyStr);
+			        embed.setFooter(`{ ${res.from.language.iso} => ${language} }`);
+			        
+			        this.message.channel.send({embed});
 			    	
-			    }).catch(err => {
-				    throw err;
-				});
+			    }).catch((err) => {
+                    this.error('process -> translate',err);
+                });
 			    
-			}).catch( err => {
-				throw err;
-			});
+			}).catch((err) => {
+                this.error('process -> fetchMessages',err);
+            });
 			
 		} catch(e) {
 			
@@ -60,33 +85,6 @@ class Command extends Module {
 	
     async analyze() {
     }
-
-    reply( replyTitle, replyStr, replyFooter ) {
-		
-        const Discord = require('discord.js');
-    	let embed = new Discord.RichEmbed();
-    	embed.setColor(0x888888);
-    	
-    	while( replyStr.length >= 2000 ) {
-
-    		const n = replyStr.lastIndexOf(/,|./g, 2000);
-    		let chunk = replyStr.slice(0,n+1);		    		
-    		
-        	embed.setTitle(replyTitle);
-    		embed.setDescription(chunk);
-    		this.message.author.send({embed}); 
-    		
-    		replyStr = replyStr.slice(n+1);
-
-    	}     	
-
-    	embed.setTitle(replyTitle);
-    	embed.setDescription(replyStr);
-    	embed.setFooter(replyFooter);
-    	
-    	this.message.channel.send({embed});
-    	
-	}
     
 }
 

@@ -1,179 +1,95 @@
 class ModuleRegistry {
 
-    constructor( clientConfig ) {
+    constructor() {
         
-        return new Promise((resolve, reject) => {
-            
-            this.clientConfig = clientConfig;
-            this.modules = {};
-            this.commands = {};
-            this.preMonitors = {};
-            this.postMonitors = {};
-            const ScheduleHandler = require(`../utilities/schedule-handler.js`);        
-            
-            this.scheduler = new ScheduleHandler(clientConfig);
-            this.scheduler.initJobs().then( () => {
-
-                this.load();
-                resolve(this);
-                
-            }).catch((reason) => reject(reason));
-            
-        });
+        this.modules = {};
         
     }
     
-    reload( module ) {
 
-    	if( typeof module !== "undefined" ) {
-    		
-    	    module.active = [true,"yes","true","on","start","activate"].includes(module.active) ? true : false;
-    	    
-    	    for( let m = 0; m < this.clientConfig.modules.length; ++m ) {
-            	
-                if( this.clientConfig.modules[m].id === module.id ) {
-                	
-                    if( typeof this.commands[this.clientConfig.modules[m].command] !== "undefined" )        { delete this.commands[this.clientConfig.modules[m].command]; }
-                    if( typeof this.preMonitors[this.clientConfig.modules[m].command] !== "undefined" )     { delete this.preMonitors[this.clientConfig.modules[m].command]; }
-                    if( typeof this.postMonitors[this.clientConfig.modules[m].command] !== "undefined" )    { delete this.postMonitors[this.clientConfig.modules[m].command]; }
-                    if( typeof this.modules[this.clientConfig.modules[m].id] !== "undefined" )              { delete this.modules[this.clientConfig.modules[m].id]; }
-
-                    if( module.active ) { 
-
-                        this.modules[module.id] = require(`./module.${module.id}/module.${module.id}.json`);
-                        this.modules[module.id].command = module.command;
-                        this.commands[module.command] = this.modules[module.id];
-                        if( module.type === "preMonitor" ) { this.preMonitors[module.command] = this.modules[module.id]; }
-                        if( module.type === "postMonitor" ) { this.postMonitors[module.command] = this.modules[module.id]; }
-                        
-                        console.log( JSON.stringify(this.clientConfig.modules[m]) +"=>"+ JSON.stringify(module) );
-                        this.clientConfig.modules[m] = module;
-                        this.clientConfig.mRegistry = this;
-                        
-                        return `Module '${module.id}' has been reloaded`;
-                    }
-
-                    this.clientConfig.modules[m] = module;
-                    this.clientConfig.mRegistry = this;
-                    
-                	return `Module '${module.id}' has been unloaded`;
-                }
-            	
-            }
-    		
-    	} else {
-    		
-    		//Reload all modules
-    	    delete this.modules;
-    	    delete this.commands;
-    	    delete this.preMonitors;
-    	    delete this.postMonitors;
-            
-            this.modules = {};
-            this.commands = {};
-            this.preMonitors = {};
-            this.postMonitors = {};
-            
-            return this.load();
-    		    		
-    	}
-    	
-    }    
-    
-    load() {
+    load( config ) {
     	
         try {
 
         	//Build commands
-            for( let m = 0; m < this.clientConfig.modules.length; ++m ) {
+            for( let m in config.settings.modules ) {
                 
-                if( this.clientConfig.modules[m].active ) {
-                                       
-                    this.modules[this.clientConfig.modules[m].id] = require(`./module.${this.clientConfig.modules[m].id}/module.${this.clientConfig.modules[m].id}.json`);
-                    this.modules[this.clientConfig.modules[m].id].command = this.clientConfig.modules[m].command;
-                    
-                    this.commands[this.clientConfig.modules[m].command] = this.modules[this.clientConfig.modules[m].id];
-                    
-                    switch( this.clientConfig.modules[m].type ) {
-                        case "preMonitor":
-                            this.preMonitors[this.clientConfig.modules[m].command] = this.modules[this.clientConfig.modules[m].id];
-                            break;
-                        case "postMonitor":
-                            this.postMonitors[this.clientConfig.modules[m].command] = this.modules[this.clientConfig.modules[m].id];
-                            break;
-                        default:
-                    }
+                if( config.settings.modules[m].active ) {
+                                   
+                    let tmpModule = config.settings.modules[m];
+                    this.modules[tmpModule.id] = require(config.path+'/modules/module.'+tmpModule.id+'/module.'+tmpModule.id+'.json');
+                    this.modules[tmpModule.id].commands = tmpModule.commands;
                     
                 }
                 
             }
             
-            this.clientConfig.mRegistry = this;
-            
-            console.info(`==========================================================================`);
-            console.info(`All modules have been loaded`);
-            console.info(`Running ${Object.keys(this.modules).length} of ${this.clientConfig.modules.length} available modules:\n- ${Object.keys(this.commands).toString().replace(/[,]/gi," - ")} -`);
-            console.info(`==========================================================================`);
-            console.info(`Preprocessing with ${Object.keys(this.preMonitors).length} monitors:   [ ${Object.keys(this.preMonitors).toString().replace(/[,]/gi,", ")} ]`);
-            console.info(`Active listeners on ${Object.keys(this.commands).length} commands: [ ${this.clientConfig.prefix}${Object.keys(this.commands).toString().replace(/[,]/gi," | "+this.clientConfig.prefix)} ]`);
-            console.info(`Postprocessing with ${Object.keys(this.postMonitors).length} monitors:  [ ${Object.keys(this.postMonitors).toString().replace(/[,]/gi,", ")} ]`);
-            console.info(`==========================================================================`);            
-            console.info(`Currently a member of ${this.clientConfig.client.guilds.size} guilds`);
-            console.info(`Monitoring ${this.clientConfig.client.channels.size} channels\n`);
+            console.info('==========================================================================');
+            console.info(Object.keys(this.modules).length+' modules have been loaded');
+            //console.info('Running '+Object.keys(this.modules).length+' of '+config.settings.modules.length+' available modules:\n- '+Object.keys(this.commands).toString().replace(/[,]/gi," - ")+' -');
+            console.info('==========================================================================');
+            //console.info(`Preprocessing with ${Object.keys(this.preMonitors).length} monitors:   [ ${Object.keys(this.preMonitors).toString().replace(/[,]/gi,", ")} ]`);
+            //console.info(`Active listeners on ${Object.keys(this.commands).length} commands: [ ${settings.prefix}${Object.keys(this.commands).toString().replace(/[,]/gi," | "+settings.prefix)} ]`);
+            //console.info(`Postprocessing with ${Object.keys(this.postMonitors).length} monitors:  [ ${Object.keys(this.postMonitors).toString().replace(/[,]/gi,", ")} ]`);
+            //console.info(`==========================================================================`);            
+            console.info(`Currently a member of ${config.client.guilds.size} guilds`);
+            console.info(`Monitoring ${config.client.channels.size} channels\n`);
 
-            console.info(`For more information about a specific command, try: ${this.clientConfig.prefix}<command> help`);
-            console.info(`Or, for higher level information, try: ${this.clientConfig.prefix}help\n`);
+            console.info(`For more information about a specific command, try: ${config.settings.prefix}<command> help`);
+            console.info(`Or, for higher level information, try: ${config.settings.prefix}help\n`);
             
-            return `All modules have been loaded`;
+            return true;
             
         } catch(e) {
             console.error(e);
+            return false;
         }	
     	
     }
 
-    registerMessage( message ) {
+    async registerMessage( message, config ) {
         
         try {
             
+            let k = null;
+            
             //Monitor pre command 
-        	for( let k in this.preMonitors ) {
-        		if( this.preMonitors.hasOwnProperty(k) ) {
-        			
-        			const monitorConfig = this.preMonitors[k];
-                    const Monitor = require(`./module.${monitorConfig.id}/module.${monitorConfig.id}.js`);                    
-                    const thisMonitor = new Monitor(this.clientConfig, monitorConfig, message).analyze();
-                    //if( !thisMonitor.analyze() ) { return; }
-
-        		}
+        	for( k in this.modules ) {
+        	   let tmpModule = this.modules[k];
+        	   if( tmpModule.type === 'preMonitor' ) {
+        	       const Monitor       = require(config.path+'/modules/module.'+tmpModule.id+'/module.'+tmpModule.id+'.js');                    
+                   const thisMonitor   = new Monitor(config, tmpModule, null, message);
+                   try { await thisMonitor.analyze(); } catch(e) { throw e; }
+        	   }
         	}
             
             //Process command
-            let prefix = message.content.charAt(0);
-            if( prefix !== this.clientConfig.prefix ) { return; }
+            let prefix = message.content[0];
+            if( prefix !== config.settings.prefix ) { return; }
             
             let content = message.content.slice(1).trim();
             let command = content.split(/\s+/g)[0];
     
-            if( this.commands[command] ) {
-
-            	const commandConfig = this.commands[command];
-                const Command = require(`./module.${commandConfig.id}/module.${commandConfig.id}.js`);
-                const thisCommand = new Command(this.clientConfig, commandConfig, message).process();
-            
+            for( k in this.modules ) {
+                let tmpModule = this.modules[k];
+                for( let c in tmpModule.commands ) {
+                    if( tmpModule.commands[c].includes(command) ) {
+                        const Command       = require(config.path+'/modules/module.'+tmpModule.id+'/module.'+tmpModule.id+'.js');                    
+	                    const thisCommand   = new Command(config, tmpModule, command, message);
+	                    try { await thisCommand.process(); } catch(e) { throw e; }
+	                }
+                }
             }
             
-            //Monitor post command
-        	for( let k in this.postMonitors ) {
-        		if( this.postMonitors.hasOwnProperty(k) ) {
-        			
-        			const monitorConfig = this.postMonitors[k];
-                    const Monitor = require(`./module.${monitorConfig.id}/module.${monitorConfig.id}.js`);
-                    const thisMonitor = new Monitor(this.clientConfig, monitorConfig, message).analyze();
-                    //if( !thisMonitor.analyze() ) { return; }
-                    
-        		}
-        	}
+            //Monitor pre command 
+            for( k in this.modules ) {
+               let tmpModule = this.modules[k];
+               if( tmpModule.type === 'postMonitor' ) {
+                   const Monitor       = require(config.path+'/modules/module.'+tmpModule.id+'/module.'+tmpModule.id+'.js');                    
+                   const thisMonitor   = new Monitor(config, tmpModule, null, message);
+                   try { await thisMonitor.analyze(); } catch(e) { throw e; }
+               }
+            }
 
         } catch(e) {
             console.error(e);

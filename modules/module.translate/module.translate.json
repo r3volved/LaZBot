@@ -2,9 +2,9 @@
 
     "id":"translate",
 
-    "name":"Evaluation",
+    "name":"Translation help",
 
-    "version":"1.0",
+    "version":"2.0",
     
     "type":"command",
     
@@ -12,9 +12,13 @@
     
     "help":{
     
-        "title":"Translation help",
-        "text":"Translate a specified number of users last messages into specified language.\n%PREFIX%%COMMAND% <languageID> <userID|mention> <lastNumberMessages>\n\n**Note:** *This command leverages the google translate api to automatically detect localization before translating.*",
-        "example":"*%PREFIX%%COMMAND% fr @shittybill 4*"
+        "translate":{
+        	"id":"translate",
+        	"title":"Translation help",
+        	"text":"Translate a specified number of users last messages into specified language.\n%PREFIX%%COMMAND% <languageID> <userID|mention> <lastNumberMessages>\n\n**Note:** *This command leverages the google translate api to automatically detect localization before translating.*",
+        	"example":"*%PREFIX%%COMMAND% fr @shittybill 4*"
+        }
+
     }
     
 }

@@ -4,10 +4,10 @@
     
     "master":"YOUR_USER_ID",
     
-    "version":"LaZBot v2.0",
-        
-    "adminRole":"botadmins",
+    "version":"LaZBot v2.4",
     
+    "adminRole":"botadmins",
+
     "modRole":"botmods",
     
     "database":{
@@ -39,22 +39,85 @@
     
     "prefix":"?",
 
-    "modules":[
+    "modules":{
 
-        { "command":"dmm", 		"id":"dmmonitor", 	"type":"preMonitor", 	"active":true },
-        { "command":"qm", 		"id":"qmonitor", 	"type":"preMonitor", 	"active":true },
-        { "command":"help", 	"id":"help", 		"type":"command", 		"active":true },
-        { "command":"eval", 	"id":"eval", 		"type":"command", 		"active":true },
-        { "command":"gt", 		"id":"translate", 	"type":"command", 		"active":true },
-        { "command":"alert",	"id":"reminder", 	"type":"command", 		"active":true },
-        { "command":"orders", 	"id":"platoons", 	"type":"command", 		"active":true },
-        { "command":"swgoh",	"id":"swgohRegistration", "type":"command", "active":true },
-        { "command":"mods",		"id":"swgohMods", 	"type":"command", 		"active":true },
-        { "command":"zeta",		"id":"swgohZetas", 	"type":"command", 		"active":true },
-        { "command":"heist",	"id":"swgohHeist", 	"type":"command", 		"active":true },
-        { "command":"arena",	"id":"swgohArena", 	"type":"command", 		"active":true }
+        "help":{ 
+        	
+        	"id":"help", 				
+        	"type":"command",	
+        	"active":true,
+        	"permission":"anyone",
+        	"commands":{
+        		"help":["help","?"]
+        	}
+        
+        }, 
+        
+        "meme":{
+        	
+        	"id":"meme",
+        	"type":"preMonitor",
+        	"active":true,
+        	"permission":"admin",
+        	"commands":{
+        		"meme":["meme","memes"]
+        	}
+        
+        },
+        
+        "qmonitor":{
+        	
+        	"id":"qmonitor",
+        	"type":"preMonitor",
+        	"active":true,
+        	"permission":"admin",
+        	"commands":{
+        		"qmonitor":["qmonitor","qm"]
+        	}
+        
+        },
+        
+        "eval":{
+        	
+        	"id":"eval",
+        	"type":"command",
+        	"active":true,
+        	"permission":"admin",
+        	"commands":{
+        		"eval":["eval","e"]
+        	}
+        
+        },
+        
+        "translate":{
+        	
+        	"id":"translate",
+        	"type":"command",
+        	"active":true,
+        	"permission":"admin",
+        	"commands":{
+        		"translate":["translate","gt"]
+        	}
+        
+        },
+
+        "swgoh":{ 
+        	
+        	"id":"swgoh", 	
+        	"type":"command", 		
+        	"active":true,
+        	"permission":"anyone",
+        	"commands":{
+        		"swgoh":["swgoh","sw"],
+        		"mods":["mods","mod"],
+        		"zetas":["zetas","zeta"],
+        		"heist":["heists","heist"],
+        		"arena":["arena"]
+        	}	
+        
+        }	
     
-    ],
+    },
     
     "reaction":{
         

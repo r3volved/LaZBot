@@ -2,55 +2,55 @@ let Module          = require('../module.js');
 
 class Command extends Module {
 
-    constructor(clientConfig, moduleConfig, message) {
+    constructor(config, reqModule, reqCommand, message) {
         
-        super(clientConfig, moduleConfig, message);
-       
+        super(config, reqModule, reqCommand, message);
+
     }
     
     async process() {
                 
         try {
             
-        	let auth = await this.authorized.isAuthorized();
-            if( !auth ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+            let auth = await this.auth();
+            if( !auth ) { return this.message.react(this.clientConfig.settings.reaction.DENIED); }
 
             /** Sanitize message content */
-            const content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command}`,'').trim();
-            if( content === "help" || content.length === 0 )   { return this.help(); }
+            const content = this.message.content.split(/\s+/)[1] || '';
+            if( content === "help" || content.length === 0 )   { return this.help( this.moduleConfig.help.qmonitor ); }
             if( content === "status" ) { return this.status(); }
     
-            const messageParts = content.split(/\s+/g);
-            if( messageParts.length !== 1 ) { return this.help(); }
-
-            let toggle = ["on","true","monitor","activate"].includes(messageParts[0].trim()) ? true : false;
+            let toggle = ["on","true","monitor","activate"].includes(content.trim()) ? true : false;
         	
-            //CHECK THAT BOT HAS PERMISSIONS TO REMOVE POSTS BEFORE ACTIVATING
-            let bot = this.message.channel.members.filter(m => m.id === this.clientConfig.client.user.id).first().permissionsIn(this.message.channel.id);
-        	if( !bot.has("MANAGE_MESSAGES") ) { 
-        	
-        	    this.message.react(`${this.clientConfig.reaction.DENIED}`);
-        		return this.message.reply("Sorry, I need 'manage message' permissions on this channel to be able to monitor it");            		
-        	
-        	} else {
+            if( toggle ) {
+		    
+		        //CHECK THAT BOT HAS PERMISSIONS TO REMOVE POSTS BEFORE ACTIVATING
+		        let guild = await this.message.guild.fetchMembers();
+		        
+		        let bot = await guild.members.filter(m => m.id === this.clientConfig.client.user.id).first().permissionsIn(this.message.channel);
+			    let botAuth = await bot.has("MANAGE_MESSAGES");
+			
+		    	if( !botAuth ) { 
+		    	
+		    	    this.message.react(`${this.clientConfig.settings.reaction.DENIED}`);
+		    		return this.message.reply("Sorry, I need 'manage message' permissions on this channel to be able to monitor it");            		
+		    	
+		    	} 
+                
+            }
             
-                const DatabaseHandler = require('../../utilities/db-handler.js');
-                const data = new DatabaseHandler(this.clientConfig.database, this.moduleConfig.queries.SET_SETTINGS, [this.message.channel.id, toggle, toggle]);
+            const DatabaseHandler = require('../../utilities/db-handler.js');
+            const data = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.SET_SETTINGS, [this.message.channel.id, toggle]);
 
-                data.setRows().then((result) => {
-                    this.message.react(this.clientConfig.reaction.SUCCESS);
-                }).catch((reason) => {                	
-                    this.message.react(this.clientConfig.reaction.ERROR);
-                    throw reason;
-                });
+            data.setRows().then((result) => {
+                this.message.react(this.clientConfig.settings.reaction.SUCCESS);
+            }).catch((reason) => {                	
+                this.message.react(this.clientConfig.settings.reaction.ERROR);
+                throw reason;
+            });
             
-        	}
-        	
         } catch(e) {
-            
             this.error("process",e);
-            this.help();
-            
         }
         
     }
@@ -59,12 +59,11 @@ class Command extends Module {
 
     	try {
                 	    
-            //Ignore admin or master
-        	let auth = await this.authorized.isAuthorized();
-            if( auth ) { return true; }
+            //let auth = await this.auth();
+            //if( auth ) { return true; }
 
             const DatabaseHandler = require('../../utilities/db-handler.js');
-            const dbHandler = new DatabaseHandler(this.clientConfig.database, this.moduleConfig.queries.GET_SETTINGS, [this.message.channel.id]);
+            const dbHandler = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.GET_SETTINGS, [this.message.channel.id]);
             let result = await dbHandler.getRows();
                 
             if( typeof(result) === "undefined" || typeof(result[0]) === "undefined" || !result[0].qmonitor ) { return true; }
@@ -76,9 +75,9 @@ class Command extends Module {
                 const embed = new Discord.RichEmbed();
                 
                 embed.setColor(0x6F9AD3);
-                embed.setTitle(`Sorry, this message has been deleted`);
-                embed.setDescription(`The channel '${this.message.channel.name}' is currently only accepting questions. Please reformat your comment into the form of a question and feel free to try again.`);
-                embed.addField(`Removed:`, this.message.content);
+                embed.setTitle('Sorry, this message has been deleted');
+                embed.setDescription('The channel \"'+this.message.channel.name+'\" is currently only accepting questions. Please reformat your comment into the form of a question and feel free to try again.');
+                embed.addField('Removed:', this.message.content);
                 this.message.author.send({embed});
                 this.message.delete(500);
                 
@@ -90,8 +89,6 @@ class Command extends Module {
             this.error("analyse",e);
         }                
         
-        return true;
-    	
     }
     
     status() {
@@ -99,24 +96,19 @@ class Command extends Module {
         const Discord = require('discord.js');
         let embed = new Discord.RichEmbed();
         embed.setColor(0x6F9AD3);
-        embed.setTitle(this.moduleConfig.help.title);
-        embed.setDescription(this.moduleConfig.help.text);
+        embed.setTitle(this.moduleConfig.help.qmonitor.title);
+        embed.setDescription(this.moduleConfig.help.qmonitor.text);
         
         try {
             const DatabaseHandler = require('../../utilities/db-handler.js');
-            const dbHandler = new DatabaseHandler(this.clientConfig.database, this.moduleConfig.queries.GET_SETTINGS, [this.message.channel.id]);
+            const dbHandler = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.GET_SETTINGS, [this.message.channel.id]);
             dbHandler.getRows().then((result) => {
-                
-                embed.addField("Status","Active and monitoring");
-                embed.addField("Example",this.moduleConfig.help.example);        
+                if( result[0].qmonitor ) { embed.addField("Status","Active and monitoring"); }
+                else { embed.addField("Status","Inactive"); }
                 this.message.channel.send({embed}); 
-                
             }).catch((reason) => {
-                
                 embed.addField("Status","Inactive");
-                embed.addField("Example",this.moduleConfig.help.example);        
                 this.message.channel.send({embed}); 
-                
             });
         } catch(e) {
             this.error("status",e);

@@ -2,17 +2,16 @@ let Module          = require('../module.js');
 
 class Monitor extends Module {
 
-    constructor(clientConfig, moduleConfig, message) {
+    constructor(config, reqModule, reqCommand, message) {
         
-        super(clientConfig, moduleConfig, message);
+        super(config, reqModule, reqCommand, message);
         
     }
     
     //Process command
 	async process() {
 	    	    
-    	let auth = await this.authorized.isAuthorized();
-        if( !auth ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+    	if( !this.auth() ) { return this.message.react(this.clientConfig.reaction.DENIED); }
 
 	    let content = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command} `,'');  	
     	
@@ -25,11 +24,9 @@ class Monitor extends Module {
         
         try {
 
-            //If not DM, ignore
-            if( this.message.channel.type !== "dm" ) { return true; } 
-
-            let auth = await this.authorized.isAuthorized();
-            if( auth ) { return true; }
+            //If not DM or user is authorized, ignore
+            if( this.message.channel.type !== "dm" || this.auth() ) { return true; } 
+            
 
             //Tell master if someone is DMing the bot...
             const Discord = require('discord.js');

@@ -12,10 +12,19 @@
     
     "help":{
     
-        "title":"About my command",
-        "text":"My command does stuff\nmulti-line",
-        "example":"*%PREFIX%%COMMAND% do command*"
-        
-    }    
+        "command":{
+        	"id":"command",
+        	"title":"About my command",
+	        "text":"My command does stuff\nmulti-line",
+	        "example":"*%PREFIX%%COMMAND% do command*"
+        }
+
+    },
+    
+    "queries":{
+    	
+    	"GET_STUFF":"SELECT * FROM `stuff`"
+    
+    }
     
 }

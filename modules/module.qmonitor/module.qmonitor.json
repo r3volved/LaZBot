@@ -4,24 +4,27 @@
 
     "name":"Question monitor",
 
-    "version":"1.0",
+    "version":"2.0",
     
     "type":"preMonitor",
     
     "permission":"admin",
     
     "help":{
-    
-        "title":"Question monitor help",
-        "text":"This module monitors a channel for comments in the form of a question. Non-questions will be removed on channels where this module is actively monitoring. In the case of a removal, the user will be notified over PM that their comment had ben removed.\n\nUse the command %PREFIX%%COMMAND% to toggle this monitor on your channel.",
-        "example":"*%PREFIX%%COMMAND% on*\n*%PREFIX%%COMMAND% off*"
-        
+    	
+    	"qmonitor":{
+    		"id":"qmonitor",
+	        "title":"Question monitor help",
+	        "text":"This module monitors a channel for comments in the form of a question. Non-questions will be removed on channels where this module is actively monitoring. In the case of a removal, the user will be notified over PM that their comment had ben removed.",
+	        "example":"*%PREFIX%%COMMAND% on*\n*%PREFIX%%COMMAND% off*"
+    	}
+
     },
     
     "queries":{
     	
     	"GET_SETTINGS":"SELECT `qmonitor` FROM `channel` WHERE `channelID` = ?",
-    	"SET_SETTINGS":"INSERT INTO `channel` (`channelID`, `qmonitor`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `qmonitor` = ?"
+    	"SET_SETTINGS":"INSERT INTO `channel` (`channelID`, `qmonitor`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `qmonitor`=VALUES(`qmonitor`)"
     	
     }
     

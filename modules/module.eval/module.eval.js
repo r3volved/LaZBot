@@ -2,29 +2,29 @@ let Module          = require('../module.js');
 
 class Command extends Module {
 
-	constructor(clientConfig, moduleConfig, message) {
-	    
-	    super(clientConfig, moduleConfig, message);
-	    
-	}
-	
+	constructor(config, reqModule, reqCommand, message) {
+        
+        super(config, reqModule, reqCommand, message);
+
+    }
+    
 	async process() {
 			    
-    	let auth = await this.authorized.isAuthorized();
-        if( !auth ) { return this.message.react(this.clientConfig.reaction.DENIED); }
+    	let auth = await this.auth();
+        if( !auth ) { return this.message.react(this.clientConfig.settings.reaction.DENIED); }
 
-	    let prevaled = this.message.content.replace(`${this.clientConfig.prefix}${this.moduleConfig.command} `,'');
+	    let prevaled = this.message.content.replace(`${this.clientConfig.settings.prefix}${this.command} `,'');
     	let evaled = "undefined";    	
     	
-    	if( prevaled === "help" || prevaled.length === 0 ) { return this.help(); }
+    	if( prevaled === '' || prevaled === "help" ) { return this.help( this.moduleConfig.help.eval ); }
 
     	try {
     		evaled = eval(prevaled);
     		if( typeof(evaled) === "undefined" ) { throw evaled; }
-    		this.message.react(this.clientConfig.reaction.SUCCESS);
+    		this.message.react(this.clientConfig.settings.reaction.SUCCESS);
     	} catch(e) {
     		evaled = e;
-    		this.message.react(this.clientConfig.reaction.ERROR);
+    		this.message.react(this.clientConfig.settings.reaction.ERROR);
     	}
   
     	if( !!evaled && typeof evaled === "object" && Object.keys(evaled).length > 0 ) {
@@ -44,7 +44,7 @@ class Command extends Module {
 
     modules() {
 	    
-	    return JSON.stringify(this.clientConfig.modules,""," ");
+	    return JSON.stringify(this.clientConfig.settings.modules,""," ");
 	    
 	}
 	
@@ -105,7 +105,7 @@ class Command extends Module {
         //If already sent chunks to DM, send last bit to DM
         if( dm ) { 
             this.message.author.send({embed}); 
-            this.message.react(this.clientConfig.reaction.DM);
+            this.message.react(this.clientConfig.settings.reaction.DM);
         } else { 
             this.message.channel.send({embed}); 
         }

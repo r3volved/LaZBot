@@ -49,7 +49,7 @@ class QueryHandler {
     		
 	    	//LOOK FOR CHANNEL SETTINGS AND DO COMMAND
 	    	const mysql = require('mysql');
-	    	const con = mysql.createConnection( this.clientConfig.database );
+	    	const con = mysql.createConnection( this.clientConfig.settings.database );
 	    	
 	    	try {
 	    		con.connect(function(err) {

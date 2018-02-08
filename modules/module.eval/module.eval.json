@@ -4,7 +4,7 @@
 
     "name":"Evaluation",
 
-    "version":"1.0",
+    "version":"2.0",
     
     "type":"command",
     
@@ -12,10 +12,13 @@
     
     "help":{
     
-        "title":"Evaluation help",
-        "text":"Evaluate and view results of an expresssion.\n%PREFIX%%COMMAND% <thingToEval>\n\n**Note:** *This command is restricted to bot master*",
-        "example":"*%PREFIX%%COMMAND% this.message.id*"
-        
+        "eval":{
+        	"id":"eval",
+        	"title":"Evaluation help",
+	        "text":"Evaluate and view results of an expresssion.\n%PREFIX%%COMMAND% <thingToEval>\n\n**Note:** *This command is restricted to bot master*",
+	        "example":"*%PREFIX%%COMMAND% this.message.id*"
+        }
+
     }
     
 }
