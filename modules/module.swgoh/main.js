@@ -21,7 +21,7 @@ class Command extends Module {
             
             switch( this.command ) {
                 case "swgoh":
-                    return this.doSwgoh();    
+                	return require('./doSwgoh.js')( this ); 
                 case "arena":
                     return require('./doArena.js')( this );
                 case "zetas":
