@@ -86,7 +86,7 @@ async function doArena( obj ) {
     
     if( squads.arena ) { 
         replyObj.fields.push({ 
-            "title":"PVP Arena (Rank: "+squads.ships.rank+")",
+            "title":"PVP Arena (Rank: "+squads.arena.rank+")",
             "text":"`"+squads.arena.units.join("`\n`")+"`\n`------------------------------`\n",
             "inline":true
         });
