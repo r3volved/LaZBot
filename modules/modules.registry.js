@@ -17,7 +17,7 @@ class ModuleRegistry {
                 if( config.settings.modules[m].active ) {
                                    
                     let tmpModule = config.settings.modules[m];
-                    this.modules[tmpModule.id] = require(config.path+'/modules/module.'+tmpModule.id+'/module.'+tmpModule.id+'.json');
+                    this.modules[tmpModule.id] = require(config.path+'/modules/module.'+tmpModule.id+'/config.json');
                     this.modules[tmpModule.id].commands = tmpModule.commands;
                     
                 }
@@ -57,7 +57,7 @@ class ModuleRegistry {
         	for( k in this.modules ) {
         	   let tmpModule = this.modules[k];
         	   if( tmpModule.type === 'preMonitor' ) {
-        	       const Monitor       = require(config.path+'/modules/module.'+tmpModule.id+'/module.'+tmpModule.id+'.js');                    
+        		   const Monitor       = require(config.path+'/modules/module.'+tmpModule.id+'/main.js');                    
                    const thisMonitor   = new Monitor(config, tmpModule, null, message);
                    try { await thisMonitor.analyze(); } catch(e) { throw e; }
         	   }
@@ -74,7 +74,7 @@ class ModuleRegistry {
                 let tmpModule = this.modules[k];
                 for( let c in tmpModule.commands ) {
                     if( tmpModule.commands[c].includes(command) ) {
-                        const Command       = require(config.path+'/modules/module.'+tmpModule.id+'/module.'+tmpModule.id+'.js');                    
+                        const Command       = require(config.path+'/modules/module.'+tmpModule.id+'/main.js');                    
 	                    const thisCommand   = new Command(config, tmpModule, command, message);
 	                    try { await thisCommand.process(); } catch(e) { throw e; }
 	                }
@@ -85,7 +85,7 @@ class ModuleRegistry {
             for( k in this.modules ) {
                let tmpModule = this.modules[k];
                if( tmpModule.type === 'postMonitor' ) {
-                   const Monitor       = require(config.path+'/modules/module.'+tmpModule.id+'/module.'+tmpModule.id+'.js');                    
+                   const Monitor       = require(config.path+'/modules/module.'+tmpModule.id+'/main.js');                    
                    const thisMonitor   = new Monitor(config, tmpModule, null, message);
                    try { await thisMonitor.analyze(); } catch(e) { throw e; }
                }

@@ -4,7 +4,7 @@
     
     "master":"YOUR_USER_ID",
     
-    "version":"LaZBot v2.4",
+    "version":"LaZBot v2.5",
     
     "adminRole":"botadmins",
 
@@ -22,9 +22,9 @@
     "datadb":{
     	
         "host":"localhost",
-        "user":"lazbot",
-        "password":"lazbot314",
-        "database":"lazbot"
+        "user":"livedata",
+        "password":"datalive",
+        "database":"livedata"
     	
     },
     
@@ -44,7 +44,6 @@
         "help":{ 
         	
         	"id":"help", 				
-        	"type":"command",	
         	"active":true,
         	"permission":"anyone",
         	"commands":{
@@ -56,8 +55,7 @@
         "meme":{
         	
         	"id":"meme",
-        	"type":"preMonitor",
-        	"active":true,
+        	"active":false,
         	"permission":"admin",
         	"commands":{
         		"meme":["meme","memes"]
@@ -68,8 +66,7 @@
         "qmonitor":{
         	
         	"id":"qmonitor",
-        	"type":"preMonitor",
-        	"active":true,
+        	"active":false,
         	"permission":"admin",
         	"commands":{
         		"qmonitor":["qmonitor","qm"]
@@ -80,8 +77,7 @@
         "eval":{
         	
         	"id":"eval",
-        	"type":"command",
-        	"active":true,
+        	"active":false,
         	"permission":"admin",
         	"commands":{
         		"eval":["eval","e"]
@@ -92,8 +88,7 @@
         "translate":{
         	
         	"id":"translate",
-        	"type":"command",
-        	"active":true,
+        	"active":false,
         	"permission":"admin",
         	"commands":{
         		"translate":["translate","gt"]
@@ -104,7 +99,6 @@
         "swgoh":{ 
         	
         	"id":"swgoh", 	
-        	"type":"command", 		
         	"active":true,
         	"permission":"anyone",
         	"commands":{

@@ -23,13 +23,13 @@ class Command extends Module {
                 case "swgoh":
                     return this.doSwgoh();    
                 case "arena":
-                    return this.doArena();
+                    return require('./doArena.js')( this );
                 case "zetas":
-                    return this.doZetas();
+                    return require('./doZetas.js')( this );
                 case "mods":
-                    return this.doMods();
+                    return require('./doMods.js')( this );
                 case "heist":
-                    return this.doHeist();
+                	return require('./doHeist.js')( this );
                 default:
             }
             
@@ -40,346 +40,11 @@ class Command extends Module {
         
     }
     
-
-    async doSwgoh() {
     
-		const content = this.message.content.split(/\s+/g);
-		if( content[1] ) {
-		    
-		    switch( content[1] ) {
-		        case "add":
-		            return this.add( content );
-		        case "sync":
-		            return this.sync( content );
-		        case "remove":    
-		            return this.remove( content );
-		        case "me":
-		            return this.find( content );
-		        default:
-		            if( content[1].match(/\d{18}/) ) {
-		                return this.find( content );
-		            }
-		    }
-		
-		}
-		
-		return this.help( this.moduleConfig.help.swgoh );
-    
+    async analyze() {
     }
     
-    
-    async doZetas() {
-    
-        const content = this.message.content.split(/\s+/g);
-        
-        let discordId = content.length === 1 || content[1] === 'me' ? this.message.author.id : content[1].replace(/[\\|<|@|!]*(\d{18})[>]*/g,'$1');
-        if( !discordId.match(/\d{18}/) ) { return this.help( this.moduleConfig.help.zetas ); }
-        
-        const DatabaseHandler = require('../../utilities/db-handler.js');
-        const registration = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.GET_REGISTER, [discordId]);
-        let result = null;
-        
-        try {
-            result = await registration.getRows();
-        } catch(e) {
-            this.message.react(this.clientConfig.settings.reaction.ERROR);                    
-            return this.error(e);           
-        }
 
-        if( result.length === 0 ) { 
-            this.message.react(this.clientConfig.settings.reaction.ERROR);
-            return this.message.channel.send("The requested discord user is not registered with a swgoh account.\nSee help for registration use.");
-        }
-                            
-        let allyCode    = result[0].allyCode;
-        let playerName  = result[0].playerName;
-        let updated     = result[0].updated;
-            
-        result = await this.findZetas( allyCode );
-        
-        let toons = {};
-        let toon  = null;
-
-        for( let row of result ) {
-            
-            let toon   = await JSON.parse(row.unitName);
-            let aName  = await JSON.parse(row.abilityName);
-            
-            if( !toons[toon] ) { toons[toon] = []; }
-            toons[toon].push(aName);
-            
-        }
-
-        let order = await Object.keys(toons).sort((a,b) => {
-            return toons[b].length-toons[a].length; 
-        });
-        
-        let replyObj = {};
-        
-        let ud = new Date();
-        ud.setTime(updated);
-        ud = ud.toISOString().replace(/T/g,' ').replace(/\..*/g,'');
-
-        replyObj.title = playerName+'\'s zeta\'s';
-        replyObj.description = 'Fetched at: \n'+ud;
-        replyObj.fields = [];
-
-        for( let k of order ) {
-            
-            let field = {};
-            field.title = '('+toons[k].length+') '+k;
-            field.text = '';
-            for( let i = 0; i < toons[k].length; ++i ) {
-                field.text += '` - '+toons[k][i]+'`\n';
-            }
-            field.text += '`------------------------------`\n';
-            field.inline = true;
-            replyObj.fields.push( field );
-        
-        } 
-                
-        this.reply( replyObj );
-
-    }
-    
-    
-    async doMods() {
-    
-        const content = this.message.content.split(/\s+/g);
-        
-        let discordId = content.length === 1 || content[1] === 'me' ? this.message.author.id : content[1].replace(/[\\|<|@|!]*(\d{18})[>]*/g,'$1');
-        if( !discordId.match(/\d{18}/) ) { return this.help( this.moduleConfig.help.mods ); }
-        
-        const DatabaseHandler = require('../../utilities/db-handler.js');
-        const registration = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.GET_REGISTER, [discordId]);
-        let result = null;
-        
-        try {
-            result = await registration.getRows();
-        } catch(e) {
-            this.message.react(this.clientConfig.settings.reaction.ERROR);                    
-            return this.error(e);           
-        }
-
-        if( result.length === 0 ) { 
-            this.message.react(this.clientConfig.settings.reaction.ERROR);
-            return this.message.channel.send("The requested discord user is not registered with a swgoh account.\nSee help for registration use.");
-        }
-                            
-        let allyCode    = result[0].allyCode;
-        let playerName  = result[0].playerName;
-        let updated     = result[0].updated;
-            
-        try {
-            result = await this.findMods( allyCode );
-        } catch(e) {
-            this.message.react(this.clientConfig.settings.reaction.ERROR);                    
-            return this.error(e);           
-        }
-        
-        await this.message.react(this.clientConfig.settings.reaction.SUCCESS);
-        
-        let mods = [];
-        let mod  = {};
-        let secondaryCount = 1;
-        for( let i = 0; i < result.length; ++i ) {
-            
-            if( !mod.mod_uid || result[i].mod_uid !== mod.mod_uid ) {
-                
-                if( mod.mod_uid ) { 
-                    
-                    for( secondaryCount; secondaryCount < 5; ++secondaryCount ) {
-                        mod["secondaryType_"+secondaryCount] = "";
-                        mod["secondaryValue_"+secondaryCount] = "";
-                    }
-                    
-                    mod.characterName = result[i].characterName.substr(1,result[i].characterName.length-2);
-                    mods.push(mod); 
-                
-                }
-                
-                secondaryCount = 1;
-                
-                mod = {};
-                mod.mod_uid = result[i].mod_uid;
-                mod.slot    = result[i].slot;
-                mod.set     = result[i].set.replace(/\s/,'');
-                mod.level   = parseInt(result[i].level);
-                mod.pips    = parseInt(result[i].pips);
-                mod.primaryBonusType  = result[i].type;
-                mod.primaryBonusValue = result[i].value;
-                
-            } else {
-                
-                mod["secondaryType_"+secondaryCount] = result[i].type;
-                mod["secondaryValue_"+secondaryCount] = result[i].value;
-                ++secondaryCount;
-                
-            }
-            
-        }
-        
-        let modBuffer = new Buffer(JSON.stringify(mods));
-        const Discord = require('discord.js');
-        this.message.author.send(new Discord.Attachment(modBuffer,'mods-'+playerName+'-'+updated.toString()+'.json'));
-        this.message.react(this.clientConfig.settings.reaction.DM);
-                
-    }
-    
-    
-    async doHeist() {
-    
-        const content = this.message.content.split(/\s+/g);
-        
-        let discordId = content.length === 1 || content[1] === 'me' ? this.message.author.id : content[1].replace(/[\\|<|@|!]*(\d{18})[>]*/g,'$1');
-        if( content.length > 1 && content[1] === 'help' ) { return this.help( this.moduleConfig.help.heist ); }
-        
-        let result = null;
-        
-        try {
-            result = await this.fetchEvents();
-        } catch(e) {
-            this.message.react(this.clientConfig.settings.reaction.ERROR);                    
-            return this.error(e);           
-        }
-        
-        let replyObj = {};
-        
-        replyObj.title = this.moduleConfig.help.heist.title;
-        replyObj.description = '';
-        replyObj.fields = [];
-        
-        for( let i = 0; i < result.length; ++i ) {
-            
-            if( result[i].nameKey === 'EVENT_CREDIT_HEIST_GETAWAY_NAME' ) {
-                let credit = {};
-                credit.title = 'Credit heist';
-                credit.text = '';
-                for( let s = 0; s < result[i].instanceList.length; ++s ) {
-                    let sDate = new Date();
-                    sDate.setTime( result[i].instanceList[s].startTime );
-                    credit.text += '`'+sDate.toISOString().split(/T/)[0]+'`\n';
-                }
-                replyObj.fields.push(credit);
-            }
-            
-            if( result[i].nameKey === 'EVENT_TRAINING_DROID_SMUGGLING_NAME' ) {
-                let droid = {};
-                droid.title = 'Droid smuggling';
-                droid.text = '';
-                for( let s = 0; s < result[i].instanceList.length; ++s ) {
-                    let sDate = new Date();
-                    sDate.setTime( result[i].instanceList[s].startTime );
-                    droid.text += '`'+sDate.toISOString().split(/T/)[0]+'`\n';
-                }
-                replyObj.fields.push(droid);
-            }
-
-        }
-        
-        this.reply( replyObj );
-
-    }
-    
-    async doArena() {
-    
-        const content = this.message.content.split(/\s+/g);
-        
-        let discordId = content.length === 1 || content[1] === 'me' ? this.message.author.id : content[1].replace(/[\\|<|@|!]*(\d{18})[>]*/g,'$1');
-        if( !discordId.match(/\d{18}/) ) { return this.help( this.moduleConfig.help.arena ); }
-        
-        const DatabaseHandler = require('../../utilities/db-handler.js');
-        const registration = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.GET_REGISTER, [discordId]);
-        let result = null;
-        
-        try {
-            result = await registration.getRows();
-        } catch(e) {
-            this.message.react(this.clientConfig.settings.reaction.ERROR);                    
-            return this.error(e);           
-        }
-
-        if( result.length === 0 ) { 
-            this.message.react(this.clientConfig.settings.reaction.ERROR);
-            return this.message.channel.send("The requested discord user is not registered with a swgoh account.\nSee help for registration use.");
-        }
-                            
-        let allyCode    = result[0].allyCode;
-        let playerName  = result[0].playerName;
-        
-        try {
-            result = await this.fetchPlayer( allyCode );
-            result = result[0].pvpProfileList;
-        } catch(e) {
-            this.message.react(this.clientConfig.settings.reaction.ERROR);                    
-            return this.error(e);           
-        }
-                    
-        let squads = {};
-        let u = 0;
-        
-        squads.arena = {};
-        squads.arena.rank = result[0].rank;
-        squads.arena.units = [];
-        for( u = 0; u < result[0].squad.cellList.length; ++u ) {
-            squads.arena.units.push( result[0].squad.cellList[u].unitDefId );
-        }
-        
-        squads.ships = {};
-        squads.ships.rank = result[1].rank;
-        squads.ships.units = []; 
-        for( u = 0; u < result[1].squad.cellList.length; ++u ) {
-            squads.ships.units.push( result[1].squad.cellList[u].unitDefId );
-        }
-        
-        let cnames, snames = null;
-        try {
-            cnames = await this.findUnitDefs( squads.arena.units );
-            snames = await this.findUnitDefs( squads.ships.units ); 
-        } catch(e) {
-            this.message.react(this.clientConfig.settings.reaction.ERROR);                    
-            return this.error(e);           
-        }
-        
-        squads.arena.units = [];
-        for( u = 0; u < cnames.length; ++u ) {
-            squads.arena.units.push(cnames[u].name);
-        }
-        
-        squads.ships.units = [];
-        for( u = 0; u < snames.length; ++u ) {
-            squads.ships.units.push(snames[u].name);
-        }
-        
-        
-        
-        let replyObj = {};
-        
-        replyObj.title = playerName+'\'s arena';
-        replyObj.description = 'Fetched at: \n'+( new Date().toISOString().replace(/T/g,' ').replace(/\..*/g,'') );
-        replyObj.fields = [];
-        
-        if( squads.ships ) {
-            replyObj.fields.push({ 
-                "title":"Ship Arena (Rank: "+squads.ships.rank+")",
-                "text":"`"+squads.ships.units.join("`\n`")+"`\n`------------------------------`\n",
-                "inline":true
-            });
-        }
-        
-        if( squads.arena ) { 
-            replyObj.fields.push({ 
-                "title":"PVP Arena (Rank: "+squads.ships.rank+")",
-                "text":"`"+squads.arena.units.join("`\n`")+"`\n`------------------------------`\n",
-                "inline":true
-            });
-        }
-        
-        
-        this.reply( replyObj );
-                    
-    }
-        
     async sync( content ) {
     	
     	let discordId, playerId, playerName, allyCode, playerGuild = null;
@@ -436,7 +101,7 @@ class Command extends Module {
 
     }
 
-    
+
     async add( content ) {
     	
         let discordId, playerId, playerName, allyCode, playerGuild = null;
@@ -730,10 +395,6 @@ class Command extends Module {
         
     }
 
-
-    async analyze() {
-    }
-    
 
 }
 

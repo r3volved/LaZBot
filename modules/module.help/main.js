@@ -10,7 +10,21 @@ class Command extends Module {
     
     process() {
 
-        try {
+        return this.doHelp();
+        
+    }
+    
+    
+    analyze() {
+    	if( this.message.content.includes(this.clientConfig.client.user.id) ) {
+    		return this.doHelp();
+    	}
+    	
+    }
+    
+    doHelp() {
+    	
+    	try {
             
             let extra = {};
             extra.title = 'Available commands';
@@ -22,15 +36,6 @@ class Command extends Module {
             this.error("init",e);
             
         }
-        
-    }
-    
-    
-    analyze() {
-    	
-    	if( !!this.message.content.includes(this.clientConfig.client.user.id) ) {
-    		return this.help( this.moduleConfig.help.help );
-    	}
     	
     }
     
