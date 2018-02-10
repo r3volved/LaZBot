@@ -2,9 +2,9 @@
 
     "id":"help",
 
-    "name":"Help command",
+    "name":"Help module",
 
-    "version":"2.4",
+    "version":"2.5",
     
     "type":"preMonitor",
     
@@ -14,7 +14,7 @@
     
     	"help":{
 	        "title":"You look like you might be having problems",
-	        "text":"`I am currently listening with the prefix: %PREFIX%\n-------------------------------------------`\nYou can get more help with these commands by running each command followed by 'help'"        		 
+	        "text":"I am currently listening for the following commands with the prefix: **%PREFIX%**\n*Get command-specific help by running each command followed by 'help'*"        		 
     	}
 
     }

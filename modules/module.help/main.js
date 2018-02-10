@@ -22,18 +22,35 @@ class Command extends Module {
     	
     }
     
-    doHelp() {
+    async doHelp() {
     	
     	try {
             
-            let extra = {};
-            extra.title = 'Available commands';
-            extra.text  = '...commands';
-            return this.help( this.moduleConfig.help.help, extra );
+    		let space = ' ';
+    		let extras = [];
+    		
+            for( let k in this.clientConfig.registry.modules ) {
+
+            	let modl = this.clientConfig.registry.modules[k];
+
+            	let extra = {};
+                extra.title = modl.name+'  v'+modl.version;
+                extra.inline = true;
+                extra.text  = '```';
+                extra.text += 'Commands      Aliases\n';
+            	for( let c in modl.commands ) {
+        			extra.text += this.clientConfig.settings.prefix+c+space.repeat(10-c.length)+'|  '+modl.commands[c].join(', ')+'\n';
+        		}
+            	extra.text += '```';
+            	extras.push( extra );
+        		
+            }
+            
+            return this.help( this.moduleConfig.help.help, extras );
         
         } catch(e) {
             
-            this.error("init",e);
+            this.error("doHelp",e);
             
         }
     	

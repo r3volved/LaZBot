@@ -73,7 +73,13 @@ class Module {
         replyObj.description = replyObj.description.replace(/%COMMAND%/g, helpJson.id);
         
         replyObj.fields = replyObj.fields || [];
-        if( extra ) { replyObj.fields.push(extra); }
+        if( extra ) { 
+        	if( Array.isArray(extra) ) {
+        		replyObj.fields = replyObj.fields.concat(extra);
+        	} else {
+            	replyObj.fields.push(extra); 
+        	}
+        }
         
         if( helpJson.example ) {
 	        let exampleField = {};
