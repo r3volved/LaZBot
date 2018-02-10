@@ -26,8 +26,8 @@ class Module {
     
     reply( replyObj ) {
             
-        if( typeof replyOnj === 'string' ) {
-        	return this.channel.message.send( replyObj );
+        if( typeof replyObj === 'string' ) {
+        	return this.message.channel.send( replyObj );
         }
         
     	const Discord = require('discord.js');

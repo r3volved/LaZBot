@@ -63,7 +63,7 @@ class Command extends Module {
         playerGuild = result[0].playerGuild;
     	
     	try {
-    	   result = await this.fetchPlayer( allyCode );    	   
+    		result = await this.fetchPlayer( allyCode );    	   
     	} catch(e) {
     	    this.message.react(this.clientConfig.settings.reaction.ERROR);                    
             return this.reply(e);           
@@ -76,6 +76,7 @@ class Command extends Module {
     	playerGuild = result[0].guildName;
     	
     	//insert into lazbot db
+    	const DatabaseHandler = require('../../utilities/db-handler.js');
         const data = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.SET_REGISTER, [discordId, playerId, playerName, allyCode, playerGuild]);
         
         try {

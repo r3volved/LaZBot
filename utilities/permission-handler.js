@@ -14,11 +14,11 @@ class PermissionHandler {
         if( this.message.author.id === this.clientConfig.settings.master ) { return true; }
         
         if( configPermission === "admin" ) {
-            return !!this.message.member.roles.find("name", this.clientConfig.adminRole); 
+            return !!this.message.member.roles.find("name", this.clientConfig.settings.adminRole); 
         }
         
         if( configPermission === "moderator" ) {
-            return !!this.message.member.roles.find("name", this.clientConfig.adminRole) ? true : !!this.message.member.roles.find("name", this.clientConfig.modRole);
+            return !!this.message.member.roles.find("name", this.clientConfig.settings.adminRole) ? true : !!this.message.member.roles.find("name", this.clientConfig.settings.modRole);
         }
 
         return true;
@@ -49,14 +49,17 @@ class PermissionHandler {
 
         //Master is always everything
         if( this.message.author.id === this.clientConfig.settings.master ) { return true; }
+        
         //Check for admin role
         if( moduleRoleRequired === this.clientConfig.settings.permissions[1] ) {
-            return !!this.message.member.roles.find("name", this.clientConfig.adminRole); 
+            return !!this.message.member.roles.find("name", this.clientConfig.settings.adminRole); 
         }
+        
         //Check for admin or moderator
         if( moduleRoleRequired === this.clientConfig.settings.permissions[2] ) {
-            return !!this.message.member.roles.find("name", this.clientConfig.adminRole) ? true : !!this.message.member.roles.find("name", this.clientConfig.modRole);
+            return !!this.message.member.roles.find("name", this.clientConfig.settings.adminRole) ? true : !!this.message.member.roles.find("name", this.clientConfig.settings.modRole);
         }
+        
         //Check anyone
         if( moduleRoleRequired === this.clientConfig.settings.permissions[3] ) {                
             return true;

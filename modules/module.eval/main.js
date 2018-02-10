@@ -10,8 +10,7 @@ class Command extends Module {
     
 	async process() {
 			    
-    	let auth = await this.auth();
-        if( !auth ) { return this.message.react(this.clientConfig.settings.reaction.DENIED); }
+        if( !await this.auth() ) { return this.message.react(this.clientConfig.settings.reaction.DENIED); }
 
 	    let prevaled = this.message.content.replace(`${this.clientConfig.settings.prefix}${this.command} `,'');
     	let evaled = "undefined";    	
@@ -44,7 +43,7 @@ class Command extends Module {
 
     modules() {
 	    
-	    return JSON.stringify(this.clientConfig.settings.modules,""," ");
+	    return JSON.stringify(this.clientConfig.registry,""," ");
 	    
 	}
 	

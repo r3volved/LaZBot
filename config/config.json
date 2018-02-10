@@ -4,7 +4,7 @@
     
     "master":"YOUR_USER_ID",
     
-    "version":"LaZBot v2.8 | SCORPIO",
+    "version":"LaZBot v2.9 | SCORPIO",
     
     "adminRole":"botadmins",
 
@@ -55,7 +55,7 @@
         "meme":{
         	
         	"id":"meme",
-        	"active":false,
+        	"active":true,
         	"permission":"admin",
         	"commands":{
         		"meme":["meme","memes"]
@@ -66,7 +66,7 @@
         "qmonitor":{
         	
         	"id":"qmonitor",
-        	"active":false,
+        	"active":true,
         	"permission":"admin",
         	"commands":{
         		"qmonitor":["qmonitor","qm"]
@@ -78,24 +78,13 @@
         	
         	"id":"eval",
         	"active":false,
-        	"permission":"admin",
+        	"permission":"master",
         	"commands":{
         		"eval":["eval","e"]
         	}
         
         },
         
-        "translate":{
-        	
-        	"id":"translate",
-        	"active":false,
-        	"permission":"admin",
-        	"commands":{
-        		"translate":["translate","gt"]
-        	}
-        
-        },
-
         "swgoh":{ 
         	
         	"id":"swgoh", 	

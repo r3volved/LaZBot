@@ -45,6 +45,13 @@
             "title":"SWGOH Heist Schedule",
             "text":"Check when the next credit and droid heists are scheduled",
             "example":"*%PREFIX%%COMMAND%*"
+        },
+        
+        "unit":{
+            "id":"unit",
+            "title":"SWGOH Unit Details",
+            "text":"Show base-unit specifications or player-unit details",
+            "example":"*%PREFIX%%COMMAND% <unitName>*\n*%PREFIX%%COMMAND% <unitName> [me|mention|discordId|allyCode|IGN]*"
         }
 
     },

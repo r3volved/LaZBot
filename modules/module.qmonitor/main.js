@@ -12,8 +12,7 @@ class Command extends Module {
                 
         try {
             
-            let auth = await this.auth();
-            if( !auth ) { return this.message.react(this.clientConfig.settings.reaction.DENIED); }
+            if( !await this.auth() ) { return this.message.react(this.clientConfig.settings.reaction.DENIED); }
 
             /** Sanitize message content */
             const content = this.message.content.split(/\s+/)[1] || '';
@@ -59,8 +58,7 @@ class Command extends Module {
 
     	try {
                 	    
-            //let auth = await this.auth();
-            //if( auth ) { return true; }
+            if( await this.auth() ) { return true; }
 
             const DatabaseHandler = require('../../utilities/db-handler.js');
             const dbHandler = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.GET_SETTINGS, [this.message.channel.id]);

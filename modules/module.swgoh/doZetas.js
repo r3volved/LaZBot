@@ -52,22 +52,38 @@ async function doZetas( obj ) {
 
     replyObj.title = playerName+'\'s zeta\'s ( '+allyCode+' )';
     replyObj.description = 'Last updated: '+ud;
+    replyObj.description += !unit ? '\n`------------------------------`' : '';
     replyObj.fields = [];
 
+    let count = 0;
+    
     for( let k of order ) {
         
-        let field = {};
-        field.title = '('+toons[k].length+') '+k;
-        field.text = '';
-        for( let i = 0; i < toons[k].length; ++i ) {
-            field.text += toons[k][i]+'\n';
-        }
-        field.text += '`------------------------------`\n';
-        field.inline = true;
-        replyObj.fields.push( field );
-    
+    	if( !unit ) {
+    		replyObj.description += '\n'+'`('+toons[k].length+')` '+k;
+    	} else {
+	        let field = {};
+	        field.title = '`('+toons[k].length+')` '+k;
+	        field.text = '';
+	        for( let i = 0; i < toons[k].length; ++i ) {
+	            field.text += toons[k][i]+'\n';
+	        }
+	        field.text += '`------------------------------`\n';
+	        field.inline = true;
+	        replyObj.fields.push( field );
+    	}
+
+    	count += toons[k].length;
     } 
-            
+     
+    if( !unit ) {
+    	let extra = {};
+    	extra.title = '**Total '+count+'**';
+    	extra.text = 'For unit details, see:\n*'+obj.clientConfig.settings.prefix+obj.command+' '+allyCode+' <unitName>*';
+    	
+    	replyObj.fields.push( extra );
+    }
+    
     obj.reply( replyObj );
 
 }

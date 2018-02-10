@@ -18,11 +18,12 @@ async function doHeist( obj ) {
     replyObj.title = obj.moduleConfig.help.heist.title;
     replyObj.description = '';
     
+    let droid = '`Not scheduled`';
+    let credit = '`Not scheduled`';
+    
     for( let i = 0; i < result.length; ++i ) {
         
         if( result[i].nameKey === 'EVENT_CREDIT_HEIST_GETAWAY_NAME' ) {
-            let credit = '`Not scheduled`';
-            replyObj.description += '**Credits** : ';
             for( let s = 0; s < result[i].instanceList.length; ++s ) {
                 let sDate = new Date();
                 if( sDate.getTime() < result[i].instanceList[s].endTime ) { 
@@ -30,12 +31,9 @@ async function doHeist( obj ) {
 	                credit = '`'+sDate.toISOString().split(/T/)[0]+'`';
 	            }
             }
-            replyObj.description += credit+'\n';
         }
         
         if( result[i].nameKey === 'EVENT_TRAINING_DROID_SMUGGLING_NAME' ) {
-            let droid = '`Not scheduled`';
-            replyObj.description += '**Droids**  : ';
             for( let s = 0; s < result[i].instanceList.length; ++s ) {
                 let sDate = new Date();
                 if( sDate.getTime() < result[i].instanceList[s].endTime ) { 
@@ -43,10 +41,12 @@ async function doHeist( obj ) {
     	            droid = '`'+sDate.toISOString().split(/T/)[0]+'`\n';
                 }
             }
-            replyObj.description += droid+'\n';
         }
 
     }
+    
+    replyObj.description += '**Credits** : '+credit+'\n';
+    replyObj.description += '**Droids**  : '+droid+'\n';
     
     obj.reply( replyObj );
 
