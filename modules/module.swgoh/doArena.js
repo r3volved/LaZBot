@@ -2,27 +2,20 @@ async function doArena( obj ) {
 
     const content = obj.message.content.split(/\s+/g);
     
-    let discordId = content.length === 1 || content[1] === 'me' ? obj.message.author.id : content[1].replace(/[\\|<|@|!]*(\d{18})[>]*/g,'$1');
-    if( !discordId.match(/\d{18}/) ) { return obj.help( obj.moduleConfig.help.arena ); }
-    
-    const DatabaseHandler = require('../../utilities/db-handler.js');
-    const registration = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_REGISTER, [discordId]);
-    let result = null;
+    if( content[1] && content[1] === 'help' ) { return obj.help( obj.moduleConfig.help.arena ); }
+
+    let result, discordId, playerId, playerName, allyCode, playerGuild = null;
+    let id = !content[1] || content[1] === 'me' ? obj.message.author.id : content[1].replace(/[\\|<|@|!]*(\d{18})[>]*/g,'$1');
     
     try {
-        result = await registration.getRows();
+        result = await obj.getRegister(id);
     } catch(e) {
-        obj.message.react(obj.clientConfig.settings.reaction.ERROR);                    
-        return obj.error(e);           
+        this.message.react(obj.clientConfig.settings.reaction.ERROR);                    
+        return obj.reply(e);
     }
-
-    if( result.length === 0 ) { 
-        obj.message.react(obj.clientConfig.settings.reaction.ERROR);
-        return obj.message.channel.send("The requested discord user is not registered with a swgoh account.\nSee help for registration use.");
-    }
-                        
-    let allyCode    = result[0].allyCode;
-    let playerName  = result[0].playerName;
+                            
+    allyCode    = result[0].allyCode;
+    playerName  = result[0].playerName;
     
     try {
         result = await obj.fetchPlayer( allyCode );
@@ -39,59 +32,79 @@ async function doArena( obj ) {
     squads.arena.rank = result[0].rank;
     squads.arena.units = [];
     for( u = 0; u < result[0].squad.cellList.length; ++u ) {
-        squads.arena.units.push( result[0].squad.cellList[u].unitDefId );
+        squads.arena.units[result[0].squad.cellList[u].cellIndex] = result[0].squad.cellList[u].unitDefId;
     }
     
-    squads.ships = {};
-    squads.ships.rank = result[1].rank;
-    squads.ships.units = []; 
-    for( u = 0; u < result[1].squad.cellList.length; ++u ) {
-        squads.ships.units.push( result[1].squad.cellList[u].unitDefId );
-    }
-    
-    let cnames, snames = null;
+    let cnames = null;
     try {
         cnames = await obj.findUnitDefs( squads.arena.units );
-        snames = await obj.findUnitDefs( squads.ships.units ); 
     } catch(e) {
         obj.message.react(obj.clientConfig.settings.reaction.ERROR);                    
         return obj.error(e);           
     }
+
+    let snames = null;
+    if( result.length > 1 ) {
+    	    	
+	    squads.ships = {};
+	    squads.ships.rank = result[1].rank;
+	    squads.ships.units = []; 
+	    for( u = 0; u < result[1].squad.cellList.length; ++u ) {
+	        squads.ships.units[result[1].squad.cellList[u].cellIndex] = result[1].squad.cellList[u].unitDefId;
+	    }
+	    
+	    try {
+	        snames = await obj.findUnitDefs( squads.ships.units ); 
+	    } catch(e) {
+	        obj.message.react(obj.clientConfig.settings.reaction.ERROR);                    
+	        return obj.error(e);           
+	    }
     
-    squads.arena.units = [];
-    for( u = 0; u < cnames.length; ++u ) {
-        squads.arena.units.push(cnames[u].name);
     }
-    
-    squads.ships.units = [];
-    for( u = 0; u < snames.length; ++u ) {
-        squads.ships.units.push(snames[u].name);
-    }
-    
-    
-    
+	
+        
     let replyObj = {};
-    
-    replyObj.title = playerName+'\'s arena';
-    replyObj.description = 'Fetched at: \n'+( new Date().toISOString().replace(/T/g,' ').replace(/\..*/g,'') );
+    replyObj.title = playerName+'\'s arena ( '+allyCode+' )';
+    replyObj.description = 'Fetched at: '+( new Date().toISOString().replace(/T/g,' ').replace(/\..*/g,'') );
     replyObj.fields = [];
     
-    if( squads.ships ) {
-        replyObj.fields.push({ 
+    let positions = [ "L|", "2|", "3|", "4|", "5|", "6|", "B|", "B|", "B|", "B|", "B|" ];
+    let i;
+    let space = "\u200b";
+    
+    if( snames ) {
+
+    	let stext = "";
+        let si;
+        for( si = 0; si < squads.ships.units.length; ++si ) {
+        	stext += "`"+positions[si]+"` "+squads.ships.units[si]+"\n";
+        }
+        for( si = 0; si < snames.length; ++si ) {
+        	stext = stext.replace(snames[si].id, snames[si].name);
+        }
+        stext += "`------------------------------`\n";
+    	replyObj.fields.push({ 
             "title":"Ship Arena (Rank: "+squads.ships.rank+")",
-            "text":"`"+squads.ships.units.join("`\n`")+"`\n`------------------------------`\n",
+            "text":stext,
             "inline":true
         });
+    
     }
     
-    if( squads.arena ) { 
-        replyObj.fields.push({ 
-            "title":"PVP Arena (Rank: "+squads.arena.rank+")",
-            "text":"`"+squads.arena.units.join("`\n`")+"`\n`------------------------------`\n",
-            "inline":true
-        });
+    let atext = "";
+    let ai;
+    for( ai = 0; ai < squads.arena.units.length; ++ai ) {
+    	atext += "`"+positions[ai]+"` "+squads.arena.units[ai]+"\n";
     }
-    
+    for( ai = 0; ai < cnames.length; ++ai ) {
+    	atext = atext.replace(cnames[ai].id, cnames[ai].name);
+    }
+    atext += "`------------------------------`\n";
+	replyObj.fields.push({ 
+        "title":"PVP Arena (Rank: "+squads.arena.rank+")",
+        "text":atext,
+        "inline":true
+    });
     
     obj.reply( replyObj );
                 

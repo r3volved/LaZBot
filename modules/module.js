@@ -26,13 +26,17 @@ class Module {
     
     reply( replyObj ) {
             
-        const Discord = require('discord.js');
+        if( typeof replyOnj === 'string' ) {
+        	return this.channel.message.send( replyObj );
+        }
+        
+    	const Discord = require('discord.js');
         const embed = new Discord.RichEmbed();
         
         replyObj.color = replyObj.color || '0x6F9AD3';
         embed.setColor(replyObj.color);
         
-        replyObj.title = replyObj.title || this.moduleConfig.settings.name;
+        replyObj.title = replyObj.title || this.moduleConfig.name;
         embed.setTitle(replyObj.title);         
         
         replyObj.footer = replyObj.footer || this.clientConfig.client.user.username+'  ['+this.clientConfig.settings.version+']';

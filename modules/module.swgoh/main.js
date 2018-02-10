@@ -47,31 +47,20 @@ class Command extends Module {
 
     async sync( content ) {
     	
-    	let discordId, playerId, playerName, allyCode, playerGuild = null;
-        let replyStr = 'Not Found!';
-
-        discordId = content[2] === 'me' ? this.message.author.id : content[2].replace(/[\\|<|@|!]*(\d{18})[>]*/g,'$1');
-        if( !discordId.match(/\d{18}/) ) { return this.help(); }
+    	let result, discordId, playerId, playerName, allyCode, playerGuild = null;
+        let id = content[2] === 'me' ? this.message.author.id : content[2].replace(/[\\|<|@|!]*(\d{18})[>]*/g,'$1');
         
-    	//find discordID in lazbot db
-        const DatabaseHandler = require('../../utilities/db-handler.js');
-        const registration = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.GET_REGISTER, [discordId]);
-        
-        let result = null;
         try {
-            result = await registration.getRows();
+            result = await this.getRegister(id);
         } catch(e) {
-	        this.message.react(this.clientConfig.settings.reaction.ERROR);                    
-	        return this.reply(e);	        
+            this.message.react(this.clientConfig.settings.reaction.ERROR);                    
+            return this.reply(e);
         }
         
-        if( result.length === 0 ) { 
-        	this.message.react(this.clientConfig.settings.reaction.ERROR);
-        	replyStr = "The requested discord user is not registered.\nSee help for registration use.";
-        	return this.reply( replyStr, "Not found" );
-    	}
-		
-    	allyCode = result[0].allyCode.toString();
+    	discordId = result[0].discordId;
+    	playerName = result[0].playerName;
+        allyCode = result[0].allyCode.toString();
+        playerGuild = result[0].playerGuild;
     	
     	try {
     	   result = await this.fetchPlayer( allyCode );    	   
@@ -103,15 +92,16 @@ class Command extends Module {
 
 
     async add( content ) {
-    	
-        let discordId, playerId, playerName, allyCode, playerGuild = null;
-        let replyStr = 'Not Found!';
 
+        let discordId, playerId, playerName, allyCode, playerGuild = null;
+
+    	if( !content[2] ) { return this.help( this.moduleConfig.help.swgoh ); }
         discordId = content[2] === 'me' ? this.message.author.id : content[2].replace(/[\\|<|@|!]*(\d{18})[>]*/g,'$1');
-        if( !discordId.match(/\d{18}/) ) { return this.help(); }
+        if( !discordId.match(/\d{18}/) ) { return this.help( this.moduleConfig.help.swgoh ); }
                 
+        if( !content[3] ) { return this.help( this.moduleConfig.help.swgoh ); }
         allyCode  = content[3].replace(/-/g,'') || null;
-    	if( !allyCode || !allyCode.match(/\d{9}/) ) { return this.help(); }
+    	if( !allyCode || !allyCode.match(/\d{9}/) ) { return this.help( this.moduleConfig.help.swgoh  ); }
 
         let result = null;
         
@@ -174,15 +164,50 @@ class Command extends Module {
     
     async find( content ) {
     	
-        let discordId, playerId, playerName, allyCode, playerGuild = null;
-        let replyStr = 'Not Found!';
-
-        discordId = content[1] === 'me' ? this.message.author.id : content[1].replace(/[\\|<|@|!]*(\d{18})[>]*/g,'$1');
-        if( !discordId.match(/\d{18}/) ) { return this.help(); }
+        let result, discordId, playerId, playerName, allyCode, playerGuild = null;
+        let id = content[1] === 'me' ? this.message.author.id : content[1].replace(/[\\|<|@|!]*(\d{18})[>]*/g,'$1');
         
+        try {
+            result = await this.getRegister(id);
+        } catch(e) {
+            this.message.react(this.clientConfig.settings.reaction.ERROR);                    
+            return this.reply(e);
+        }
+                          	
+        let replyObj = {};
+        replyObj.title = 'Results for ';
+        replyObj.title += content[1] === 'me' ? this.message.author.username : result[0].playerName;
+        
+        replyObj.description = '**Discord**   : '+result[0].discordId+'\n';
+        replyObj.description += '**Player**      : '+result[0].playerName+'\n';
+        replyObj.description += '**Guild**        : '+result[0].playerGuild+'\n';
+        replyObj.description += '**AllyCode** : '+result[0].allyCode+'\n';
+                
+   	    let ud = new Date();
+		ud.setTime(result[0].updated);
+		ud = ud.toISOString().replace(/T/g,' ').replace(/\..*/g,'');
+        replyObj.text += 'Updated: '+ud;
+
+        return this.reply( replyObj );
+   	            
+    }
+    
+    
+    async getRegister( id ) {
+    	
     	//find discordID in lazbot db
         const DatabaseHandler = require('../../utilities/db-handler.js');
-        const registration = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.GET_REGISTER, [discordId]);
+        
+        let registration = null;
+        if( id.match(/\d{18}/) ) {
+        	registration = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.GET_REGISTER_BY_DID, [id]);
+        } else {
+        	if( id.replace(/-/g,'').match(/\d{9}/) ) { 
+            	registration = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.GET_REGISTER_BY_ALLYCODE, [id.replace(/-/g,'')]);
+	        } else {
+	        	registration = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.GET_REGISTER_BY_PLAYER, ['%'+id.toLowerCase()+'%']);
+	        }
+        }
         
         let result = null;
         
@@ -195,26 +220,135 @@ class Command extends Module {
         
         if( result.length === 0 ) { 
         	this.message.react(this.clientConfig.settings.reaction.ERROR);
-        	replyStr = "The requested discord user is not registered.\nSee help for registration use.";
-        	return this.reply( replyStr, "Not found" );
+        	let replyStr = "The requested discord user is not registered.\nSee help for registration use.";
+        	return this.reply( replyStr );
         }
-                          	
-        let updated = result[0].updated; 
-        	    
-        this.message.react(this.clientConfig.settings.reaction.SUCCESS);
-        replyStr = `Player: ${result[0].playerName}\nGuild: ${result[0].playerGuild}\nAllyCode: ${result[0].allyCode}`;
-        let replyTitle = 'Results for ';
-   	    replyTitle += content[1] === 'me' ? this.message.author.username : discordId;
-   	            
-   	    let ud = new Date();
-		ud.setTime(updated);
-		ud = ud.toISOString().replace(/T/g,' ').replace(/\..*/g,'');
-		return this.reply( replyStr, replyTitle, `Last updated: \n${ud}` );
-   	            
+        
+        return result;
+    	
     }
     
-    /** PROMISES **/
     
+    findUnitDefs( units ) {
+        
+        return new Promise((resolve,reject) => {
+            
+            //find discordID in lazbot db
+            const DatabaseHandler = require('../../utilities/db-handler.js');
+            const data = new DatabaseHandler(this.clientConfig.settings.datadb, this.moduleConfig.queries.GET_UNITNAMES, [units]);
+            data.getRows().then((result) => {
+                if( result.length === 0 ) { 
+                    this.message.react(this.clientConfig.settings.reaction.ERROR);
+                    let replyStr = "There was an error retriving your units";
+                    reject(replyStr);
+                
+                } else {
+                    resolve(result);
+                }
+            }).catch((reason) => {                  
+                this.message.react(this.clientConfig.settings.reaction.ERROR);                    
+                reject(reason);
+            });
+            
+        });
+        
+    }
+    
+    
+    findMods( allyCode ) {
+        
+        return new Promise((resolve,reject) => {
+            
+            //find discordID in lazbot db
+            const DatabaseHandler = require('../../utilities/db-handler.js');
+            const data = new DatabaseHandler(this.clientConfig.settings.datadb, this.moduleConfig.queries.GET_MODS, [allyCode]);
+            data.getRows().then((result) => {
+                if( result.length === 0 ) { 
+                    this.message.react(this.clientConfig.settings.reaction.ERROR);
+                    replyStr = "The requested discord user is not registered with a swgoh account.\nSee help for registration use.";
+                    reject(replyStr);
+                
+                } else {
+                    resolve(result);
+                }
+            }).catch((reason) => {                  
+                this.message.react(this.clientConfig.settings.reaction.ERROR);                    
+                reject(reason);
+            });
+            
+        });
+        
+    }
+
+    
+    findZetas( allyCode, unit ) {
+        
+        return new Promise((resolve,reject) => {
+            
+        	let query = !unit ? this.moduleConfig.queries.GET_ZETAS : this.moduleConfig.queries.GET_UNIT_ZETAS;
+        	let args  = !unit ? [allyCode] : [allyCode,'%'+unit.toLowerCase()+'%'];
+        	
+            const DatabaseHandler = require('../../utilities/db-handler.js');
+            const data = new DatabaseHandler(this.clientConfig.settings.datadb, query, args);
+            data.getRows().then((result) => {
+                if( result.length === 0 ) { 
+                    this.message.react(this.clientConfig.settings.reaction.ERROR);
+                    let replyStr = "The requested user does not have any zetas.";
+                    reject(replyStr);
+                
+                } else {
+                    resolve(result);
+                }
+            }).catch((reason) => {                  
+                this.message.react(this.clientConfig.settings.reaction.ERROR);                    
+                reject(reason);
+            });
+            
+        });
+        
+    }
+
+
+    fetchEvents() {
+        
+        return new Promise( async (resolve, reject) => {
+            
+        	let settings = {};
+                settings.path       = process.cwd();
+                settings.path       = settings.path.replace(/\\/g,'\/')+'/compiled';
+                settings.hush       = true;
+                settings.verbose    = false;
+                settings.force      = false;
+                
+            let rpc = null;
+                    
+            try {
+            	await this.message.react(this.clientConfig.settings.reaction.THINKING);
+                const RpcService = require(settings.path+'/services/service.rpc.js');
+                rpc = await new RpcService(settings);
+
+                /** Start the RPC Service - with no logging**/
+                await rpc.start(`Fetching events...\n`, false);
+                
+                let iData = await rpc.Player( 'GetInitialData' );
+                
+                /** End the RPC Service **/
+                await rpc.end("All data fetched");
+
+                resolve( iData.gameEventList );
+                
+            } catch(e) {
+                console.error(e);
+                await this.message.react(this.clientConfig.settings.reaction.ERROR);
+                await rpc.end(e.message);
+                reject(e);
+            }            
+            
+        });
+        
+    }
+ 
+
     fetchPlayer( allyCode ) {
     	
     	return new Promise( async (resolve, reject) => {
@@ -231,7 +365,7 @@ class Command extends Module {
 	        let profile, rpc, sql = null;
 	                
             try {
-                await this.message.react(this.clientConfig.settings.reaction.THINKING);
+            	await this.message.react(this.clientConfig.settings.reaction.THINKING);
         		const RpcService = require(settings.path+'/services/service.rpc.js');
                 rpc = await new RpcService(settings);
 
@@ -278,122 +412,6 @@ class Command extends Module {
     	
     }
     
-
-    findUnitDefs( units ) {
-        
-        return new Promise((resolve,reject) => {
-            
-            //find discordID in lazbot db
-            const DatabaseHandler = require('../../utilities/db-handler.js');
-            const data = new DatabaseHandler(this.clientConfig.settings.datadb, this.moduleConfig.queries.GET_UNITNAMES, [units]);
-            data.getRows().then((result) => {
-                if( result.length === 0 ) { 
-                    this.message.react(this.clientConfig.settings.reaction.ERROR);
-                    let replyStr = "There was an error retriving your units";
-                    reject(replyStr);
-                
-                } else {
-                    resolve(result);
-                }
-            }).catch((reason) => {                  
-                this.message.react(this.clientConfig.settings.reaction.ERROR);                    
-                reject(reason);
-            });
-            
-        });
-        
-    }
-    
-    
-    fetchEvents() {
-        
-        return new Promise( async (resolve, reject) => {
-            
-            let settings = {};
-                settings.path       = process.cwd();
-                settings.path       = settings.path.replace(/\\/g,'\/')+'/compiled';
-                settings.hush       = true;
-                settings.verbose    = false;
-                settings.force      = false;
-                
-            let rpc = null;
-                    
-            try {
-                await this.message.react(this.clientConfig.settings.reaction.THINKING);
-                const RpcService = require(settings.path+'/services/service.rpc.js');
-                rpc = await new RpcService(settings);
-
-                /** Start the RPC Service - with no logging**/
-                await rpc.start(`Fetching events...\n`, false);
-                
-                let iData = await rpc.Player( 'GetInitialData' );
-                
-                /** End the RPC Service **/
-                await rpc.end("All data fetched");
-
-                resolve( iData.gameEventList );
-                
-            } catch(e) {
-                console.error(e);
-                await this.message.react(this.clientConfig.settings.reaction.ERROR);
-                await rpc.end(e.message);
-                reject(e);
-            }            
-            
-        });
-        
-    }
- 
-
-    findMods( allyCode ) {
-        
-        return new Promise((resolve,reject) => {
-            
-            //find discordID in lazbot db
-            const DatabaseHandler = require('../../utilities/db-handler.js');
-            const data = new DatabaseHandler(this.clientConfig.settings.datadb, this.moduleConfig.queries.GET_MODS, [allyCode]);
-            data.getRows().then((result) => {
-                if( result.length === 0 ) { 
-                    this.message.react(this.clientConfig.settings.reaction.ERROR);
-                    replyStr = "The requested discord user is not registered with a swgoh account.\nSee help for registration use.";
-                    reject(replyStr);
-                
-                } else {
-                    resolve(result);
-                }
-            }).catch((reason) => {                  
-                this.message.react(this.clientConfig.settings.reaction.ERROR);                    
-                reject(reason);
-            });
-            
-        });
-        
-    }
-
-    
-    findZetas( allyCode ) {
-        
-        return new Promise((resolve,reject) => {
-            
-            const DatabaseHandler = require('../../utilities/db-handler.js');
-            const data = new DatabaseHandler(this.clientConfig.settings.datadb, this.moduleConfig.queries.GET_ZETAS, [allyCode]);
-            data.getRows().then((result) => {
-                if( result.length === 0 ) { 
-                    this.message.react(this.clientConfig.settings.reaction.ERROR);
-                    let replyStr = "The requested user does not have any zetas.";
-                    reject(replyStr);
-                
-                } else {
-                    resolve(result);
-                }
-            }).catch((reason) => {                  
-                this.message.react(this.clientConfig.settings.reaction.ERROR);                    
-                reject(reason);
-            });
-            
-        });
-        
-    }
 
 
 }

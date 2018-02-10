@@ -4,18 +4,16 @@ async function doSwgoh( obj ) {
 	if( content[1] ) {
 	    
 	    switch( content[1] ) {
+		    case "help":
+	        	return obj.help( obj.moduleConfig.help.swgoh );
 	        case "add":
 	            return obj.add( content );
 	        case "sync":
 	            return obj.sync( content );
 	        case "remove":    
 	            return obj.remove( content );
-	        case "me":
-	            return obj.find( content );
 	        default:
-	            if( content[1].match(/\d{18}/) ) {
-	                return obj.find( content );
-	            }
+	            return obj.find( content );
 	    }
 	
 	}

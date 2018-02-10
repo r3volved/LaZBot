@@ -2,30 +2,30 @@ async function doZetas( obj ) {
 
     const content = obj.message.content.split(/\s+/g);
     
-    let discordId = content.length === 1 || content[1] === 'me' ? obj.message.author.id : content[1].replace(/[\\|<|@|!]*(\d{18})[>]*/g,'$1');
-    if( !discordId.match(/\d{18}/) ) { return obj.help( obj.moduleConfig.help.zetas ); }
-    
-    const DatabaseHandler = require('../../utilities/db-handler.js');
-    const registration = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_REGISTER, [discordId]);
-    let result = null;
+    if( content[1] && content[1] === 'help' ) { return obj.help( obj.moduleConfig.help.zetas ); }
+
+    let result, discordId, playerId, playerName, allyCode, playerGuild = null;
+    let id = !content[1] || content[1] === 'me' ? obj.message.author.id : content[1].replace(/[\\|<|@|!]*(\d{18})[>]*/g,'$1');
     
     try {
-        result = await registration.getRows();
+        result = await obj.getRegister(id);
     } catch(e) {
-        obj.message.react(obj.clientConfig.settings.reaction.ERROR);                    
-        return obj.error(e);           
-    }
-
-    if( result.length === 0 ) { 
-        obj.message.react(obj.clientConfig.settings.reaction.ERROR);
-        return obj.message.channel.send("The requested discord user is not registered with a swgoh account.\nSee help for registration use.");
+        this.message.react(obj.clientConfig.settings.reaction.ERROR);                    
+        return obj.reply(e);
     }
                         
-    let allyCode    = result[0].allyCode;
-    let playerName  = result[0].playerName;
-    let updated     = result[0].updated;
-        
-    result = await obj.findZetas( allyCode );
+    allyCode    = result[0].allyCode;
+    playerName  = result[0].playerName;
+    updated     = result[0].updated;
+
+    let unit = content[2] || null;
+    
+    try {
+    	result = await obj.findZetas( allyCode, unit );
+    } catch(e) {
+        obj.message.react(obj.clientConfig.settings.reaction.ERROR);                    
+        return obj.message.channel.send("The requested player or player-unit does not have any zetas.");
+    }
     
     let toons = {};
     let toon  = null;
@@ -50,8 +50,8 @@ async function doZetas( obj ) {
     ud.setTime(updated);
     ud = ud.toISOString().replace(/T/g,' ').replace(/\..*/g,'');
 
-    replyObj.title = playerName+'\'s zeta\'s';
-    replyObj.description = 'Fetched at: \n'+ud;
+    replyObj.title = playerName+'\'s zeta\'s ( '+allyCode+' )';
+    replyObj.description = 'Last updated: '+ud;
     replyObj.fields = [];
 
     for( let k of order ) {
@@ -60,7 +60,7 @@ async function doZetas( obj ) {
         field.title = '('+toons[k].length+') '+k;
         field.text = '';
         for( let i = 0; i < toons[k].length; ++i ) {
-            field.text += '` - '+toons[k][i]+'`\n';
+            field.text += toons[k][i]+'\n';
         }
         field.text += '`------------------------------`\n';
         field.inline = true;
