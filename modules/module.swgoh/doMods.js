@@ -9,9 +9,9 @@ async function doMods( obj ) {
     
     try {
         result = await obj.getRegister(id);
+        if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
     } catch(e) {
-        this.message.react(obj.clientConfig.settings.reaction.ERROR);                    
-        return obj.reply(e);
+        return obj.error('doMods.getRegister',e);
     }
                             
     allyCode    = result[0].allyCode;
@@ -19,13 +19,11 @@ async function doMods( obj ) {
     updated     = result[0].updated;
         
     try {
-        result = await obj.findMods( allyCode );
+    	result = await obj.findMods( allyCode );
+        if( !result || !result[0] ) { return obj.fail('The requested player does not have any mods.'); }
     } catch(e) {
-        obj.message.react(obj.clientConfig.settings.reaction.ERROR);                    
-        return obj.error(e);           
+        return obj.error('doMods.findMods', e);
     }
-    
-//    await obj.message.react(obj.clientConfig.settings.reaction.SUCCESS);
     
     let mods = [];
     let mod  = {};
@@ -69,8 +67,10 @@ async function doMods( obj ) {
     
     let modBuffer = new Buffer(JSON.stringify(mods));
     const Discord = require('discord.js');
+
     obj.message.author.send(new Discord.Attachment(modBuffer,'mods-'+playerName+'-'+updated.toString()+'.json'));
     obj.message.react(obj.clientConfig.settings.reaction.DM);
+    return obj.success();
             
 }
 

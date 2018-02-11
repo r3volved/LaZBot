@@ -2,9 +2,9 @@
 
     "id":"meme",
 
-    "name":"Meme reply",
+    "name":"Meme monitor",
 
-    "version":"2.0",
+    "version":"2.5",
     
     "type":"preMonitor",
     
@@ -14,8 +14,8 @@
     
         "meme":{
     		"id":"meme",
-        	"title":"Meme reply",
-	        "text":"Barriss is banned - stfu",
+        	"title":"Barriss is a bitch monitor",
+	        "text":"Slap a fool who mentions the skank",
 	        "example":"*%PREFIX%%COMMAND% on*"
         }
 
@@ -24,7 +24,7 @@
     "queries":{
     	
     	"GET_SETTINGS":"SELECT `meme` FROM `channel` WHERE `channelID` = ?",
-    	"SET_SETTINGS":"INSERT INTO `channel` (`channelID`, `meme`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `meme`=VALUES(`meme`)"
+    	"SET_SETTINGS":"INSERT INTO `channel` (`channelID`, `channelName`, `serverID`, `serverName`, `meme`) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE `channelName`=VALUES(`channelName`), `serverID`=VALUES(`serverID`), `serverName`=VALUES(`serverName`), `meme`=VALUES(`meme`)"
     	
     }    
     

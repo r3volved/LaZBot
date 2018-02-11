@@ -20,9 +20,12 @@ class Command extends Module {
             if( content === "status" ) { return this.status(); }
     
             let toggle = ["on","true","monitor","activate"].includes(content.trim()) ? true : false;
-
+            let serverId = this.message.guild.id;
+            let serverName = this.message.guild.name;
+            let channelName = this.message.channel.name;
+            
             const DatabaseHandler = require('../../utilities/db-handler.js');
-            const data = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.SET_SETTINGS, [this.message.channel.id, toggle]);
+            const data = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.SET_SETTINGS, [this.message.channel.id, channelName, serverId, serverName, toggle]);
 
             data.setRows().then((result) => {
                 this.message.react(this.clientConfig.settings.reaction.SUCCESS);

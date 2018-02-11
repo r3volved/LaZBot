@@ -78,7 +78,7 @@ class ModuleRegistry {
 	                    const thisCommand   = new Command(config, tmpModule, command, message);
 	                    try { await thisCommand.process(); } catch(e) { throw e; }
 	                }
-                }
+                }            	
             }
             
             //Monitor pre command 

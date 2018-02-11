@@ -9,8 +9,7 @@ async function doHeist( obj ) {
     try {
         result = await obj.fetchEvents();
     } catch(e) {
-        obj.message.react(obj.clientConfig.settings.reaction.ERROR);                    
-        return obj.error(e);           
+        return obj.error('doHeist.fetchEvents',e);           
     }
     
     let replyObj = {};
@@ -48,7 +47,7 @@ async function doHeist( obj ) {
     replyObj.description += '**Credits** : '+credit+'\n';
     replyObj.description += '**Droids**  : '+droid+'\n';
     
-    obj.reply( replyObj );
+    return obj.success( replyObj );
 
 }
 

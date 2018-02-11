@@ -30,6 +30,8 @@ class Command extends Module {
                     return require('./doMods.js')( this );
                 case "heist":
                 	return require('./doHeist.js')( this );
+                case "unit":
+                	return require('./doUnit.js')( this );
                 default:
             }
             
@@ -52,9 +54,9 @@ class Command extends Module {
         
         try {
             result = await this.getRegister(id);
+            if( !result || !result[0] || !result[0].allyCode ) { return this.fail('The requested user is not registered'); }
         } catch(e) {
-            this.message.react(this.clientConfig.settings.reaction.ERROR);                    
-            return this.reply(e);
+            return this.error('sync.getRegister',e);
         }
         
     	discordId = result[0].discordId;
@@ -64,30 +66,29 @@ class Command extends Module {
     	
     	try {
     		result = await this.fetchPlayer( allyCode );    	   
-    	} catch(e) {
-    	    this.message.react(this.clientConfig.settings.reaction.ERROR);                    
-            return this.reply(e);           
+            if( !result || !result[0] ) { return this.fail('The requested player cannot be found.'); }
+        } catch(e) {
+            return this.error('sync.fetchPlayer', e);
         }
     	
-    	this.message.react(this.clientConfig.settings.reaction.WORKING);
+    	await this.message.react(this.clientConfig.settings.reaction.WORKING);
         	
 		playerId 	= result[0].playerId;
     	playerName 	= result[0].name;
     	playerGuild = result[0].guildName;
     	
     	//insert into lazbot db
-    	const DatabaseHandler = require('../../utilities/db-handler.js');
+    	const DatabaseHandler = require(this.clientConfig.path+'/utilities/db-handler.js');
         const data = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.SET_REGISTER, [discordId, playerId, playerName, allyCode, playerGuild]);
         
         try {
             result = await data.setRows();
         } catch(e) {
-            this.message.react(this.clientConfig.settings.reaction.ERROR);
-            return this.reply(e);
+            return this.error('sync.setRows',e);
         }
 
-        this.message.react(this.clientConfig.settings.reaction.SUCCESS);
-        return true;
+        await this.message.react(this.clientConfig.settings.reaction.SUCCESS);
+        return this.success();
 
     }
 
@@ -108,30 +109,29 @@ class Command extends Module {
         
         try {
             result = await this.fetchPlayer( allyCode );        
+            if( !result || !result[0] ) { return this.fail('The requested player cannot be found.'); }
         } catch(e) {
-            this.message.react(this.clientConfig.settings.reaction.ERROR);
-            return this.reply(e);
+            return this.error('add.fetchPlayer', e);
         }
         
-        this.message.react(this.clientConfig.settings.reaction.WORKING);
+        await this.message.react(this.clientConfig.settings.reaction.WORKING);
 
 		playerId 	= result[0].playerId;
     	playerName 	= result[0].name;
     	playerGuild = result[0].guildName;
     	
     	//insert into lazbot db
-    	const DatabaseHandler = require('../../utilities/db-handler.js');
+    	const DatabaseHandler = require(this.clientConfig.path+'/utilities/db-handler.js');
         const data = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.SET_REGISTER, [discordId, playerId, playerName, allyCode, playerGuild]);
         
         try {
             result = await data.setRows();        
         } catch(e) {
-            this.message.react(this.clientConfig.settings.reaction.ERROR);
-            return this.reply(e);
+            return this.error('add.fetchPlayer', e);
         }
         
-        this.message.react(this.clientConfig.settings.reaction.SUCCESS);
-        return true;
+        await this.message.react(this.clientConfig.settings.reaction.SUCCESS);
+        return this.success();
 
     }
     
@@ -142,10 +142,10 @@ class Command extends Module {
     	
     	playerId  = content[3] || null;
         allyCode  = content[2].replace(/-/g,'') || null;
-    	if( !playerId || !allyCode || !allyCode.match(/\d{9}/) ) { return this.help(); }
+    	if( !playerId || !allyCode || !allyCode.match(/\d{9}/) ) { return this.help( this.moduleConfig.help.swgoh ); }
     	
     	//delete where allycode and playerid
-    	const DatabaseHandler = require('../../utilities/db-handler.js');
+    	const DatabaseHandler = require(this.clientConfig.path+'/utilities/db-handler.js');
         const data = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.DEL_REGISTER, [playerId, allyCode]);
         
         let result = null;
@@ -153,12 +153,11 @@ class Command extends Module {
         try {
             result = await data.setRows();
         } catch(e) {
-            this.message.react(this.clientConfig.settings.reaction.ERROR);
-            return this.reply(e);
+            return this.error('remove.fetchPlayer', e);
         }
         
-    	this.message.react(this.clientConfig.settings.reaction.SUCCESS);
-    	return true;
+    	await this.message.react(this.clientConfig.settings.reaction.SUCCESS);
+        return this.success();
     	
     }
     
@@ -170,9 +169,9 @@ class Command extends Module {
         
         try {
             result = await this.getRegister(id);
+            if( !result || !result[0] || !result[0].allyCode ) { return this.fail('The requested user is not registered'); }
         } catch(e) {
-            this.message.react(this.clientConfig.settings.reaction.ERROR);                    
-            return this.reply(e);
+            return this.error('find.getRegister',e);
         }
                           	
         let replyObj = {};
@@ -189,7 +188,7 @@ class Command extends Module {
 		ud = ud.toISOString().replace(/T/g,' ').replace(/\..*/g,'');
         replyObj.text += 'Updated: '+ud;
 
-        return this.reply( replyObj );
+        return this.success( replyObj );
    	            
     }
     
@@ -215,14 +214,11 @@ class Command extends Module {
         try {
             result = await registration.getRows();
         } catch(e) {
-            this.message.react(this.clientConfig.settings.reaction.ERROR);                    
-            return this.reply(e);
+        	throw e;
         }
         
         if( result.length === 0 ) { 
-        	this.message.react(this.clientConfig.settings.reaction.ERROR);
-        	let replyStr = "The requested discord user is not registered.\nSee help for registration use.";
-        	return this.reply( replyStr );
+        	return false;
         }
         
         return result;
@@ -293,15 +289,11 @@ class Command extends Module {
             const data = new DatabaseHandler(this.clientConfig.settings.datadb, query, args);
             data.getRows().then((result) => {
                 if( result.length === 0 ) { 
-                    this.message.react(this.clientConfig.settings.reaction.ERROR);
-                    let replyStr = "The requested user does not have any zetas.";
-                    reject(replyStr);
-                
+                    resolve(false);
                 } else {
                     resolve(result);
                 }
             }).catch((reason) => {                  
-                this.message.react(this.clientConfig.settings.reaction.ERROR);                    
                 reject(reason);
             });
             
@@ -310,6 +302,30 @@ class Command extends Module {
     }
 
 
+    findUnitDetails( allyCode, unit ) {
+        
+        return new Promise((resolve,reject) => {
+            
+        	let query = !unit ? this.moduleConfig.queries.GET_PLAYER_UNIT : this.moduleConfig.queries.GET_PLAYER_UNIT;
+        	let args  = !unit ? [allyCode] : [allyCode,'%'+unit.toLowerCase()+'%'];
+        	
+            const DatabaseHandler = require('../../utilities/db-handler.js');
+            const data = new DatabaseHandler(this.clientConfig.settings.datadb, query, args);
+            data.getRows().then((result) => {
+                if( result.length === 0 ) { 
+                    resolve(false);
+                } else {
+                    resolve(result);
+                }
+            }).catch((reason) => {                  
+                reject(reason);
+            });
+            
+        });
+        
+    }
+
+    
     fetchEvents() {
         
         return new Promise( async (resolve, reject) => {
@@ -324,13 +340,13 @@ class Command extends Module {
             let rpc = null;
                     
             try {
-            	await this.message.react(this.clientConfig.settings.reaction.THINKING);
                 const RpcService = require(settings.path+'/services/service.rpc.js');
                 rpc = await new RpcService(settings);
 
                 /** Start the RPC Service - with no logging**/
                 await rpc.start(`Fetching events...\n`, false);
                 
+            	await this.message.react(this.clientConfig.settings.reaction.THINKING);
                 let iData = await rpc.Player( 'GetInitialData' );
                 
                 /** End the RPC Service **/
@@ -339,8 +355,6 @@ class Command extends Module {
                 resolve( iData.gameEventList );
                 
             } catch(e) {
-                console.error(e);
-                await this.message.react(this.clientConfig.settings.reaction.ERROR);
                 await rpc.end(e.message);
                 reject(e);
             }            
@@ -366,33 +380,31 @@ class Command extends Module {
 	        let profile, rpc, sql = null;
 	                
             try {
-            	await this.message.react(this.clientConfig.settings.reaction.THINKING);
         		const RpcService = require(settings.path+'/services/service.rpc.js');
                 rpc = await new RpcService(settings);
 
                 /** Start the RPC Service - with no logging**/
     	        await rpc.start(`Fetching ${allyCode}...\n`, false);
     	        
+            	await this.message.react(this.clientConfig.settings.reaction.THINKING);
     	        profile = await rpc.Player( 'GetPlayerProfile', { "identifier":parseInt(allyCode) } );
                 
                 /** End the RPC Service **/
 	            await rpc.end("All data fetched");
 
             } catch(e) {
-                console.error(e);
                 await rpc.end(e.message);
-                await this.message.react(this.clientConfig.settings.reaction.ERROR);
                 reject(e);
             }
             
             try {
-                await this.message.react(this.clientConfig.settings.reaction.WORK);
 	    		const SqlService = require(settings.path+'/services/service.sql.js');
 	            sql = await new SqlService(settings);
 
 		        /** Start the SQL Service - with no logging**/
 		        await sql.start(`Saving ${allyCode}...\n`, false);
 		        
+                await this.message.react(this.clientConfig.settings.reaction.WORK);
 		        await sql.query( 'SET FOREIGN_KEY_CHECKS = 0;' );
 		        let sqlresult = await sql.query( 'insert', 'PlayerProfile', [profile] );
 	            await sql.query( 'SET FOREIGN_KEY_CHECKS = 1;' );
@@ -403,8 +415,6 @@ class Command extends Module {
 	            resolve([profile]);
 	            
             } catch(e) {
-                console.error(e);
-                await this.message.react(this.clientConfig.settings.reaction.ERROR);
                 await sql.end(e.message);
                 reject(e);
             }

@@ -1,5 +1,3 @@
-const PermissionHandler = require(`../utilities/permission-handler.js`);
-
 class Module {
     
     constructor(config, reqModule, reqCommand, message) {
@@ -12,14 +10,13 @@ class Module {
             this.message = message;
                         
         } catch(e) {
-        	
-        	this.error("init",e);
-            
+        	this.error("module.init",e);
         }
         
     }
     
     async auth() {
+    	const PermissionHandler = require(this.clientConfig.path+'/utilities/permission-handler.js');
         let pHandler = new PermissionHandler(this.clientConfig, this.moduleConfig, this.message);
         return await pHandler.isAuthorized(); 
     }
@@ -27,7 +24,8 @@ class Module {
     reply( replyObj ) {
             
         if( typeof replyObj === 'string' ) {
-        	return this.message.channel.send( replyObj );
+        	this.message.channel.send( replyObj );
+        	return true;
         }
         
     	const Discord = require('discord.js');
@@ -52,11 +50,10 @@ class Module {
         }
         
         try {
-            this.message.channel.send({embed});
-            return true;
+        	this.message.channel.send({embed});
+        	return true;
         } catch(e) {
-            console.error(e);
-            return false;
+        	return this.error('module.reply',e);
         } 
         
     }
@@ -64,43 +61,89 @@ class Module {
     
     help( helpJson, extra ) {
     
-        let replyObj = {};
+    	try {
+	        let replyObj = {};
+	        
+	        replyObj.title  = helpJson.title;
+	        
+	        replyObj.description = helpJson.text;
+	        replyObj.description = replyObj.description.replace(/%PREFIX%/g, this.clientConfig.settings.prefix);
+	        replyObj.description = replyObj.description.replace(/%COMMAND%/g, helpJson.id);
+	        
+	        replyObj.fields = replyObj.fields || [];
+	        if( extra ) { 
+	        	if( Array.isArray(extra) ) {
+	        		replyObj.fields = replyObj.fields.concat(extra);
+	        	} else {
+	            	replyObj.fields.push(extra); 
+	        	}
+	        }
+	        
+	        if( helpJson.example ) {
+		        let exampleField = {};
+		        exampleField.title = 'Example';
+		        exampleField.text  = helpJson.example;
+		        exampleField.text  = exampleField.text.replace(/%PREFIX%/g, this.clientConfig.settings.prefix);
+		        exampleField.text  = exampleField.text.replace(/%COMMAND%/g, helpJson.id);
+		        replyObj.fields.push(exampleField);
+	        }
         
-        replyObj.title  = helpJson.title;
-        
-        replyObj.description = helpJson.text;
-        replyObj.description = replyObj.description.replace(/%PREFIX%/g, this.clientConfig.settings.prefix);
-        replyObj.description = replyObj.description.replace(/%COMMAND%/g, helpJson.id);
-        
-        replyObj.fields = replyObj.fields || [];
-        if( extra ) { 
-        	if( Array.isArray(extra) ) {
-        		replyObj.fields = replyObj.fields.concat(extra);
-        	} else {
-            	replyObj.fields.push(extra); 
-        	}
-        }
-        
-        if( helpJson.example ) {
-	        let exampleField = {};
-	        exampleField.title = 'Example';
-	        exampleField.text  = helpJson.example;
-	        exampleField.text  = exampleField.text.replace(/%PREFIX%/g, this.clientConfig.settings.prefix);
-	        exampleField.text  = exampleField.text.replace(/%COMMAND%/g, helpJson.id);
-	        replyObj.fields.push(exampleField);
-        }
-        
-        this.reply( replyObj );
+	        return this.success( replyObj );
+	        
+    	} catch(e) {
+    		return this.error('module.help',e);
+    	}
                 
     }
         
+    cmdlog( result, notes ) {
+    	notes = notes || '';
+    	try {
+    	    const DatabaseHandler = require(this.clientConfig.path+'/utilities/db-handler.js');
+    	    let commandLog = new DatabaseHandler(
+	    		this.clientConfig.settings.database,
+	    		"INSERT INTO `cmdlog` VALUES (?, ?, ?, ?, ?, ?)",
+	    		[new Date(), this.command, this.message.channel.id, this.message.author.id, result, notes]
+    	    );
+    	    commandLog.setRows();
+    	} catch(e) {	
+    		console.warn("Message listener problem!");
+    		console.error(e);		
+    	}
+    }
+    
+    success(replyObj) {
+    	
+    	if( replyObj ) {
+    		let sent = this.reply( replyObj );
+	    	if( sent ) { 
+	    		this.cmdlog(1, this.message.content); 
+	            this.message.react(this.clientConfig.settings.reaction.SUCCESS);
+	            return true;
+	    	}
+	    	return false;
+    	}
+    	this.cmdlog(1, this.message.content);
+    	return true;
+    	
+    }
+    
+    fail(reason) {
+    	
+    	this.cmdlog(2,reason);
+        this.message.react(this.clientConfig.settings.reaction.WARNING);
+    	this.reply( reason );
+    	return false;
+
+    }
+    
     error(process, err) {
     	
-    	const ErrorHandler = require(`../utilities/error-handler.js`);
-    	const eHandler = new ErrorHandler(this.moduleConfig.id,process,err).log();
-    	console.error( process );
+    	this.cmdlog(3,err.message);
+        this.message.react(this.clientConfig.settings.reaction.ERROR);                    
+        console.warn(`[Error] : ${this.moduleConfig.id} => ${process}`);
     	console.error( err );
-    	return;
+    	return false;
     	
     }
     

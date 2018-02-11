@@ -4,7 +4,7 @@
 
     "name":"Question monitor",
 
-    "version":"2.0",
+    "version":"2.5",
     
     "type":"preMonitor",
     
@@ -24,7 +24,7 @@
     "queries":{
     	
     	"GET_SETTINGS":"SELECT `qmonitor` FROM `channel` WHERE `channelID` = ?",
-    	"SET_SETTINGS":"INSERT INTO `channel` (`channelID`, `qmonitor`) VALUES (?, ?) ON DUPLICATE KEY UPDATE `qmonitor`=VALUES(`qmonitor`)"
+    	"SET_SETTINGS":"INSERT INTO `channel` (`channelID`, `channelName`, `serverID`, `serverName`, `qmonitor`) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE `channelName`=VALUES(`channelName`), `serverID`=VALUES(`serverID`), `serverName`=VALUES(`serverName`), `qmonitor`=VALUES(`qmonitor`)"
     	
     }
     

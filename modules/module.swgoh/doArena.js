@@ -9,9 +9,9 @@ async function doArena( obj ) {
     
     try {
         result = await obj.getRegister(id);
+        if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
     } catch(e) {
-        this.message.react(obj.clientConfig.settings.reaction.ERROR);                    
-        return obj.reply(e);
+        return obj.error('doArena.getRegister',e);
     }
                             
     allyCode    = result[0].allyCode;
@@ -19,10 +19,10 @@ async function doArena( obj ) {
     
     try {
         result = await obj.fetchPlayer( allyCode );
+        if( !result || !result[0] || !result[0].pvpProfileList ) { return obj.fail('The requested player or player-unit does have arena data.'); }
         result = result[0].pvpProfileList;
     } catch(e) {
-        obj.message.react(obj.clientConfig.settings.reaction.ERROR);                    
-        return obj.error(e);           
+        return obj.error('doArena.fetchPlayer', e);
     }
                 
     let squads = {};
@@ -39,8 +39,7 @@ async function doArena( obj ) {
     try {
         cnames = await obj.findUnitDefs( squads.arena.units );
     } catch(e) {
-        obj.message.react(obj.clientConfig.settings.reaction.ERROR);                    
-        return obj.error(e);           
+        return obj.error('doArena.findUnitDefs', e);
     }
 
     let snames = null;
@@ -56,8 +55,7 @@ async function doArena( obj ) {
 	    try {
 	        snames = await obj.findUnitDefs( squads.ships.units ); 
 	    } catch(e) {
-	        obj.message.react(obj.clientConfig.settings.reaction.ERROR);                    
-	        return obj.error(e);           
+	        return obj.error('doArena.findUnitDefs', e);
 	    }
     
     }
@@ -106,7 +104,7 @@ async function doArena( obj ) {
         "inline":true
     });
     
-    obj.reply( replyObj );
+    return obj.success( replyObj );
                 
 }
 

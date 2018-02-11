@@ -11,14 +11,16 @@ class PermissionHandler {
     authorIs( configPermission ) {
         
         //Master is always everything
-        if( this.message.author.id === this.clientConfig.settings.master ) { return true; }
-        
-        if( configPermission === "admin" ) {
-            return !!this.message.member.roles.find("name", this.clientConfig.settings.adminRole); 
+    	if( configPermission === "master" ) {
+            return this.message.author.id === this.clientConfig.settings.master;            
+    	}
+    	
+    	if( configPermission === "admin" ) {
+            return this.message.author.id === this.clientConfig.settings.master || !!this.message.member.roles.find("name", this.clientConfig.settings.adminRole); 
         }
         
         if( configPermission === "moderator" ) {
-            return !!this.message.member.roles.find("name", this.clientConfig.settings.adminRole) ? true : !!this.message.member.roles.find("name", this.clientConfig.settings.modRole);
+            return this.message.author.id === this.clientConfig.settings.master || !!this.message.member.roles.find("name", this.clientConfig.settings.adminRole) ? true : !!this.message.member.roles.find("name", this.clientConfig.settings.modRole);
         }
 
         return true;

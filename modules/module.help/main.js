@@ -29,10 +29,15 @@ class Command extends Module {
     		let space = ' ';
     		let extras = [];
     		
+    		const PermissionHandler = require(this.clientConfig.path+'/utilities/permission-handler.js');
+            let pHandler = new PermissionHandler(this.clientConfig, this.moduleConfig, this.message);
+
             for( let k in this.clientConfig.registry.modules ) {
 
             	let modl = this.clientConfig.registry.modules[k];
 
+            	if( !await pHandler.authorIs(modl.permission) ) { continue; }
+            	
             	let extra = {};
                 extra.title = modl.name+'  v'+modl.version;
                 extra.inline = true;

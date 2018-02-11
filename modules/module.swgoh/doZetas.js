@@ -9,11 +9,11 @@ async function doZetas( obj ) {
     
     try {
         result = await obj.getRegister(id);
+        if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
     } catch(e) {
-        this.message.react(obj.clientConfig.settings.reaction.ERROR);                    
-        return obj.reply(e);
+        return obj.error('doZetas.getRegister',e);
     }
-                        
+
     allyCode    = result[0].allyCode;
     playerName  = result[0].playerName;
     updated     = result[0].updated;
@@ -22,11 +22,11 @@ async function doZetas( obj ) {
     
     try {
     	result = await obj.findZetas( allyCode, unit );
+        if( !result || !result[0] ) { return obj.fail('The requested player or player-unit does not have any zetas.'); }
     } catch(e) {
-        obj.message.react(obj.clientConfig.settings.reaction.ERROR);                    
-        return obj.message.channel.send("The requested player or player-unit does not have any zetas.");
+        return obj.error('doZetas.findZetas', e);
     }
-    
+
     let toons = {};
     let toon  = null;
 
@@ -84,7 +84,7 @@ async function doZetas( obj ) {
     	replyObj.fields.push( extra );
     }
     
-    obj.reply( replyObj );
+    return obj.success( replyObj );
 
 }
 
