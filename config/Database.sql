@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS `channel` (
   `spreadsheet` varchar(256) NOT NULL DEFAULT '',
   `webhook` varchar(256) NOT NULL DEFAULT '',
   `modrole` varchar(32) NOT NULL DEFAULT 'modrole',
-  `qmonitor` tinyint(1) NOT NULL DEFAULT '0',
+  `qmonitor` BOOLEAN NOT NULL DEFAULT FALSE,
+  `meme` BOOLEAN NOT NULL DEFAULT FALSE,
   PRIMARY KEY(`channelID` )
 );
 

@@ -1,0 +1,24 @@
+{
+
+    "id":"translate",
+
+    "name":"Translation help",
+
+    "version":"2.0",
+    
+    "type":"command",
+    
+    "permission":"anyone",
+    
+    "help":{
+    
+        "translate":{
+        	"id":"translate",
+        	"title":"Translation help",
+        	"text":"Translate a specified number of users last messages into specified language.\n%PREFIX%%COMMAND% <languageID> <userID|mention> <lastNumberMessages>\n\n**Note:** *This command leverages the google translate api to automatically detect localization before translating.*",
+        	"example":"*%PREFIX%%COMMAND% fr @shittybill 4*"
+        }
+
+    }
+    
+}

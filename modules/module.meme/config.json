@@ -1,0 +1,31 @@
+{
+
+    "id":"meme",
+
+    "name":"Meme monitor",
+
+    "version":"2.5",
+    
+    "type":"preMonitor",
+    
+    "permission":"admin",
+    
+    "help":{
+    
+        "meme":{
+    		"id":"meme",
+        	"title":"Barriss is a bitch monitor",
+	        "text":"Slap a fool who mentions the skank",
+	        "example":"*%PREFIX%%COMMAND% on*"
+        }
+
+    },
+    
+    "queries":{
+    	
+    	"GET_SETTINGS":"SELECT `meme` FROM `channel` WHERE `channelID` = ?",
+    	"SET_SETTINGS":"INSERT INTO `channel` (`channelID`, `channelName`, `serverID`, `serverName`, `meme`) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE `channelName`=VALUES(`channelName`), `serverID`=VALUES(`serverID`), `serverName`=VALUES(`serverName`), `meme`=VALUES(`meme`)"
+    	
+    }    
+    
+}

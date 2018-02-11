@@ -1,16 +1,16 @@
 class ErrorHandler {
 
-    constructor(module, process, error) {
+    constructor(mod, process, error) {
     	
-    	this.module 	= module;
-    	this.process 	= process;
-    	this.error 		= error;
+    	this.mod       = mod;
+    	this.process   = process;
+    	this.error 	   = error;
     	
     }
     
     log() {
 
-        console.warn(`[Error] : ${this.module} => ${this.process}`);
+        console.warn(`[Error] : ${this.mod} => ${this.process}`);
         console.error(this.error);        
 
     }

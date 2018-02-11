@@ -14,15 +14,15 @@ class ScheduleHandler {
         return new Promise((resolve, reject) => {
         
             //If the module is off, don't look for alerts
-            for(let m = 0; m < this.clientConfig.modules.length; ++m ) {
-                if( this.clientConfig.modules[m].id === "reminder" && !this.clientConfig.modules[m].active ) { resolve(this); }                
+            for(let m = 0; m < this.clientConfig.settings.modules.length; ++m ) {
+                if( this.clientConfig.settings.modules[m].id === "reminder" && !this.clientConfig.settings.modules[m].active ) { resolve(this); }                
             }
             
             const sql = "SELECT * FROM reminder WHERE active = ?";
             const args = [true];
             
             const DatabaseHandler = require(`./db-handler.js`);
-            const dbHandler = new DatabaseHandler(this.clientConfig.database, sql, args);
+            const dbHandler = new DatabaseHandler(this.clientConfig.settings.database, sql, args);
             
             dbHandler.getRows().then( (rows) => {
                
@@ -34,7 +34,7 @@ class ScheduleHandler {
                     //If the alert is expired, remove from db
                     if( rows[i].dateTime < today && ( rows[i].cadence !== "weekly" && rows[i].cadence !== "daily" ) ) { 
                         let remSql = "DELETE FROM reminder WHERE channelID = ? and name = ?";                    
-                        const remHandler = new DatabaseHandler(this.clientConfig.database, remSql, [ rows[i].channelID, rows[i].name ]);
+                        const remHandler = new DatabaseHandler(this.clientConfig.settings.database, remSql, [ rows[i].channelID, rows[i].name ]);
                         remHandler.setRows().then((response) => {
                         	
                             //If client is a member of channel, schedule
@@ -111,7 +111,7 @@ class ScheduleHandler {
             const args = [ channelID, name ];
             
             const DatabaseHandler = require('./db-handler.js');
-            const dbHandler = new DatabaseHandler(this.clientConfig.database, sql, args);
+            const dbHandler = new DatabaseHandler(this.clientConfig.settings.database, sql, args);
                         
             dbHandler.getRows().then( (rows) => { 
                 
@@ -132,7 +132,7 @@ class ScheduleHandler {
                     this.jobs.delete(`${rows[0].channelID}-${rows[0].name}`);
                     
                     let remSql = "DELETE FROM reminder WHERE channelID = ? and name = ?";                    
-                    const remHandler = new DatabaseHandler(this.clientConfig.database, remSql, [ rows[0].channelID, rows[0].name ]);
+                    const remHandler = new DatabaseHandler(this.clientConfig.settings.database, remSql, [ rows[0].channelID, rows[0].name ]);
                     remHandler.setRows().catch( (reason) => {
                         throw reason;
                     });
