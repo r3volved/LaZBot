@@ -73,7 +73,7 @@ class ModuleRegistry {
             for( k in this.modules ) {
                 let tmpModule = this.modules[k];
                 for( let c in tmpModule.commands ) {
-                    if( tmpModule.commands[c].includes(command) ) {
+                    if( c === command || tmpModule.commands[c].includes(command) ) {
                         const Command       = require(config.path+'/modules/module.'+tmpModule.id+'/main.js');                    
 	                    const thisCommand   = new Command(config, tmpModule, command, message);
 	                    try { await thisCommand.process(); } catch(e) { throw e; }

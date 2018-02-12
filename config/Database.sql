@@ -49,7 +49,8 @@ CREATE TABLE `channel` (
   `webhook` varchar(256) NOT NULL DEFAULT '',
   `modrole` varchar(32) NOT NULL DEFAULT 'modrole',
   `qmonitor` tinyint(1) NOT NULL DEFAULT '0',
-  `meme` tinyint(1) NOT NULL DEFAULT '0'
+  `meme` tinyint(1) NOT NULL DEFAULT '0',
+  `language` varchar(6) NOT NULL DEFAULT 'ENG_US'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

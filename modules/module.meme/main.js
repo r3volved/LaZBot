@@ -53,7 +53,7 @@ class Command extends Module {
                 if( typeof(result) === "undefined" || typeof(result[0]) === "undefined" || !result[0].meme ) { return true; }
 
                 //Slap zarriss
-                if(this.message.content.match(/((z|b|Z|B)(arris|ariss|aris)|(\s*offee|\s*ofee))/gmi)) {
+                if(this.message.content.match(/((z|b)(arris|ariss|aris)|([\s|b|z]offee|[\s|b|z]ofee))/gmi)) {
                 	this.message.channel.send("Special message from CFH", {
                 	    file: "https://media.discordapp.net/attachments/381890989838827521/401137312999669760/image.png"
                 	});

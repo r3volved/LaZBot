@@ -10,56 +10,37 @@ class Command extends Module {
     
     process() {
 
-        return this.doHelp();
-        
+        try {
+            
+            for( let c in this.moduleConfig.commands ) {
+                if( this.moduleConfig.commands[c].includes( this.command ) ) {
+                    this.command = c;
+                    break;
+                }
+            }
+            
+            switch( this.command ) {
+                case "help":
+                    return require('./doHelp.js')( this ); 
+                default:
+            }
+            
+        } catch(e) {
+            //On error, log to console and return help
+            this.error("process",e);            
+        }    
+            
     }
     
     
     analyze() {
     	if( this.message.content.includes(this.clientConfig.client.user.id) ) {
-    		return this.doHelp();
+            this.command = 'help';
+            return require('./doHelp.js')( this ); 
     	}
     	
     }
     
-    async doHelp() {
-    	
-    	try {
-            
-    		let space = ' ';
-    		let extras = [];
-    		
-    		const PermissionHandler = require(this.clientConfig.path+'/utilities/permission-handler.js');
-            let pHandler = new PermissionHandler(this.clientConfig, this.moduleConfig, this.message);
-
-            for( let k in this.clientConfig.registry.modules ) {
-
-            	let modl = this.clientConfig.registry.modules[k];
-
-            	if( !await pHandler.authorIs(modl.permission) ) { continue; }
-            	
-            	let extra = {};
-                extra.title = modl.name+'  v'+modl.version;
-                extra.inline = true;
-                extra.text  = '```';
-                extra.text += 'Commands      Aliases\n';
-            	for( let c in modl.commands ) {
-        			extra.text += this.clientConfig.settings.prefix+c+space.repeat(10-c.length)+'|  '+modl.commands[c].join(', ')+'\n';
-        		}
-            	extra.text += '```';
-            	extras.push( extra );
-        		
-            }
-            
-            return this.help( this.moduleConfig.help.help, extras );
-        
-        } catch(e) {
-            
-            this.error("doHelp",e);
-            
-        }
-    	
-    }
     
 }
 

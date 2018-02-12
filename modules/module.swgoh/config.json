@@ -4,7 +4,7 @@
 
     "name":"SWGOH-Discord",
 
-    "version":"3.0",
+    "version":"3.1",
     
     "type":"command",
     
@@ -15,8 +15,7 @@
     	"swgoh":{
     		"id":"swgoh",
 	        "title":"SWGOH-Discord Registration",
-	        "text":"Register your Discord profile agaist your SWGOH profile for access to game-related commands",
-	        "example":"**Add user to registration**\n*%PREFIX%%COMMAND% add me <allyCode>\n%PREFIX%%COMMAND% add <mention|discordId> <allyCode>*\n\n**Sync your live data**\n*%PREFIX%%COMMAND% sync [me]\n%PREFIX%%COMMAND% sync <mention|discordId|allyCode|IGN>*\n\n**Registration details**\n*%PREFIX%%COMMAND% <me|mention|discordId|allyCode|IGN>*\n\nIn the case that someone else registers on your allycode, the real account owner can remove the existing registration with their playerId\n\n**To keep your playerId private, DM this command to the bot - do not post your playerId in the public server**)\n*%PREFIX%%COMMAND% remove <allyCode> <playerId>*"
+	        "text":"Register your Discord profile agaist your SWGOH profile for access to game-related commands\n\n:thinking: indicates the bot is looking for info\n:hourglass_flowing_sand: indicates the bot is fetching profile information\n:hourglass: indicates the bot is saving your profile details\n:white_check_mark: or :x: indicates success or failure of routine\n\n**Add user to registration**\n*%PREFIX%%COMMAND% add me <allyCode>\n%PREFIX%%COMMAND% add <mention|discordId> <allyCode>*\n\n**Sync your live data**\n*%PREFIX%%COMMAND% sync [me]\n%PREFIX%%COMMAND% sync <mention|discordId|allyCode|IGN>*\n\n**Registration details**\n*%PREFIX%%COMMAND% <me|mention|discordId|allyCode|IGN>*\n\n**In the case that someone else registers on your allycode, the real account owner can remove the existing registration with their playerId**\n*%PREFIX%%COMMAND% remove <allyCode> <playerId>*\n\n*Note: To keep your playerId private, DM the remove command to the bot - do not post your playerId in the public server*"
     	},
     	
     	"arena":{
@@ -52,6 +51,13 @@
             "title":"SWGOH Unit Details",
             "text":"Show base-unit specifications or player-unit details",
             "example":"*%PREFIX%%COMMAND% <unitName>*\n*%PREFIX%%COMMAND% <unitName> [me|mention|discordId|allyCode|IGN]*"
+        },
+        
+        "guild":{
+        	"id":"guild",
+        	"title":"SWGOH Guild Lookup",
+        	"text":"Lookup details around a specified guild.\n\nGuild identifier can be the guild name, the guild ID, or an allycode or discordID of a guild member",
+        	"example":"*%PREFIX%%COMMAND% <identifier>*\n*%PREFIX%%COMMAND% <identifier>*\n"
         }
 
     },
@@ -73,7 +79,7 @@
     	"GET_UNIT_ZETAS":"SELECT PlayerProfile.name, udn.text as 'unitName', abn.text as 'abilityName' FROM Skill JOIN SkillTierDefinition ON SkillTierDefinition.skillDefinitionId = Skill.id JOIN SkillDefinition ON SkillDefinition.id = SkillTierDefinition.skillDefinitionId JOIN Ability ON Ability.id = SkillDefinition.abilityReference JOIN Unit ON Unit.id = Skill.unitId JOIN PlayerProfile ON PlayerProfile.playerId = Unit.playerProfilePlayerId JOIN UnitDef ON UnitDef.id = Unit.definitionId JOIN Localization sdn ON sdn.id = SkillDefinition.nameKey AND sdn.language = 'ENG_US' JOIN Localization abn ON abn.id = Ability.nameKey AND abn.language = 'ENG_US' JOIN Localization udn ON udn.id = UnitDef.nameKey AND udn.language = 'ENG_US' WHERE SkillTierDefinition.powerOverrideTag = 'zeta' AND PlayerProfile.allyCode = ? AND (Skill.tier+2) = 8 AND LOWER(udn.text) LIKE ? GROUP BY PlayerProfile.name, udn.text, abn.text ORDER BY udn.text ASC, abn.text ASC",
     	
     	"GET_PLAYER_UNIT":"SELECT PlayerProfile.name, udn.text as 'unitName', udd.text as 'unitDesc', CASE WHEN Unit.currentRarity LIKE '%SEVEN%' THEN 7 WHEN Unit.currentRarity LIKE '%SIX%' THEN 6 WHEN Unit.currentRarity LIKE '%FIVE%' THEN 5 WHEN Unit.currentRarity LIKE '%FOUR%' THEN 4 WHEN Unit.currentRarity LIKE '%THREE%' THEN 3 WHEN Unit.currentRarity LIKE '%TWO%' THEN 2 WHEN Unit.currentRarity LIKE '%ONE%' THEN 1 END as 'currentRarity', Unit.currentLevel, Unit.currentXp, REPLACE(Unit.currentTier,'TIER_','') as currentTier, UnitDef.forceAlignment, UnitDef.combatType, UnitDef.threatLevel, UnitDef.categoryId, UnitDef.skillReference, UnitDef.primaryUnitStat, UnitTierDef.tier as 'gearTier', UnitTierDef.equipmentSet as 'gearRequired', UnitTierDef.baseStat as 'gearStats' FROM Unit JOIN PlayerProfile ON PlayerProfile.playerId = Unit.playerProfilePlayerId JOIN UnitDef ON UnitDef.id = Unit.definitionId JOIN UnitTierDef ON UnitTierDef.unitDefId = UnitDef.id AND UnitTierDef.tier = Unit.currentTier JOIN Localization udn ON udn.id = UnitDef.nameKey AND udn.language = 'ENG_US' JOIN Localization udd ON udd.id = UnitDef.descKey AND udd.language = 'ENG_US' WHERE PlayerProfile.allyCode = ? AND LOWER(udn.text) LIKE ?"
-    	
+    		
     }
     
 }
