@@ -47,7 +47,30 @@
         	"active":true,
         	"permission":"anyone",
         	"commands":{
-        		"help":["help","?"]
+        		"help":["?"]
+        	}
+        
+        }, 
+        
+        "setup":{ 
+        	
+        	"id":"setup", 				
+        	"active":true,
+        	"permission":"admin",
+        	"commands":{
+        		"setup":["su","channel"]
+        	}
+        
+        },
+        
+        "google":{ 
+        	
+        	"id":"google", 				
+        	"active":true,
+        	"permission":"anyone",
+        	"commands":{
+        		"search":["gs"],
+        		"translate":["gt"]
         	}
         
         }, 
@@ -58,7 +81,7 @@
         	"active":true,
         	"permission":"admin",
         	"commands":{
-        		"meme":["meme","memes"]
+        		"meme":["memes"]
         	}
         
         },
@@ -69,7 +92,7 @@
         	"active":true,
         	"permission":"admin",
         	"commands":{
-        		"qmonitor":["qmonitor","qm"]
+        		"qmonitor":["qm"]
         	}
         
         },
@@ -77,10 +100,10 @@
         "eval":{
         	
         	"id":"eval",
-        	"active":false,
+        	"active":true,
         	"permission":"master",
         	"commands":{
-        		"eval":["eval","e"]
+        		"eval":["e"]
         	}
         
         },
@@ -91,11 +114,12 @@
         	"active":true,
         	"permission":"anyone",
         	"commands":{
-        		"swgoh":["swgoh","sw"],
-        		"mods":["mods","mod"],
-        		"zetas":["zetas","zeta"],
-        		"heist":["heists","heist"],
-        		"arena":["arena"]
+        		"swgoh":["sw","goh"],
+        		"zetas":["zetas"],
+        		"heist":["heists","$"],
+        		"arena":[],
+        		"unit":["units"],
+        		"mods":["mod"]
         	}	
         
         }	

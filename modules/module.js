@@ -128,6 +128,11 @@ class Module {
     	
     }
     
+    silentSuccess(note) {    	
+		this.cmdlog(1, note); 
+		return true;
+    }
+    
     fail(reason) {
     	
     	this.cmdlog(2,reason);

@@ -12,44 +12,18 @@ class Command extends Module {
                 
         try {
             
-            if( !await this.auth() ) { return this.message.react(this.clientConfig.settings.reaction.DENIED); }
-
-            /** Sanitize message content */
-            const content = this.message.content.split(/\s+/)[1] || '';
-            if( content === "help" || content.length === 0 )   { return this.help( this.moduleConfig.help.qmonitor ); }
-            if( content === "status" ) { return this.status(); }
-    
-            let toggle = ["on","true","monitor","activate"].includes(content.trim()) ? true : false;
-            let serverId = this.message.guild.id;
-            let serverName = this.message.guild.name;
-            let channelName = this.message.channel.name;
-        	
-            if( toggle ) {
-		    
-		        //CHECK THAT BOT HAS PERMISSIONS TO REMOVE POSTS BEFORE ACTIVATING
-		        let guild = await this.message.guild.fetchMembers();
-		        
-		        let bot = await guild.members.filter(m => m.id === this.clientConfig.client.user.id).first().permissionsIn(this.message.channel);
-			    let botAuth = await bot.has("MANAGE_MESSAGES");
-			
-		    	if( !botAuth ) { 
-		    	
-		    	    this.message.react(`${this.clientConfig.settings.reaction.DENIED}`);
-		    		return this.message.reply("Sorry, I need 'manage message' permissions on this channel to be able to monitor it");            		
-		    	
-		    	} 
-                
+            for( let c in this.moduleConfig.commands ) {
+                if( this.moduleConfig.commands[c].includes( this.command ) ) {
+                    this.command = c;
+                    break;
+                }
             }
             
-            const DatabaseHandler = require('../../utilities/db-handler.js');
-            const data = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.SET_SETTINGS, [this.message.channel.id, channelName, serverId, serverName, toggle]);
-
-            data.setRows().then((result) => {
-                this.message.react(this.clientConfig.settings.reaction.SUCCESS);
-            }).catch((reason) => {                	
-                this.message.react(this.clientConfig.settings.reaction.ERROR);
-                throw reason;
-            });
+            switch( this.command ) {
+                case "qmonitor":
+                    return require('./doToggle.js')( this ); 
+                default:
+            }
             
         } catch(e) {
             this.error("process",e);
@@ -63,7 +37,7 @@ class Command extends Module {
                 	    
             if( await this.auth() ) { return true; }
 
-            const DatabaseHandler = require('../../utilities/db-handler.js');
+            const DatabaseHandler = require(this.clientConfig.path+'/utilities/db-handler.js');
             const dbHandler = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.GET_SETTINGS, [this.message.channel.id]);
             let result = await dbHandler.getRows();
                 
@@ -81,8 +55,8 @@ class Command extends Module {
                 embed.addField('Removed:', this.message.content);
                 this.message.author.send({embed});
                 this.message.delete(500);
-                
-                return false;
+            	this.command = 'question monitor';
+                return this.silentSuccess('non-question: '+this.message.content);
                 
             }                   
         
@@ -101,7 +75,7 @@ class Command extends Module {
         embed.setDescription(this.moduleConfig.help.qmonitor.text);
         
         try {
-            const DatabaseHandler = require('../../utilities/db-handler.js');
+            const DatabaseHandler = require(this.clientConfig.path+'/utilities/db-handler.js');
             const dbHandler = new DatabaseHandler(this.clientConfig.settings.database, this.moduleConfig.queries.GET_SETTINGS, [this.message.channel.id]);
             dbHandler.getRows().then((result) => {
                 if( result[0].qmonitor ) { embed.addField("Status","Active and monitoring"); }
