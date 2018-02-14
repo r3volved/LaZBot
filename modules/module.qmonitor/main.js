@@ -55,7 +55,8 @@ class Command extends Module {
                 embed.addField('Removed:', this.message.content);
                 this.message.author.send({embed});
                 this.message.delete(500);
-            	this.command = 'question monitor';
+
+                this.command = 'question monitor';
                 return this.silentSuccess('non-question: '+this.message.content);
                 
             }                   
