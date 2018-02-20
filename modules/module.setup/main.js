@@ -2,9 +2,9 @@ let Module          = require('../module.js');
 
 class Command extends Module {
 
-    constructor(config, reqModule, reqCommand, message) {
+    constructor(config, reqModule, message, cmdObj) {
         
-        super(config, reqModule, reqCommand, message);
+        super(config, reqModule, message, cmdObj);
 
     }
     
@@ -12,16 +12,9 @@ class Command extends Module {
 
         try {
             
-            for( let c in this.moduleConfig.commands ) {
-                if( this.moduleConfig.commands[c].includes( this.command ) ) {
-                    this.command = c;
-                    break;
-                }
-            }
-            
-            switch( this.command ) {
+            switch( this.cmdObj.cmd ) {
                 case "setup":
-                    return require('./doSetup.js')( this ); 
+                    return require('./doSetup.js').doSetup( this ); 
                 default:
             }
             

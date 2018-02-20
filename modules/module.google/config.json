@@ -4,26 +4,53 @@
 
     "name":"Google",
 
-    "version":"1.0",
+    "version":"2.0",
     
     "type":"command",
     
     "permission":"anyone",
     
+    "commands":{
+    
+    	"search":{
+			"aliases":["gs"],
+			"procedure":"doSearch",
+			"args":["text"],
+			"help":{
+	    		"id":"search",
+	    		"title":"Google quick-search",
+	            "text":"Perform a quick google search without ever leaving the comfort of your discord",
+	            "example":"*%PREFIX%%COMMAND% <stuff to google>*"
+	    	}
+		},
+    	"translate":{
+			"aliases":["gt"],
+			"procedure":"doTranslate",
+			"args":["id", "lang", "num"],
+			"help":{
+	        	"id":"translate",
+	        	"title":"Google Translation help",
+	        	"text":"Translate a specified number of users last messages into specified language.\n%PREFIX%%COMMAND% <languageID> <userID|mention> <lastNumberMessages>\n\n**Note:** *This command leverages the google translate api to automatically detect localization before translating.*",
+	        	"example":"*%PREFIX%%COMMAND% fr @shittybill 4*"
+	    	}
+		}
+    
+    },
+    
     "help":{
     
     	"search":{
-    		"id":"search",
-    		"title":"Google quick-search",
-            "text":"Perform a quick google search without ever leaving the comfort of your discord",
-            "example":"*%PREFIX%%COMMAND% <stuff to google>*"
+    		"id":"",
+    		"title":"",
+            "text":"",
+            "example":""
     	},
     	
         "translate":{
-        	"id":"translate",
-        	"title":"Google Translation help",
-        	"text":"Translate a specified number of users last messages into specified language.\n%PREFIX%%COMMAND% <languageID> <userID|mention> <lastNumberMessages>\n\n**Note:** *This command leverages the google translate api to automatically detect localization before translating.*",
-        	"example":"*%PREFIX%%COMMAND% fr @shittybill 4*"
+    		"id":"",
+    		"title":"",
+            "text":"",
+            "example":""
         }
 
     },

@@ -4,19 +4,47 @@
 
     "name":"Question monitor",
 
-    "version":"2.6",
+    "version":"2.8",
     
     "type":"preMonitor",
     
     "permission":"admin",
     
+    "commands":{
+    
+    	"qmonitor":{
+			"aliases":["qm"],
+			"procedure":"toggle",
+			"args":["text"],
+			"help":{
+	    		"id":"qmonitor",
+		        "title":"Question monitor help",
+		        "text":"This module monitors a channel for comments in the form of a question. Non-questions will be removed on channels where this module is actively monitoring. In the case of a removal, the user will be notified over PM that their comment had ben removed.",
+		        "example":"*%PREFIX%%COMMAND% on|off*\n*%PREFIX%%COMMAND% status*"
+	    	},
+			"subcommands":{ 
+				"status":{
+					"aliases":[],
+					"procedure":"status",
+					"args":[],
+					"help":{
+			    		"id":"qmonitor",
+				        "title":"Question monitor help",
+				        "text":"This module monitors a channel for comments in the form of a question. Non-questions will be removed on channels where this module is actively monitoring. In the case of a removal, the user will be notified over PM that their comment had ben removed.",
+				        "example":"*%PREFIX%%COMMAND% on*\n*%PREFIX%%COMMAND% off*"
+			    	}
+				}
+			}
+		}
+    
+    },
     "help":{
     	
     	"qmonitor":{
-    		"id":"qmonitor",
-	        "title":"Question monitor help",
-	        "text":"This module monitors a channel for comments in the form of a question. Non-questions will be removed on channels where this module is actively monitoring. In the case of a removal, the user will be notified over PM that their comment had ben removed.",
-	        "example":"*%PREFIX%%COMMAND% on*\n*%PREFIX%%COMMAND% off*"
+    		"id":"",
+	        "title":"",
+	        "text":"",
+	        "example":""
     	}
 
     },

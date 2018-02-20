@@ -3,126 +3,26 @@
     "token":"YOUR_BOT_TOKEN",
     
     "master":"YOUR_USER_ID",
-    
-    "version":"LaZBot v3.0 | SCORPIO",
-    
-    "adminRole":"botadmins",
-
-    "modRole":"botmods",
-    
-    "database":{
-    	
-        "host":"localhost",
-        "user":"lazbot",
-        "password":"lazbot314",
-        "database":"lazbot"
-        	
-    },
-    
-    "datadb":{
-    	
-        "host":"localhost",
-        "user":"livedata",
-        "password":"datalive",
-        "database":"livedata"
-    	
-    },
-    
-    "permissions":[
-    
-    	"master",
-        "admin",
-        "mod",
-        "anyone"
-    
-    ],
-    
     "prefix":"?",
-
+    
+    "version":"LaZBot v3.6 | SCORPIO",
+    
+    "permissions":[ "master", "admin", "mod", "anyone" ],
+    "adminRole":"botadmins",
+    "modRole":"botmods",
+        
+    "database":{ "host":"host", "user":"lazbot", "password":"lazbot314", "database":"lazbot" },
+    "datadb":{ "host":"host", "user":"datastore", "password":"storedata", "database":"datastore" },
+    
     "modules":{
 
-        "help":{ 
-        	
-        	"id":"help", 				
-        	"active":true,
-        	"permission":"anyone",
-        	"commands":{
-        		"help":["?"]
-        	}
-        
-        }, 
-        
-        "setup":{ 
-        	
-        	"id":"setup", 				
-        	"active":true,
-        	"permission":"admin",
-        	"commands":{
-        		"setup":["su","channel"]
-        	}
-        
-        },
-        
-        "google":{ 
-        	
-        	"id":"google", 				
-        	"active":true,
-        	"permission":"anyone",
-        	"commands":{
-        		"search":["gs"],
-        		"translate":["gt"]
-        	}
-        
-        }, 
-        
-        "meme":{
-        	
-        	"id":"meme",
-        	"active":true,
-        	"permission":"admin",
-        	"commands":{
-        		"meme":["memes"]
-        	}
-        
-        },
-        
-        "qmonitor":{
-        	
-        	"id":"qmonitor",
-        	"active":true,
-        	"permission":"admin",
-        	"commands":{
-        		"qmonitor":["qm"]
-        	}
-        
-        },
-        
-        "eval":{
-        	
-        	"id":"eval",
-        	"active":true,
-        	"permission":"master",
-        	"commands":{
-        		"eval":["e"]
-        	}
-        
-        },
-        
-        "swgoh":{ 
-        	
-        	"id":"swgoh", 	
-        	"active":true,
-        	"permission":"anyone",
-        	"commands":{
-        		"swgoh":["sw","goh"],
-        		"zetas":["zetas"],
-        		"heist":["heists","$"],
-        		"arena":[],
-        		"unit":["units"],
-        		"mods":["mod"]
-        	}	
-        
-        }	
+        "help":{ "id":"help", "active":true, "permission":"anyone" },         
+        "setup":{  "id":"setup", "active":false, "permission":"admin" },        
+        "google":{  "id":"google",  "active":true, "permission":"anyone" },         
+        "meme":{ "id":"meme", "active":true, "permission":"admin" },        
+        "qmonitor":{ "id":"qmonitor" "active":true, "permission":"admin" },        
+        "master":{ "id":"master", "active":true, "permission":"master" },        
+        "swgoh":{ "id":"swgoh", "active":true, "permission":"anyone" }
     
     },
     
@@ -135,8 +35,9 @@
         "DM":"📫",
         "THINKING":"🤔",
         "WORK":"⏳",
-        "WORKING":"⌛"
+        "WORKING":"⌛",
+        "INFO":"ℹ"
             
     }
-    
+
 }

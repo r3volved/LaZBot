@@ -40,4 +40,9 @@ async function doSetup( obj ) {
 }
 
 
-module.exports = doSetup;
+/** EXPORTS **/
+module.exports = { 
+	doSetup: async ( obj ) => { 
+    	return await doSetup( obj ); 
+    }
+}

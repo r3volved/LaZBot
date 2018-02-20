@@ -8,29 +8,38 @@ class PermissionHandler {
         
     }
     
-    authorIs( configPermission ) {
+    async authorIs( configPermission ) {
         
     	try {
-	        //Master is always everything
-	    	if( configPermission === "master" ) {
-	            return this.message.author.id === this.clientConfig.settings.master;            
+	    	if( this.message.author.id === this.clientConfig.settings.master ) { 
+	    		return true; 
 	    	}
-	    	
+
 	    	if( configPermission === "admin" ) {
-	            return this.message.author.id === this.clientConfig.settings.master || !!this.message.member.roles.find("name", this.clientConfig.settings.adminRole); 
+	    		if( this.message.channel.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.adminRole) == null) { 
+	    			return false; 
+	    		}
+	    		return true;
 	        }
 	        
 	        if( configPermission === "moderator" ) {
-	            return this.message.author.id === this.clientConfig.settings.master || !!this.message.member.roles.find("name", this.clientConfig.settings.adminRole) ? true : !!this.message.member.roles.find("name", this.clientConfig.settings.modRole);
+	    		if( this.message.channel.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.modRole) == null) { 
+	    			return false; 
+	    		}
+	    		return true;
 	        }
+
+	        if( configPermission === "anyone" ) { 
+	        	return true; 
+	    	}
+	    	
     	} catch(e) { 
     		return false;
     	}
-        return false;
-        
+    	
     }
     
-    authorHasRole( role ) {
+    async authorHasRole( role ) {
     	try {
     		return !!this.message.member.roles.find("name", role);
     	} catch(e) { 
@@ -39,7 +48,7 @@ class PermissionHandler {
         return false;
     }
     
-    authorHasPermission( permission ) {
+    async authorHasPermission( permission ) {
         try {
         	return this.message.member.hasPermission(permission);
         } catch(e) { 
@@ -48,7 +57,7 @@ class PermissionHandler {
         return false;        
     }
     
-    clientHasRole( role ) {
+    async clientHasRole( role ) {
         try {
         	return this.message.channel.members.find("id", this.clientConfig.client.user.id).roles.find("name", role);
         } catch(e) { 
@@ -57,7 +66,7 @@ class PermissionHandler {
         return false;        
     }
     
-    clientHas( permission ) {
+    async clientHas( permission ) {
     	try {
     		return this.message.channel.members.find("id", this.clientConfig.client.user.id).hasPermission(permission);
     	} catch(e) { 
@@ -66,13 +75,18 @@ class PermissionHandler {
         return false;
     }
     
-    isAuthorized() {
+    async isAuthorized() {
         
     	try {
-    	    const moduleRoleRequired = this.moduleConfig.permission;
-	
-	        //Master is always everything
+    	    //Master is always everything
 	        if( this.message.author.id === this.clientConfig.settings.master ) { return true; }
+	        
+	        const moduleRoleRequired = this.moduleConfig.permission;
+	    	
+	        //Check anyone
+	        if( moduleRoleRequired === this.clientConfig.settings.permissions[3] ) {                
+	            return true;
+	        }
 	        
 	        //Check for admin role
 	        if( moduleRoleRequired === this.clientConfig.settings.permissions[1] ) {
@@ -84,10 +98,6 @@ class PermissionHandler {
 	            return this.message.channel.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.adminRole) ? true : this.message.channel.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.modRole);
 	        }
 	        
-	        //Check anyone
-	        if( moduleRoleRequired === this.clientConfig.settings.permissions[3] ) {                
-	            return true;
-	        }
     	} catch(e) { 
     		return false;
     	}

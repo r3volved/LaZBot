@@ -1,47 +1,28 @@
-let Module          = require('../module.js');
-
-class Command extends Module {
-
-    constructor(config, reqModule, reqCommand, message) {
-        
-        super(config, reqModule, reqCommand, message);
-
+async function doCommand( obj ) {
+    try {
+    	let process = obj.moduleConfig.commands[obj.cmdObj.cmd].procedure;
+    	return require('./commands.js')[process]( obj ); 
+    } catch(e) {
+        //On error, log to console and return help
+        obj.error("process",e);            
     }
-    
-    process() {
-
-        try {
-            
-            for( let c in this.moduleConfig.commands ) {
-                if( this.moduleConfig.commands[c].includes( this.command ) ) {
-                    this.command = c;
-                    break;
-                }
-            }
-            
-            switch( this.command ) {
-                case "help":
-                    return require('./doHelp.js')( this ); 
-                default:
-            }
-            
-        } catch(e) {
-            //On error, log to console and return help
-            this.error("process",e);            
-        }    
-            
-    }
-    
-    
-    analyze() {
-    	if( this.message.content.includes(this.clientConfig.client.user.id) ) {
-            this.command = 'help';
-            return require('./doHelp.js')( this ); 
-    	}
-    	
-    }
-    
-    
 }
 
-module.exports = Command;
+async function doMonitor( obj ) {
+    try {
+    	return require('./monitors.js').doMonitor( obj ); 
+    } catch(e) {
+        //On error, log to console and return help
+        obj.error("process",e);            
+    }
+}
+
+/** EXPORTS **/
+module.exports = { 
+	doCommand: async ( obj ) => { 
+    	return await doCommand( obj ); 
+    },
+	doMonitor: async ( obj ) => { 
+    	return await doMonitor( obj ); 
+    }
+}

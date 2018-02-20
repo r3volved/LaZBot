@@ -8,21 +8,9 @@ async function doCommand( obj ) {
     }
 }
 
-async function doMonitor( obj ) {
-    try {
-    	return require('./monitors.js').doMonitor( obj ); 
-    } catch(e) {
-        //On error, log to console and return help
-        obj.error("process",e);            
-    }
-}
-
 /** EXPORTS **/
 module.exports = { 
 	doCommand: async ( obj ) => { 
     	return await doCommand( obj ); 
-    },
-	doMonitor: async ( obj ) => { 
-    	return await doMonitor( obj ); 
     }
 }

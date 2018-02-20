@@ -1,8 +1,8 @@
 {
 
-    "id":"eval",
+    "id":"master",
 
-    "name":"Evaluation",
+    "name":"Master Tools",
 
     "version":"2.0",
     
@@ -10,7 +10,21 @@
     
     "permission":"master",
     
-    "help":{
+    "commands":{
+    
+    	"eval":{
+			"aliases":["e"],
+			"procedure":"doEval",
+			"args":["text"],
+			"help":{
+	    	    "title":"*--------HELP TITLE--------*",
+				"text":"*---------help text----------*"
+	    	}
+		}
+		
+	},
+	
+	"help":{
     
         "eval":{
         	"id":"eval",

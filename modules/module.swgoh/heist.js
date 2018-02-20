@@ -1,19 +1,13 @@
-async function doHeist( obj ) {
-
-    const content = obj.message.content.split(/\s+/g);
+async function heist( obj ) {
     
-    if( content[1] && content[1] === 'help' ) { return obj.help( obj.moduleConfig.help.heist ); }
-
     let result = null;
-    
     try {
-        result = await obj.fetchEvents();
+        result = await fetchEvents( obj );
     } catch(e) {
         return obj.error('doHeist.fetchEvents',e);           
     }
     
     let replyObj = {};
-    
     replyObj.title = obj.moduleConfig.help.heist.title;
     replyObj.description = '';
     
@@ -21,7 +15,6 @@ async function doHeist( obj ) {
     let credit = '`Not scheduled`';
     
     for( let i = 0; i < result.length; ++i ) {
-        
         if( result[i].nameKey === 'EVENT_CREDIT_HEIST_GETAWAY_NAME' ) {
             for( let s = 0; s < result[i].instanceList.length; ++s ) {
                 let sDate = new Date();
@@ -31,7 +24,6 @@ async function doHeist( obj ) {
 	            }
             }
         }
-        
         if( result[i].nameKey === 'EVENT_TRAINING_DROID_SMUGGLING_NAME' ) {
             for( let s = 0; s < result[i].instanceList.length; ++s ) {
                 let sDate = new Date();
@@ -41,14 +33,55 @@ async function doHeist( obj ) {
                 }
             }
         }
-
     }
     
     replyObj.description += '**Credits** : '+credit+'\n';
     replyObj.description += '**Droids**  : '+droid+'\n';
-    
     return obj.success( replyObj );
 
 }
 
-module.exports = doHeist;
+async function fetchEvents( obj ) {
+    
+    return new Promise( async (resolve, reject) => {
+        
+    	let settings = {};
+            settings.path       = process.cwd();
+            settings.path       = settings.path.replace(/\\/g,'\/')+'/compiled';
+            settings.hush       = true;
+            settings.verbose    = false;
+            settings.force      = false;
+            
+        let rpc = null;
+                
+        try {
+            const RpcService = require(settings.path+'/services/service.rpc.js');
+            rpc = await new RpcService(settings);
+
+            /** Start the RPC Service - with no logging**/
+            await rpc.start(`Fetching events...\n`, false);
+            
+        	await obj.message.react(obj.clientConfig.settings.reaction.THINKING);
+            let iData = await rpc.Player( 'GetInitialData' );
+            
+            /** End the RPC Service **/
+            await rpc.end("All data fetched");
+
+            resolve( iData.gameEventList );
+            
+        } catch(e) {
+            await rpc.end(e.message);
+            reject(e);
+        }            
+        
+    });
+    
+}
+ 
+
+/** EXPORTS **/
+module.exports = { 
+	heist: async ( obj ) => { 
+    	return await heist( obj ); 
+    }
+}
