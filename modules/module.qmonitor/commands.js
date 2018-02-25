@@ -26,9 +26,7 @@
 		}
 		
 		const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-		const data = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.SET_SETTINGS, [obj.message.channel.id, channelName, serverId, serverName, toggle]);
-		
-		data.setRows().then((result) => {
+		DatabaseHandler.setRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.SET_SETTINGS, [obj.message.channel.id, channelName, serverId, serverName, toggle]).then((result) => {
 			obj.message.react(obj.clientConfig.settings.reaction.SUCCESS);
 		    return obj.success();
 		}).catch((reason) => {
@@ -53,8 +51,7 @@ async function status( obj ) {
      
 	try {
 		const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-		const dbHandler = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_SETTINGS, [obj.message.channel.id]);
-		dbHandler.getRows().then((result) => {
+		DatabaseHandler.getRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_SETTINGS, [obj.message.channel.id]).then((result) => {
 			if( result[0].qmonitor ) { embed.addField("Status","Active and monitoring"); }
 			else { embed.addField("Status","Inactive"); }
 			obj.message.channel.send({embed}); 

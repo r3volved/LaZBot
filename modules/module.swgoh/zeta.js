@@ -1,7 +1,8 @@
 async function zeta( obj ) {
 
     try {
-        result = await getRegister( obj );
+    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
+	    result = await DatabaseHandler.getRegister( obj );
         if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
     } catch(e) {
         return obj.error('doZetas.getRegister',e);
@@ -84,34 +85,6 @@ async function zeta( obj ) {
 }
 
 
-async function getRegister( obj ) {
-	
-	try {
-		let registration = null;
-	    const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-	    if( obj.cmdObj.args.discordId ) {
-	    	registration = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_REGISTER_BY_DID, [obj.cmdObj.args.discordId]);
-	    } else {
-	    	if( obj.cmdObj.args.allycode ) { 
-	        	registration = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_REGISTER_BY_ALLYCODE, [obj.cmdObj.args.allycode]);
-	        } else {
-	        	registration = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_REGISTER_BY_PLAYER, ['%'+obj.cmdObj.args.id+'%']);
-	        }
-	    }
-	    
-	    try {
-	        let result = null;
-	        result = await registration.getRows();
-	        if( result.length === 0 ) { return false; }
-	        return result;
-	    } catch(e) {
-	    	throw e;
-	    }
-	} catch(e) {
-		obj.error('swgoh.getRegister',e);
-	}
-}
-
 
 async function findZetas( obj, allyCode, unit, lang ) {
     
@@ -122,14 +95,13 @@ async function findZetas( obj, allyCode, unit, lang ) {
     	let args  = !unit ? [allyCode, lang] : [allyCode,'%'+unit+'%', lang];
     	
         const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-        const data = new DatabaseHandler(obj.clientConfig.settings.datadb, query, args);
-        data.getRows().then((result) => {
+        DatabaseHandler.getRows(obj.clientConfig.settings.datadb, query, args).then((result) => {
             if( result.length === 0 ) { 
                 resolve(false);
             } else {
                 resolve(result);
             }
-        }).catch((reason) => {                  
+        }).catch((reason) => {
             reject(reason);
         });
         

@@ -129,16 +129,19 @@ class Module {
     	notes = notes || 'none';
     	try {
     	    const DatabaseHandler = require(this.clientConfig.path+'/utilities/db-handler.js');
-    	    let commandLog = new DatabaseHandler(
+    	    let commandLog = DatabaseHandler.setRows(
 	    		this.clientConfig.settings.database,
 	    		"INSERT INTO `cmdlog` VALUES (?, ?, ?, ?, ?, ?)",
 	    		[new Date(), this.cmdObj.prefix+this.cmdObj.cmd, this.message.channel.id, this.message.author.id, result, notes]
     	    );
-    	    commandLog.setRows();
     	} catch(e) {	
     		console.warn("Command logger problem!");
     		console.error(e);		
     	}
+    }
+    
+    react(reaction) {
+    	return reaction ? this.message.react(reaction) : false;        
     }
     
     success(replyObj, reaction) {

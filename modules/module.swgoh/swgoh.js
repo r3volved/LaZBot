@@ -23,8 +23,7 @@ async function add( obj ) {
 		
 	    try {
 			const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-		    const data = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.SET_REGISTER, [discordId, playerId, playerName, allycode, playerGuild]);
-	        result = await data.setRows();        
+			result = await DatabaseHandler.setRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.SET_REGISTER, [discordId, playerId, playerName, allycode, playerGuild]);
 	    } catch(e) {
 	        return obj.error('add.addPlayer', e);
 	    }
@@ -48,8 +47,7 @@ async function remove( obj ) {
 	    let result = null;
 	    try {
 	    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-	        const data = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.DEL_REGISTER, [playerId, allycode]);
-	        result = await data.setRows();
+	    	result = await DatabaseHandler.setRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.DEL_REGISTER, [playerId, allycode]);
 	    } catch(e) {
 	        return obj.error('remove.fetchPlayer', e);
 	    }
@@ -69,8 +67,9 @@ async function update( obj ) {
 		let result, discordId, playerId, playerName, allycode, playerGuild = null;
 
 	    try {
-	        result = await getRegister( obj );
-	        if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
+	    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
+		    result = await DatabaseHandler.getRegister( obj );
+		    if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
 	    } catch(e) {
 	        return obj.error('sync.getRegister',e);
 	    }
@@ -95,8 +94,7 @@ async function update( obj ) {
 		
 	    try {
 			const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-		    const data = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.SET_REGISTER, [discordId, playerId, playerName, allycode, playerGuild]);
-	        result = await data.setRows();        
+			result = await DatabaseHandler.setRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.SET_REGISTER, [discordId, playerId, playerName, allycode, playerGuild]);
 	    } catch(e) {
 	        return obj.error('add.addPlayer', e);
 	    }
@@ -115,8 +113,9 @@ async function find( obj ) {
 	    let result, discordId, playerId, playerName, allycode, playerGuild = null;
 	    
 	    try {
-	        result = await getRegister( obj );
-	        if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
+	    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
+		    result = await DatabaseHandler.getRegister( obj );
+		    if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
 	    } catch(e) {
 	        return obj.error('find.getRegister',e);
 	    }
@@ -140,35 +139,6 @@ async function find( obj ) {
 		obj.error('swgoh.find',e);
 	}
 	
-}
-
-
-async function getRegister( obj ) {
-	
-	try {
-		let registration = null;
-	    const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-	    if( obj.cmdObj.args.discordId ) {
-	    	registration = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_REGISTER_BY_DID, [obj.cmdObj.args.discordId]);
-	    } else {
-	    	if( obj.cmdObj.args.allycode ) { 
-	        	registration = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_REGISTER_BY_ALLYCODE, [obj.cmdObj.args.allycode]);
-	        } else {
-	        	registration = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_REGISTER_BY_PLAYER, ['%'+obj.cmdObj.args.id+'%']);
-	        }
-	    }
-	    
-	    try {
-	        let result = null;
-	        result = await registration.getRows();
-	        if( result.length === 0 ) { return false; }
-	        return result;
-	    } catch(e) {
-	    	throw e;
-	    }
-	} catch(e) {
-		obj.error('swgoh.getRegister',e);
-	}
 }
 
 

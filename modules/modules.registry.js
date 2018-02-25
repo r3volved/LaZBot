@@ -25,10 +25,18 @@ class ModuleRegistry {
                 
             }
             
-            console.info('==========================================================================');
-            console.info(Object.keys(this.modules).length+' modules have been loaded, listening for '+Object.keys(this.commands).length+' available commands:\n'+Object.keys(this.commands).join(', '));
-            console.info('==========================================================================');
-            console.info('Currently a member of '+config.client.guilds.size+' guilds\n');
+            console.info('='.repeat(80));
+            console.info('Modules   : Commands');
+            console.info('-'.repeat(10)+':'+'-'.repeat(69));
+            let mdls = Object.keys(this.modules);
+            for(let m in this.modules ) {
+            	console.info(m+' '.repeat(10 - m.length)+': '+Object.keys(this.modules[m].commands).join(', '));
+            }
+            console.info('='.repeat(80));
+            console.info('Currently a member of '+config.client.guilds.size+' guilds:');
+            for( let g of config.client.guilds ) {
+            	console.info(g[1].id+' : '+g[1].region+' '.repeat(10 - g[1].region.length)+' : '+g[1].name);//+' : '+g[1].channels.size+' channels');
+            }
             
             return true;
             

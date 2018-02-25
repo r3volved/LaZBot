@@ -2,16 +2,13 @@ async function doMonitor( obj ) {
 	
 	try {
 	
-        obj.cmdObj = { "module":"qmonitor", "cmd":"analyze" };
-        	
         if( !await obj.auth() ) { 
     		
-	        const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-	        const dbHandler = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_SETTINGS, [obj.message.channel.id]);
 	        
 	        let result = null;
 	        try {
-	        	result = await dbHandler.getRows();
+	        	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
+	        	result = await DatabaseHandler.getRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_SETTINGS, [obj.message.channel.id]);
 	        } catch(e) {
 	            obj.error("analyse",e);
 	        }    
@@ -21,7 +18,9 @@ async function doMonitor( obj ) {
 	        //ANALYZE MESSAGE
 	        if( !obj.message.content.match(/(.*(?:\w*|\s*)(?:\?))/gi) ) {
 	            			        
-	        	const Discord = require('discord.js');
+	        	obj.cmdObj = { "module":"qmonitor", "cmd":"qmonitor", "prefix":"" };
+	        	
+	            const Discord = require('discord.js');
 	            const embed = new Discord.RichEmbed();
 	            
 	            embed.setColor(0x6F9AD3);

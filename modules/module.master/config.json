@@ -14,13 +14,23 @@
     
     	"eval":{
 			"aliases":["e"],
-			"procedure":"doEval",
+			"procedure":"eval",
 			"args":["text"],
 			"help":{
 	    	    "title":"*--------HELP TITLE--------*",
 				"text":"*---------help text----------*"
 	    	}
+		},
+		"report":{
+			"aliases":[],
+			"procedure":"report",
+			"args":["id","text"],
+			"help":{
+	    	    "title":"*--------HELP TITLE--------*",
+				"text":"*---------help text----------*"
+	    	}
 		}
+		
 		
 	},
 	

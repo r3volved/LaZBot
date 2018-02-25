@@ -2,7 +2,8 @@ async function arena( obj ) {
 
     let result, discordId, playerId, playerName, allyCode, playerGuild = null;
     try {
-        result = await getRegister( obj );
+    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
+	    result = await DatabaseHandler.getRegister( obj );
         if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
     } catch(e) {
         return obj.error('doArena.getRegister',e);
@@ -53,7 +54,8 @@ async function arenaUnits( obj ) {
 
     let result, discordId, playerId, playerName, allyCode, playerGuild = null;
     try {
-        result = await getRegister( obj );
+    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
+	    result = await DatabaseHandler.getRegister( obj );
         if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
     } catch(e) {
         return obj.error('doArena.getRegister',e);
@@ -153,42 +155,13 @@ async function arenaUnits( obj ) {
                 
 }
 
-async function getRegister( obj ) {
-	
-	try {
-		let registration = null;
-	    const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-	    if( obj.cmdObj.args.discordId ) {
-	    	registration = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_REGISTER_BY_DID, [obj.cmdObj.args.discordId]);
-	    } else {
-	    	if( obj.cmdObj.args.allycode ) { 
-	        	registration = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_REGISTER_BY_ALLYCODE, [obj.cmdObj.args.allycode]);
-	        } else {
-	        	registration = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_REGISTER_BY_PLAYER, ['%'+obj.cmdObj.args.id+'%']);
-	        }
-	    }
-	    
-	    try {
-	        let result = null;
-	        result = await registration.getRows();
-	        if( result.length === 0 ) { return false; }
-	        return result;
-	    } catch(e) {
-	    	throw e;
-	    }
-	} catch(e) {
-		obj.error('swgoh.getRegister',e);
-	}
-}
-
 async function findUnitDefs( obj, units ) {
     
     return new Promise((resolve,reject) => {
         
         //find discordID in lazbot db
         const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-        const data = new DatabaseHandler(obj.clientConfig.settings.datadb, obj.moduleConfig.queries.GET_UNITNAMES, [units]);
-        data.getRows().then((result) => {
+        DatabaseHandler.getRows(obj.clientConfig.settings.datadb, obj.moduleConfig.queries.GET_UNITNAMES, [units]).then((result) => {
             if( result.length === 0 ) { 
                 obj.message.react(obj.clientConfig.settings.reaction.ERROR);
                 let replyStr = "There was an error retriving your units";

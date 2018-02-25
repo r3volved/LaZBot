@@ -1,7 +1,8 @@
 async function mod( obj ) {
 
     try {
-        result = await getRegister( obj );
+    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
+	    result = await DatabaseHandler.getRegister( obj );
         if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
     } catch(e) {
         return obj.error('doMods.getRegister',e);
@@ -69,47 +70,17 @@ async function mod( obj ) {
             
 }
 
-async function getRegister( obj ) {
-	
-	try {
-		let registration = null;
-	    const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-	    if( obj.cmdObj.args.discordId ) {
-	    	registration = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_REGISTER_BY_DID, [obj.cmdObj.args.discordId]);
-	    } else {
-	    	if( obj.cmdObj.args.allycode ) { 
-	        	registration = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_REGISTER_BY_ALLYCODE, [obj.cmdObj.args.allycode]);
-	        } else {
-	        	registration = new DatabaseHandler(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_REGISTER_BY_PLAYER, ['%'+obj.cmdObj.args.id+'%']);
-	        }
-	    }
-	    
-	    try {
-	        let result = null;
-	        result = await registration.getRows();
-	        if( result.length === 0 ) { return false; }
-	        return result;
-	    } catch(e) {
-	    	throw e;
-	    }
-	} catch(e) {
-		obj.error('swgoh.getRegister',e);
-	}
-}
-
 async function findMods( obj, allyCode ) {
     
     return new Promise((resolve,reject) => {
         
         //find discordID in lazbot db
         const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-        const data = new DatabaseHandler(obj.clientConfig.settings.datadb, obj.moduleConfig.queries.GET_MODS, [allyCode]);
-        data.getRows().then((result) => {
+        DatabaseHandler.getRows(obj.clientConfig.settings.datadb, obj.moduleConfig.queries.GET_MODS, [allyCode]).then((result) => {
             if( result.length === 0 ) { 
                 obj.message.react(obj.clientConfig.settings.reaction.ERROR);
                 replyStr = "The requested discord user is not registered with a swgoh account.\nSee help for registration use.";
                 reject(replyStr);
-            
             } else {
                 resolve(result);
             }
@@ -122,26 +93,6 @@ async function findMods( obj, allyCode ) {
     
 }
 
-
-async function doStoredProcedure( obj, procedure, args ) {
-    
-    return new Promise( async (resolve,reject) => {
-        
-        if( !procedure ) { reject('no procedure to fetch'); }
-        let result = null;
-        try {
-        	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-            const data = new DatabaseHandler(obj.clientConfig.settings.datadb, procedure, args);
-        	result = await data.getRows()
-        } catch(e) {
-            obj.message.react(obj.clientConfig.settings.reaction.ERROR);
-        	reject(e.message);
-        }
-        resolve(result);
-        
-    });
-    
-}
 
 /** EXPORTS **/
 module.exports = { 
