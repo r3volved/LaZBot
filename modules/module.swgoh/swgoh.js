@@ -9,7 +9,7 @@ async function add( obj ) {
 		
 		let result = null;    
 	    try {
-	        result = await fetchPlayer( obj, allycode );        
+	    	result = await require('./utilities.js').fetchPlayer( allycode, obj );        
 	        if( !result || !result[0] ) { return obj.fail('The requested player cannot be found.'); }
 	    } catch(e) {
 	        return obj.error('add.fetchPlayer', e);
@@ -80,7 +80,7 @@ async function update( obj ) {
 	    playerGuild = result[0].playerGuild;
 		
 	    try {
-	        result = await fetchPlayer( obj, allycode );        
+	    	result = await require('./utilities.js').fetchPlayer( allycode, obj );        
 	        if( !result || !result[0] ) { return obj.fail('The requested player cannot be found.'); }
 	    } catch(e) {
 	        return obj.error('add.fetchPlayer', e);
@@ -141,63 +141,6 @@ async function find( obj ) {
 	
 }
 
-
-async function fetchPlayer( obj, allycode ) {
-	
-	return new Promise( async (resolve, reject) => {
-		
-		let settings = {};
-            settings.path       = process.cwd();
-            settings.path       = settings.path.replace(/\\/g,'\/')+'/compiled';
-	        settings.hush       = true;
-	        settings.verbose    = false;
-	        settings.force      = false;
-	        
-	    let profile, rpc, sql = null;
-	            
-	    try {
-			const RpcService = require(settings.path+'/services/service.rpc.js');
-	        rpc = await new RpcService(settings);
-	
-	        /** Start the RPC Service - with no logging**/
-	        await rpc.start(`Fetching ${allycode}...\n`, false);
-	        
-	    	await obj.message.react(obj.clientConfig.settings.reaction.THINKING);
-	        profile = await rpc.Player( 'GetPlayerProfile', { "identifier":parseInt(allycode) } );
-	        
-	        /** End the RPC Service **/
-	        await rpc.end("All data fetched");
-	
-	    } catch(e) {
-	        await rpc.end(e.message);
-	        reject(e);
-	    }
-	    
-	    try {
-			const SqlService = require(settings.path+'/services/service.sql.js');
-	        sql = await new SqlService(settings);
-	
-	        /** Start the SQL Service - with no logging**/
-	        await sql.start(`Saving ${allycode}...\n`, false);
-	        
-	        await obj.message.react(obj.clientConfig.settings.reaction.WORK);
-	        await sql.query( 'SET FOREIGN_KEY_CHECKS = 0;' );
-	        let sqlresult = await sql.query( 'insert', 'PlayerProfile', [profile] );
-	        await sql.query( 'SET FOREIGN_KEY_CHECKS = 1;' );
-	        
-	        /** End the RPC Service **/
-	        await sql.end("Saved");
-	
-	        resolve([profile]);
-	        
-	    } catch(e) {
-	        await sql.end(e.message);
-	        reject(e);
-	    }
-	        
-	});
-	
-}
     
 
 /** EXPORTS **/

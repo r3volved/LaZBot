@@ -90,7 +90,7 @@ client.on('ready', async () => {
 	    await client.user.setPresence({game:{ name:config.settings.prefix+"help", type:"LISTENING" }});
 	    
 	} catch(e) { console.error(e); }
-    
+	
 }); 
 
 

@@ -68,6 +68,7 @@ class Module {
         
         replyObj.footer = replyObj.footer || this.clientConfig.client.user.username+'  ['+this.clientConfig.settings.version+']';
         embed.setFooter(replyObj.footer);           
+        //embed.setURL('https://discord.gg/XB4DKCt');
         
         replyObj.description = replyObj.description || '';
         embed.setDescription(replyObj.description);
@@ -95,7 +96,7 @@ class Module {
 	        
 	        replyObj.title  = helpJson.title;
 	        
-	        replyObj.description = helpJson.text;
+	        replyObj.description = helpJson.text+'\n\nFor further assistance, bug reports or suggestions - come visit my master at https://discord.gg/XB4DKCt';
 	        replyObj.description = replyObj.description.replace(/%PREFIX%/g, this.clientConfig.settings.prefix);
 	        replyObj.description = replyObj.description.replace(/%COMMAND%/g, helpJson.id);
 	        

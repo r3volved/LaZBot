@@ -20,7 +20,7 @@ async function guild( obj ) {
     else if( !result ) { return obj.fail('No guilds found with this name'); }
     result = result[0];
     
-    let threshold = 1;
+    let threshold = args ? 1 : 2;
     
     let reply = {};
     reply.title = "I found "+result.length+" guilds";
@@ -76,6 +76,11 @@ async function guildDetails( obj ) {
     let nbsp = '0';
     for( let i of result ) {
     	reply.description += '`'+i.allyCode+'`| **'+i.name+'** |`'+i.totalGP.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+'GP`\n';
+    	
+    	if( reply.description.length > 1500 ) {
+    		await obj.success(reply);
+    		reply.description = 'continued...\n';
+    	}
     }
     
     return obj.success(reply);

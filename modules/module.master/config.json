@@ -29,7 +29,42 @@
 	    	    "title":"*--------HELP TITLE--------*",
 				"text":"*---------help text----------*"
 	    	}
+		},
+		"update":{
+			"aliases":[],
+			"procedure":"update",
+			"args":["id","text"],
+			"help":{
+	    	    "title":"*--------HELP TITLE--------*",
+				"text":"*---------help text----------*"
+	    	},
+	    	"subcommands":{ 
+				"players":{
+					"aliases":[],
+					"procedure":"updatePlayers",
+					"args":["num"],
+					"help":{
+						"id":"Update swgoh player database",
+			    	    "title":"SWGOH Players update",
+				        "text":"",
+						"example":"%PREFIX%%COMMAND% <num>"
+			    	}
+				},
+				"data":{
+					"aliases":[],
+					"procedure":"updateData",
+					"args":[],
+					"help":{
+						"id":"Update swgoh game database",
+			    	    "title":"SWGOH Game update",
+				        "text":"",
+						"example":"%PREFIX%%COMMAND%"
+			    	}
+				}
+	    	}
 		}
+		
+		
 		
 		
 	},

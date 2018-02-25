@@ -7,6 +7,8 @@ async function mod( obj ) {
     } catch(e) {
         return obj.error('doMods.getRegister',e);
     }
+    
+    
                             
     allycode    = result[0].allyCode;
     playerName  = result[0].playerName;
