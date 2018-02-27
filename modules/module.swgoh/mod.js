@@ -1,29 +1,27 @@
-async function doMods( obj ) {
+async function mod( obj ) {
 
-    const content = obj.message.content.split(/\s+/g);
-    
-    if( content[1] && content[1] === 'help' ) { return obj.help( obj.moduleConfig.help.mods ); }
-    
-    let result, discordId, playerId, playerName, allyCode, playerGuild = null;
-    let id = !content[1] || content[1] === 'me' ? obj.message.author.id : content[1].replace(/[\\|<|@|!]*(\d{18})[>]*/g,'$1');
-    
     try {
-        result = await obj.getRegister(id);
+    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
+	    result = await DatabaseHandler.getRegister( obj );
         if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
     } catch(e) {
         return obj.error('doMods.getRegister',e);
     }
+    
+    
                             
-    allyCode    = result[0].allyCode;
+    allycode    = result[0].allyCode;
     playerName  = result[0].playerName;
     updated     = result[0].updated;
         
     try {
-    	result = await obj.findMods( allyCode );
+    	result = await findMods( obj, allycode );
         if( !result || !result[0] ) { return obj.fail('The requested player does not have any mods.'); }
     } catch(e) {
         return obj.error('doMods.findMods', e);
     }
+    
+    result = result[0];
     
     let mods = [];
     let mod  = {};
@@ -39,7 +37,7 @@ async function doMods( obj ) {
                     mod["secondaryValue_"+secondaryCount] = "";
                 }
                 
-                mod.characterName = result[i].characterName.substr(1,result[i].characterName.length-2);
+                mod.characterName = result[i].characterName;
                 mods.push(mod); 
             
             }
@@ -49,7 +47,7 @@ async function doMods( obj ) {
             mod = {};
             mod.mod_uid = result[i].mod_uid;
             mod.slot    = result[i].slot;
-            mod.set     = result[i].set.replace(/\s/,'');
+            mod.set     = result[i].set;
             mod.level   = parseInt(result[i].level);
             mod.pips    = parseInt(result[i].pips);
             mod.primaryBonusType  = result[i].type;
@@ -74,4 +72,33 @@ async function doMods( obj ) {
             
 }
 
-module.exports = doMods;
+async function findMods( obj, allyCode ) {
+    
+    return new Promise((resolve,reject) => {
+        
+        //find discordID in lazbot db
+        const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
+        DatabaseHandler.getRows(obj.clientConfig.settings.datadb, obj.moduleConfig.queries.GET_MODS, [allyCode]).then((result) => {
+            if( result.length === 0 ) { 
+                obj.message.react(obj.clientConfig.settings.reaction.ERROR);
+                replyStr = "The requested discord user is not registered with a swgoh account.\nSee help for registration use.";
+                reject(replyStr);
+            } else {
+                resolve(result);
+            }
+        }).catch((reason) => {                  
+            obj.message.react(obj.clientConfig.settings.reaction.ERROR);                    
+            reject(reason);
+        });
+        
+    });
+    
+}
+
+
+/** EXPORTS **/
+module.exports = { 
+	mod: async ( obj ) => { 
+    	return await mod( obj ); 
+    }
+}

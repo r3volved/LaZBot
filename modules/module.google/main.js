@@ -13,7 +13,7 @@ async function doMonitor( obj ) {
     	return require('./monitors.js').doMonitor( obj ); 
     } catch(e) {
         //On error, log to console and return help
-    	obj.error("process",e);            
+        obj.error("process",e);            
     }
 }
 

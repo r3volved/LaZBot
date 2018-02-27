@@ -39,9 +39,8 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 client.on('guildCreate', guild => {
   
 	try {
-	    const DatabaseHandler = require(config.path+'/utilities/db-handler.js');
-	    botLog = new DatabaseHandler(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), ` ! ${client.name} joined ${guild.name}`]);
-	    botLog.setRows();
+	    const botLog = require(config.path+'/utilities/db-handler.js');
+	    botLog.setRows(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), ` ! ${config.client.usernname} joined ${guild.name}`]);
 	} catch(e) {	
 		console.warn("Message listener problem!");
 		console.error(e);		
@@ -56,18 +55,29 @@ client.on('guildCreate', guild => {
  */
 
 //ON READY
-client.on('ready', () => {
+client.on('ready', async () => {
     
     config.client = client;
-    	
-    console.info(`==========================================================================`);
-    console.info(`Started successfully with configuration: ${process.argv[2]}`);
-    console.info(`Connected as: ${config.client.user.username} => Using prefix: ${config.settings.prefix}`);
-
-    const DatabaseHandler = require(config.path+'/utilities/db-handler.js');
-    botLog = new DatabaseHandler(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), `Connected as: ${config.client.user.username}`]);
-    botLog.setRows();
     
+    try {
+	    const botLog = require(config.path+'/utilities/db-handler.js');
+	    botLog.setRows(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), `Connected as: ${config.client.user.username}`]);
+    } catch(e) {
+    	console.error(e);
+    	process.exit(-1);
+    }
+    
+    let len = 28;
+    let version = ' '.repeat(len - config.settings.version.length)+config.settings.version;
+    let name 	= ' '.repeat(len - config.client.user.username.length)+config.client.user.username;
+    let prefix  = ' '.repeat(len - 9)+'Prefix: '+config.settings.prefix;
+    
+    console.info('='.repeat(80));
+    console.info('='.repeat(80));
+    console.info(` ██╗      █████╗ ███████╗██████╗  ██████╗ ████████╗\n ██║     ██╔══██╗╚══███╔╝██╔══██╗██╔═══██╗╚══██╔══╝${version}\n ██║     ███████║  ███╔╝ ██████╔╝██║   ██║   ██║   \n ██║     ██╔══██║ ███╔╝  ██╔══██╗██║   ██║   ██║   ${name}\n ███████╗██║  ██║███████╗██████╔╝╚██████╔╝   ██║   ${prefix}\n ╚══════╝╚═╝  ╚═╝╚══════╝╚═════╝  ╚═════╝    ╚═╝   `)
+    console.info('='.repeat(80));
+    console.info(`Started successfully with configuration: ${process.argv[2]}`);
+
     /**
      * Once connected, build module registry
      * The module registry is the core of the bot and ties all the module configurations together and organizes scheduling
@@ -76,67 +86,81 @@ client.on('ready', () => {
     
 	    const ModuleRegistry   = require(config.path+'/modules/modules.registry.js');
 	    config.registry        = new ModuleRegistry();
-	    config.registry.load( config );
-	    client.user.setPresence({game:{ name:config.settings.prefix+"help", type:"LISTENING" }});
+	    await config.registry.load( config );
+	    await client.user.setPresence({game:{ name:config.settings.prefix+"help", type:"LISTENING" }});
 	    
 	} catch(e) { console.error(e); }
-    
+	
 }); 
 
 
 //ON DISCONNECT
-client.on('disconnect', (event) => {
-	
-    const DatabaseHandler = require(config.path+'/utilities/db-handler.js');
-    botLog = new DatabaseHandler(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), ` ! Client disconnected: [${event.code}] ${event.reason}`]);
-    botLog.setRows();
-
+client.on('disconnect', async (event) => {
     console.error(`\n ! Client disconnected: [${event.code}] ${event.reason}`);
-	
+    try{
+	    const botLog = require(config.path+'/utilities/db-handler.js');
+	    botLog.setRows(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), ` ! Client disconnected: [${event.code}] ${event.reason}`]);
+    } catch(e) {
+    	console.error(e);
+    }
+
 	//Try login again
 	if( event.code !== 4004 ) {
-		doLogin();
+		try {
+			await doLogin();
+		} catch(e) {
+			console.error('Error: trying to re-login\n',e);
+		}
 	}
 		
 });
 
 //ON RECONNECTING
-client.on('reconnecting', () => {
-
-    const DatabaseHandler = require(config.path+'/utilities/db-handler.js');
-    botLog = new DatabaseHandler(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), 'Client reconnecting']);
-    console.warn('\n ! Client reconnecting');	
-	    
+client.on('reconnecting', async (e) => {
+    console.warn('\n ! Client reconnecting -'+new Date());	
+	if(e) console.error(e);
+	try {
+	    const botLog = require(config.path+'/utilities/db-handler.js');
+	    botLog.setRows(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), 'Client reconnecting']);
+	} catch(e) {
+		console.error(e);
+	}
 });
 
 //ON RESUME
-client.on('resumed', (replayed) => {
-
-    const DatabaseHandler = require(config.path+'/utilities/db-handler.js');
-    botLog = new DatabaseHandler(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), 'Client resumed']);
-    console.info('\n ! Client resumed:');
-    console.info(replayed);
-
+client.on('resumed', async (replayed) => {
+    console.info('\n ! Client resumed -'+new Date());
+    if(replayed) console.log(replayed);
+	try {
+	    const botLog = require(config.path+'/utilities/db-handler.js');
+	    botLog.setRows(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), 'Client resumed']);
+	} catch(e) {
+		console.error(e);
+	}
 });
 
 //ON ERROR
-client.on('error', (error) => {
-
-    const DatabaseHandler = require(config.path+'/utilities/db-handler.js');
-    botLog = new DatabaseHandler(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), 'Client connection error']);
-    console.error('\n ! Client connection error:');
-    console.error(error);
-
+client.on('error', async (error) => {
+    console.error('\n ! Client connection error -'+new Date());
+    if(error) console.error(error);
+	try {
+	    const botLog = require(config.path+'/utilities/db-handler.js');
+	    botLog.setRows(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), 'Client connection error']);
+	} catch(e) {
+		console.error(e);
+	}
 });
 
 //ON WARNING
-client.on('warn', (info) => {
-
-    const DatabaseHandler = require(config.path+'/utilities/db-handler.js');
-    botLog = new DatabaseHandler(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), 'Client warning']);
-	console.warn('\n ! Client warning:');
-	console.warn(info);
-
+client.on('warn', async (info) => {
+	console.warn('\n ! Client warning -'+new Date());
+	if(info) console.warn(info);
+    try{
+	    const botLog = require(config.path+'/utilities/db-handler.js');
+	    botLog.setRows(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), 'Client warning']);
+    } catch(e) {
+    	console.error(e);
+    }
 });
 
 
@@ -152,7 +176,7 @@ async function doLogin() {
         await client.login(config.settings.token);
     
     } catch(err) {
-        console.error('\n ! '+err.message);
+        console.error('\n ! '+err);
         process.exit(-1);
     }    
 }

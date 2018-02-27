@@ -3,102 +3,26 @@
     "token":"YOUR_BOT_TOKEN",
     
     "master":"YOUR_USER_ID",
-    
-    "version":"LaZBot v3.0 | SCORPIO",
-    
-    "adminRole":"botadmins",
-
-    "modRole":"botmods",
-    
-    "database":{
-    	
-        "host":"localhost",
-        "user":"lazbot",
-        "password":"lazbot314",
-        "database":"lazbot"
-        	
-    },
-    
-    "datadb":{
-    	
-        "host":"localhost",
-        "user":"livedata",
-        "password":"datalive",
-        "database":"livedata"
-    	
-    },
-    
-    "permissions":[
-    
-    	"master",
-        "admin",
-        "mod",
-        "anyone"
-    
-    ],
-    
     "prefix":"?",
-
+    
+    "version":"LaZBot v3.7 | SCORPIO",
+    
+    "permissions":[ "master", "admin", "mod", "anyone" ],
+    "adminRole":"botadmins",
+    "modRole":"botmods",
+        
+    "database":{ "host":"host", "user":"lazbot", "password":"lazbot314", "database":"lazbot" },
+    "datadb":{ "host":"host", "user":"datastore", "password":"storedata", "database":"datastore" },
+    
     "modules":{
 
-        "help":{ 
-        	
-        	"id":"help", 				
-        	"active":true,
-        	"permission":"anyone",
-        	"commands":{
-        		"help":["help","?"]
-        	}
-        
-        }, 
-        
-        "meme":{
-        	
-        	"id":"meme",
-        	"active":true,
-        	"permission":"admin",
-        	"commands":{
-        		"meme":["meme","memes"]
-        	}
-        
-        },
-        
-        "qmonitor":{
-        	
-        	"id":"qmonitor",
-        	"active":true,
-        	"permission":"admin",
-        	"commands":{
-        		"qmonitor":["qmonitor","qm"]
-        	}
-        
-        },
-        
-        "eval":{
-        	
-        	"id":"eval",
-        	"active":false,
-        	"permission":"master",
-        	"commands":{
-        		"eval":["eval","e"]
-        	}
-        
-        },
-        
-        "swgoh":{ 
-        	
-        	"id":"swgoh", 	
-        	"active":true,
-        	"permission":"anyone",
-        	"commands":{
-        		"swgoh":["swgoh","sw"],
-        		"mods":["mods","mod"],
-        		"zetas":["zetas","zeta"],
-        		"heist":["heists","heist"],
-        		"arena":["arena"]
-        	}	
-        
-        }	
+        "help":{ "id":"help", "active":true, "permission":"anyone" },         
+        "setup":{  "id":"setup", "active":false, "permission":"admin" },        
+        "google":{  "id":"google",  "active":true, "permission":"anyone" },         
+        "meme":{ "id":"meme", "active":true, "permission":"admin" },        
+        "qmonitor":{ "id":"qmonitor", "active":true, "permission":"admin" },        
+        "master":{ "id":"master", "active":true, "permission":"master" },        
+        "swgoh":{ "id":"swgoh", "active":true, "permission":"anyone" }
     
     },
     
@@ -111,8 +35,9 @@
         "DM":"📫",
         "THINKING":"🤔",
         "WORK":"⏳",
-        "WORKING":"⌛"
+        "WORKING":"⌛",
+        "INFO":"ℹ"
             
     }
-    
+
 }

@@ -1,32 +1,28 @@
-async function doZetas( obj ) {
+async function zeta( obj ) {
 
-    const content = obj.message.content.split(/\s+/g);
-    
-    if( content[1] && content[1] === 'help' ) { return obj.help( obj.moduleConfig.help.zetas ); }
-
-    let result, discordId, playerId, playerName, allyCode, playerGuild = null;
-    let id = !content[1] || content[1] === 'me' ? obj.message.author.id : content[1].replace(/[\\|<|@|!]*(\d{18})[>]*/g,'$1');
-    
     try {
-        result = await obj.getRegister(id);
+    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
+	    result = await DatabaseHandler.getRegister( obj );
         if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
     } catch(e) {
         return obj.error('doZetas.getRegister',e);
     }
 
-    allyCode    = result[0].allyCode;
+    allycode    = result[0].allyCode;
     playerName  = result[0].playerName;
     updated     = result[0].updated;
 
-    let unit = content[2] || null;
+    let unit = obj.cmdObj.args.name || null;
     
     try {
-    	result = await obj.findZetas( allyCode, unit );
+    	result = await findZetas( obj, allycode, unit );
         if( !result || !result[0] ) { return obj.fail('The requested player or player-unit does not have any zetas.'); }
     } catch(e) {
         return obj.error('doZetas.findZetas', e);
     }
 
+    result = result[0];
+    
     let toons = {};
     let toon  = null;
 
@@ -50,7 +46,7 @@ async function doZetas( obj ) {
     ud.setTime(updated);
     ud = ud.toISOString().replace(/T/g,' ').replace(/\..*/g,'');
 
-    replyObj.title = playerName+'\'s zeta\'s ( '+allyCode+' )';
+    replyObj.title = playerName+'\'s zeta\'s ( '+allycode+' )';
     replyObj.description = 'Last updated: '+ud;
     replyObj.description += !unit ? '\n`------------------------------`' : '';
     replyObj.fields = [];
@@ -79,7 +75,7 @@ async function doZetas( obj ) {
     if( !unit ) {
     	let extra = {};
     	extra.title = '**Total '+count+'**';
-    	extra.text = 'For unit details, see:\n*'+obj.clientConfig.settings.prefix+obj.command+' '+allyCode+' <unitName>*';
+    	extra.text = 'For unit details, see:\n*'+obj.clientConfig.settings.prefix+obj.cmdObj.cmd+' unit '+allycode+' <unitName>*';
     	
     	replyObj.fields.push( extra );
     }
@@ -89,4 +85,34 @@ async function doZetas( obj ) {
 }
 
 
-module.exports = doZetas;
+
+async function findZetas( obj, allyCode, unit, lang ) {
+    
+    return new Promise((resolve,reject) => {
+        
+    	lang  = lang || 'ENG_US';
+    	let query = !unit ? obj.moduleConfig.queries.GET_ZETAS : obj.moduleConfig.queries.GET_UNIT_ZETAS;
+    	let args  = !unit ? [allyCode, lang] : [allyCode,'%'+unit+'%', lang];
+    	
+        const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
+        DatabaseHandler.getRows(obj.clientConfig.settings.datadb, query, args).then((result) => {
+            if( result.length === 0 ) { 
+                resolve(false);
+            } else {
+                resolve(result);
+            }
+        }).catch((reason) => {
+            reject(reason);
+        });
+        
+    });
+    
+}
+
+
+/** EXPORTS **/
+module.exports = { 
+	zeta: async ( obj ) => { 
+    	return await zeta( obj ); 
+    }
+}

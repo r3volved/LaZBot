@@ -4,19 +4,48 @@
 
     "name":"Meme monitor",
 
-    "version":"2.5",
+    "version":"2.8",
     
     "type":"preMonitor",
     
     "permission":"admin",
     
+    "commands":{
+    
+    	"meme":{
+			"aliases":["memes"],
+			"procedure":"toggle",
+			"args":["text"],
+			"help":{
+	    		"id":"meme",
+	        	"title":"Barriss is a bitch monitor",
+		        "text":"Slap a fool who mentions the skank",
+		        "example":"*%PREFIX%%COMMAND% on|off*\n*%PREFIX%%COMMAND% status*"
+	    	},
+			"subcommands":{ 
+				"status":{
+					"aliases":[],
+					"procedure":"status",
+					"args":[],
+					"help":{
+			    		"id":"memeStatus",
+			        	"title":"Show status of monitor",
+				        "text":"Slap a fool who mentions the skank",
+				        "example":"*%PREFIX%%COMMAND% status*"
+			    	}
+				}
+			}
+		}
+    
+    },
+    
     "help":{
     
         "meme":{
-    		"id":"meme",
-        	"title":"Barriss is a bitch monitor",
-	        "text":"Slap a fool who mentions the skank",
-	        "example":"*%PREFIX%%COMMAND% on*"
+    		"id":"",
+        	"title":"",
+	        "text":"",
+	        "example":""
         }
 
     },

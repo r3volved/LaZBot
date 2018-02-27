@@ -1,13 +1,13 @@
 class Module {
     
-    constructor(config, reqModule, reqCommand, message) {
+    constructor(config, reqModule, message, cmdObj) {
         
         try {
                         
-            this.clientConfig = config;
-            this.moduleConfig = reqModule;
-            this.command = reqCommand;
-            this.message = message;
+            this.clientConfig = config || null;
+            this.moduleConfig = reqModule || null;
+            this.message = message || null;
+            this.cmdObj = cmdObj || null;
                         
         } catch(e) {
         	this.error("module.init",e);
@@ -15,10 +15,37 @@ class Module {
         
     }
     
+    
+    async doCommand() {
+    
+    	try {
+    		let result = await require(__dirname+'/module.'+this.cmdObj.module+'/main.js').doCommand( this );
+    	} catch(e) {
+    		this.error('doCommand',e);
+    	}
+    	
+    }
+    
+    
+    async doMonitor() {
+        
+    	try {
+    		let result = await require(__dirname+'/module.'+this.moduleConfig.id+'/main.js').doMonitor( this );
+    	} catch(e) {
+    		this.error('doCommand',e);
+    	}
+    	
+    }
+    
     async auth() {
     	const PermissionHandler = require(this.clientConfig.path+'/utilities/permission-handler.js');
         let pHandler = new PermissionHandler(this.clientConfig, this.moduleConfig, this.message);
-        return await pHandler.isAuthorized(); 
+        try {
+        	return await pHandler.authorIs( this.moduleConfig.permission ); 
+        } catch(e) {
+        	this.error("module.auth",e);
+        	return false;
+        }
     }
     
     reply( replyObj ) {
@@ -31,7 +58,9 @@ class Module {
     	const Discord = require('discord.js');
         const embed = new Discord.RichEmbed();
         
-        replyObj.color = replyObj.color || '0x6F9AD3';
+        let color = this.moduleConfig.commands[this.cmdObj.cmd].color || '0x6F9AD3';
+        replyObj.color = replyObj.color || color;
+        
         embed.setColor(replyObj.color);
         
         replyObj.title = replyObj.title || this.moduleConfig.name;
@@ -39,6 +68,7 @@ class Module {
         
         replyObj.footer = replyObj.footer || this.clientConfig.client.user.username+'  ['+this.clientConfig.settings.version+']';
         embed.setFooter(replyObj.footer);           
+        //embed.setURL('https://discord.gg/XB4DKCt');
         
         replyObj.description = replyObj.description || '';
         embed.setDescription(replyObj.description);
@@ -66,7 +96,7 @@ class Module {
 	        
 	        replyObj.title  = helpJson.title;
 	        
-	        replyObj.description = helpJson.text;
+	        replyObj.description = helpJson.text+'\n\nFor further assistance, bug reports or suggestions - come visit my master at https://discord.gg/XB4DKCt';
 	        replyObj.description = replyObj.description.replace(/%PREFIX%/g, this.clientConfig.settings.prefix);
 	        replyObj.description = replyObj.description.replace(/%COMMAND%/g, helpJson.id);
 	        
@@ -88,7 +118,7 @@ class Module {
 		        replyObj.fields.push(exampleField);
 	        }
         
-	        return this.success( replyObj );
+	        return this.success( replyObj, this.clientConfig.settings.reaction.INFO );
 	        
     	} catch(e) {
     		return this.error('module.help',e);
@@ -97,28 +127,32 @@ class Module {
     }
         
     cmdlog( result, notes ) {
-    	notes = notes || '';
+    	notes = notes || 'none';
     	try {
     	    const DatabaseHandler = require(this.clientConfig.path+'/utilities/db-handler.js');
-    	    let commandLog = new DatabaseHandler(
+    	    let commandLog = DatabaseHandler.setRows(
 	    		this.clientConfig.settings.database,
 	    		"INSERT INTO `cmdlog` VALUES (?, ?, ?, ?, ?, ?)",
-	    		[new Date(), this.command, this.message.channel.id, this.message.author.id, result, notes]
+	    		[new Date(), this.cmdObj.prefix+this.cmdObj.cmd, this.message.channel.id, this.message.author.id, result, notes]
     	    );
-    	    commandLog.setRows();
     	} catch(e) {	
-    		console.warn("Message listener problem!");
+    		console.warn("Command logger problem!");
     		console.error(e);		
     	}
     }
     
-    success(replyObj) {
+    react(reaction) {
+    	return reaction ? this.message.react(reaction) : false;        
+    }
+    
+    success(replyObj, reaction) {
     	
+    	reaction = reaction || this.clientConfig.settings.reaction.SUCCESS;
     	if( replyObj ) {
     		let sent = this.reply( replyObj );
 	    	if( sent ) { 
 	    		this.cmdlog(1, this.message.content); 
-	            this.message.react(this.clientConfig.settings.reaction.SUCCESS);
+	            this.message.react(reaction);
 	            return true;
 	    	}
 	    	return false;
@@ -126,6 +160,11 @@ class Module {
     	this.cmdlog(1, this.message.content);
     	return true;
     	
+    }
+    
+    silentSuccess(notes) {    	
+		this.cmdlog(1, notes); 
+		return true;
     }
     
     fail(reason) {
