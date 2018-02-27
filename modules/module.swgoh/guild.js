@@ -46,15 +46,17 @@ async function guild( obj ) {
 
 async function guildDetails( obj ) {
 
+	console.log( obj.cmdObj.args);
     let procedure, args = null;
-    if( !obj.cmdObj.args.id || obj.cmdObj.args.id === 'help' ) { return obj.help(obj.cmdObj.help); }
+    if( !obj.cmdObj.args.text || obj.cmdObj.args.text === 'help' ) { return obj.help(obj.cmdObj.help); }
     
+    if( obj.cmdObj.args.text.match(/\d{9}/) ) { obj.cmdObj.args.allycode = obj.cmdObj.args.text; }
     if( obj.cmdObj.args.allycode ) {
     	procedure = obj.moduleConfig.queries.GET_GUILD_PLAYERS_BY_ALLYCODE;
     	args = obj.cmdObj.args.allycode;
     } else {
     	procedure = obj.moduleConfig.queries.GET_GUILD_PLAYERS_BY_GUILDNAME;
-    	args = '%'+obj.cmdObj.args.id+'%';
+    	args = '%'+obj.cmdObj.args.text+'%';
     } 
     
     let result = null;
@@ -65,9 +67,11 @@ async function guildDetails( obj ) {
     	return obj.error('doGuilds.doStoredProcedure',e);
     }
     
-    if( !result && obj.cmdObj.args.allycode ) { return obj.fail('No guilds found with this allycode'); }
-    else if( !result ) { return obj.fail('No guilds found with this name'); }
     result = result[0];
+    if( (!result || result.length === 0) && obj.cmdObj.args.allycode ) { return obj.fail('No guilds found with this allycode'); }
+    else if( !result || result.length === 0 ) { return obj.fail('No guilds found with this name'); }
+    
+    console.log( result );
     
     let reply = {};
     reply.title = "I found "+result.length+" players in "+result[0].guildName;

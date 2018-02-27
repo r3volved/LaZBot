@@ -110,7 +110,7 @@
 				"details":{
 					"aliases":["u","unit"],
 					"procedure":"zeta",
-					"args":["id","name"],
+					"args":["id","text"],
 					"help":{
 			            "id":"zeta details",
 			            "title":"SWGOH Player-Unit Zetas",
@@ -161,7 +161,7 @@
 				"details":{
 					"aliases":["d","players","roster"],
 					"procedure":"guildDetails",
-					"args":["id"],
+					"args":["text"],
 					"help":{
 						"id":"guild details",
 			    	    "title":"SWGOH Guild Lookup Details",
