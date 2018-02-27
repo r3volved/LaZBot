@@ -1,6 +1,7 @@
 async function report( obj ) {
 	try {
-		
+		if( !await obj.auth() ) { return obj.message.react(obj.clientConfig.settings.reaction.DENIED); }
+			
 		let procedure = obj.cmdObj.args.id;
 		let args = obj.cmdObj.args.text || '';
 		let title = '';

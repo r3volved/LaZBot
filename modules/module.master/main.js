@@ -1,5 +1,6 @@
 async function doCommand( obj ) {
     try {
+    	if( !await obj.auth() ) { return obj.message.react(obj.clientConfig.settings.reaction.DENIED); }
     	let process = obj.moduleConfig.commands[obj.cmdObj.cmd].procedure;
     	return require('./commands.js')[process]( obj ); 
     } catch(e) {

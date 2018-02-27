@@ -1,4 +1,5 @@
 async function update( obj ) {
+	if( !await obj.auth() ) { return obj.message.react(obj.clientConfig.settings.reaction.DENIED); }
 	if( obj.cmdObj.args.id === 'help' ) { return obj.help(obj.cmdObj.help); }
 	if( obj.cmdObj.subcmd ) {
 		let process = obj.moduleConfig.commands[obj.cmdObj.cmd].subcommands[obj.cmdObj.subcmd].procedure
