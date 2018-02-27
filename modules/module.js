@@ -96,7 +96,8 @@ class Module {
 	        
 	        replyObj.title  = helpJson.title;
 	        
-	        replyObj.description = helpJson.text+'\n\nFor further assistance, bug reports or suggestions - come visit my master at https://discord.gg/XB4DKCt';
+	        replyObj.description = helpJson.text;
+	        //replyObj.description += '\n\nFor further assistance, bug reports or suggestions - come visit my master at https://discord.gg/XB4DKCt';
 	        replyObj.description = replyObj.description.replace(/%PREFIX%/g, this.clientConfig.settings.prefix);
 	        replyObj.description = replyObj.description.replace(/%COMMAND%/g, helpJson.id);
 	        
