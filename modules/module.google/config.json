@@ -30,8 +30,8 @@
 			"help":{
 	        	"id":"translate",
 	        	"title":"Google Translation help",
-	        	"text":"Translate a specified number of users last messages into specified language.\n%PREFIX%%COMMAND% <languageID> <userID|mention> <lastNumberMessages>\n\n**Note:** *This command leverages the google translate api to automatically detect localization before translating.*",
-	        	"example":"*%PREFIX%%COMMAND% fr @shittybill 4*"
+	        	"text":"Translate a specified number of users last messages into specified language.\n%PREFIX%%COMMAND% <userID|mention> <languageID> <lastNumberMessages>\n\n**Note:** *This command leverages the google translate api to automatically detect localization before translating.*",
+	        	"example":"*%PREFIX%%COMMAND% @shittybill fr 4*"
 	    	}
 		}
     

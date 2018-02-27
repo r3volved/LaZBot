@@ -12,7 +12,7 @@ async function zeta( obj ) {
     playerName  = result[0].playerName;
     updated     = result[0].updated;
 
-    let unit = obj.cmdObj.args.name || null;
+    let unit = obj.cmdObj.args.text || null;
     
     try {
     	result = await findZetas( obj, allycode, unit );
