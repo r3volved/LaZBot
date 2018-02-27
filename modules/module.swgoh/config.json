@@ -4,7 +4,7 @@
 
     "name":"SWGOH-Discord",
 
-    "version":"3.6",
+    "version":"3.7",
     
     "type":"command",
     
@@ -155,7 +155,7 @@
 				"id":"guild",
 	    	    "title":"SWGOH Guild Lookup",
 		        "text":"Find guilds by name or see guild member breakdown by guild name or member allycode",
-		        "example":"*%PREFIX%%COMMAND% <guild>*\n*%PREFIX%%COMMAND% details <guild>*\n*%PREFIX%%COMMAND% details <allycode>*"
+		        "example":"*%PREFIX%%COMMAND% <guild>*\n*%PREFIX%%COMMAND% details <allycode|guild>*\n*%PREFIX%%COMMAND% stats <allycode|guild>*"
 	    	},
 			"subcommands":{ 
 				"details":{
@@ -166,7 +166,18 @@
 						"id":"guild details",
 			    	    "title":"SWGOH Guild Lookup Details",
 				        "text":"List all registered players in a guild ordered by GP\nGuild can be searched by name, or by any allycode of a guild member",
-				        "example":"*%PREFIX%%COMMAND% <guild>*\n*%PREFIX%%COMMAND% <allycode>*"
+				        "example":"*%PREFIX%%COMMAND% <allycode|guild>*"
+			    	}
+				},
+				"stats":{
+					"aliases":["s", "stat"],
+					"procedure":"guildStats",
+					"args":["text"],
+					"help":{
+						"id":"guild stats",
+			    	    "title":"SWGOH Guild Lookup Stats",
+				        "text":"Show round-up stats for a specified guild\nGuild can be searched by name, or by any allycode of a guild member",
+				        "example":"*%PREFIX%%COMMAND% <allycode|guild>*"
 			    	}
 				}
 			}
