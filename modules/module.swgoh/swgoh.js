@@ -20,10 +20,11 @@ async function add( obj ) {
 		playerId 	= result[0].playerId;
 		playerName 	= result[0].name;
 		playerGuild = result[0].guildName;
-		
-	    try {
+		playerPrivate = obj.cmdObj.args.text.includes('private') ? 1 : 0;
+				
+		try {
 			const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-			result = await DatabaseHandler.setRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.SET_REGISTER, [discordId, playerId, playerName, allycode, playerGuild]);
+			result = await DatabaseHandler.setRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.SET_REGISTER, [discordId, playerId, playerName, allycode, playerGuild, playerPrivate]);
 	    } catch(e) {
 	        return obj.error('add.addPlayer', e);
 	    }
@@ -78,6 +79,7 @@ async function update( obj ) {
 		playerName = result[0].playerName;
 		allycode = result[0].allyCode.toString();
 	    playerGuild = result[0].playerGuild;
+		playerPrivate = obj.cmdObj.args.text.includes('private') ? 1 : result[0].private;
 		
 	    try {
 	    	result = await require('./utilities.js').fetchPlayer( allycode, obj );        
@@ -94,7 +96,7 @@ async function update( obj ) {
 		
 	    try {
 			const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-			result = await DatabaseHandler.setRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.SET_REGISTER, [discordId, playerId, playerName, allycode, playerGuild]);
+			result = await DatabaseHandler.setRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.SET_REGISTER, [discordId, playerId, playerName, allycode, playerGuild, playerPrivate]);
 	    } catch(e) {
 	        return obj.error('add.addPlayer', e);
 	    }
@@ -124,10 +126,11 @@ async function find( obj ) {
 	    replyObj.title = 'Results for ';
 	    replyObj.title += result[0].playerName;
 	    
+	    let ac = result[0].private === 1 ? '---------' : result[0].allyCode;
 	    replyObj.description = '**Discord**   : '+result[0].discordId+'\n';
 	    replyObj.description += '**Player**      : '+result[0].playerName+'\n';
 	    replyObj.description += '**Guild**        : '+result[0].playerGuild+'\n';
-	    replyObj.description += '**AllyCode** : '+result[0].allyCode+'\n';
+	    replyObj.description += '**AllyCode** : '+ac+'\n';
 	            
 	    let ud = new Date();
 		ud.setTime(result[0].updated);

@@ -4,7 +4,7 @@
 
     "name":"SWGOH-Discord",
 
-    "version":"3.7",
+    "version":"3.8",
     
     "type":"command",
     
@@ -27,7 +27,7 @@
 				"add":{
 					"aliases":["a","create"],
 					"procedure":"add",
-					"args":["id","allycode"],
+					"args":["id","allycode","text"],
 					"help":{
 						"id":"swgoh add",
 			    	    "title":"SWGOH-Discord Registration",
@@ -38,7 +38,7 @@
 				"update":{
 					"aliases":["u","sync"],
 					"procedure":"update",
-					"args":["id"],
+					"args":["id","text"],
 					"help":{
 						"id":"swgoh update",
 			    	    "title":"SWGOH-Discord Update",
@@ -242,7 +242,7 @@
     	"GET_REGISTER_BY_ALLYCODE":"SELECT * FROM `swgoh` WHERE `allyCode` = ?",
     	"GET_REGISTER_BY_PLAYER":"SELECT * FROM `swgoh` WHERE LOWER(`playerName`) LIKE ?",
     	
-    	"SET_REGISTER":"INSERT INTO `swgoh` (`discordId`, `playerId`, `playerName`, `allyCode`, `playerGuild`) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE `playerName`=VALUES(`playerName`), `playerGuild`=VALUES(`playerGuild`), `updated`=CURRENT_TIMESTAMP",
+    	"SET_REGISTER":"INSERT INTO `swgoh` (`discordId`, `playerId`, `playerName`, `allyCode`, `playerGuild`, `private`) VALUES (?, ?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE `playerName`=VALUES(`playerName`), `playerGuild`=VALUES(`playerGuild`), `updated`=CURRENT_TIMESTAMP, `private`=VALUES(`private`)",
     	"DEL_REGISTER":"DELETE FROM `swgoh` WHERE `playerId` = ? AND `allyCode` = ?",
     	
     	"GET_UNITNAMES":"SELECT UnitDef.id, REPLACE(udn.text,'\"','') as 'name' FROM UnitDef JOIN Localization udn ON udn.id = UnitDef.nameKey AND udn.language = 'ENG_US' WHERE UnitDef.id IN ( ? )",

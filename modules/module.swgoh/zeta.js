@@ -11,6 +11,7 @@ async function zeta( obj ) {
     allycode    = result[0].allyCode;
     playerName  = result[0].playerName;
     updated     = result[0].updated;
+    let ac = result[0].private === 1 ? '---------' : result[0].allyCode;
 
     let unit = obj.cmdObj.args.text || null;
     
@@ -46,7 +47,7 @@ async function zeta( obj ) {
     ud.setTime(updated);
     ud = ud.toISOString().replace(/T/g,' ').replace(/\..*/g,'');
 
-    replyObj.title = playerName+'\'s zeta\'s ( '+allycode+' )';
+    replyObj.title = playerName+'\'s zeta\'s ( '+ac+' )';
     replyObj.description = 'Last updated: '+ud;
     replyObj.description += !unit ? '\n`------------------------------`' : '';
     replyObj.fields = [];
@@ -75,7 +76,7 @@ async function zeta( obj ) {
     if( !unit ) {
     	let extra = {};
     	extra.title = '**Total '+count+'**';
-    	extra.text = 'For unit details, see:\n*'+obj.clientConfig.settings.prefix+obj.cmdObj.cmd+' unit '+allycode+' <unitName>*';
+    	extra.text = 'For unit details, see:\n*'+obj.clientConfig.settings.prefix+obj.cmdObj.cmd+' unit <player> <unit>*';
     	
     	replyObj.fields.push( extra );
     }

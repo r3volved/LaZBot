@@ -78,7 +78,7 @@ async function guildDetails( obj ) {
     let gpTotal = 0;
     let nbsp = '0';    
     for( let i of result ) {
-    	reply.description += '`'+i.allyCode+'`| **'+i.name+'** |GP:`'+i.totalGP.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+'`\n';
+        reply.description += '`GP:'+i.totalGP.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+(' '.repeat(9 - i.totalGP.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").length))+' |` **'+i.name+'**\n';
     	gpTotal += parseInt(i.totalGP);
     	if( reply.description.length > 1500 ) {
     		await obj.success(reply);
