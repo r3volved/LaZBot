@@ -11,6 +11,7 @@ async function arena( obj ) {
                             
     allycode    = result[0].allyCode;
     playerName  = result[0].playerName;
+    let ac = result[0].private === 1 ? '---------' : result[0].allyCode;
     
     try {
         result = await fetchPlayer( obj, allycode );
@@ -34,15 +35,15 @@ async function arena( obj ) {
 	
         
     let replyObj = {};
-    replyObj.title = playerName+'\'s arena ( '+allycode+' )';
+    replyObj.title = playerName+'\'s arena ( '+ac+' )';
     
-    let desc = new Date().toString()+'\n'; //.toISOString().replace(/T/g,' ').replace(/\..*/g,'')+'\n'; 
+    let desc = new Date().toString()+'\n'; 
     desc += '`------------------------------`\n';
     desc += '**Char Arena rank** : `'+squads.arena.rank+'`\n';
     desc += '**Ship Arena rank** : `'+squads.ships.rank+'`\n';
     desc += '`------------------------------`\n';
     desc += 'For details, see:\n';
-    desc += '*'+obj.clientConfig.settings.prefix+obj.cmdObj.cmd+' details '+allycode+'*'
+    desc += '*'+obj.clientConfig.settings.prefix+obj.cmdObj.cmd+' details '+playerName+'*'
     replyObj.description = desc;
     replyObj.fields = [];
     
@@ -63,7 +64,8 @@ async function arenaUnits( obj ) {
                             
     allycode    = result[0].allyCode;
     playerName  = result[0].playerName;
-    
+    let ac = result[0].private === 1 ? '---------' : result[0].allyCode;
+
     try {
         result = await fetchPlayer( obj, allycode );
         if( !result || !result[0] || !result[0].pvpProfileList ) { return obj.fail('The requested player or player-unit does have arena data.'); }
@@ -109,7 +111,7 @@ async function arenaUnits( obj ) {
 	
         
     let replyObj = {};
-    replyObj.title = playerName+'\'s arena ( '+allycode+' )';
+    replyObj.title = playerName+'\'s arena ( '+ac+' )';
     replyObj.description = 'Fetched at: '+( new Date().toISOString().replace(/T/g,' ').replace(/\..*/g,'') );
     replyObj.fields = [];
     
