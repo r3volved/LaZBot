@@ -9,13 +9,13 @@ async function report( obj ) {
 			case 'commands':
 			case 'command':
 			case 'cmd':
-				title = 'Command Report'
+				title = 'Command Report for last 10 days'
 				procedure = 'CALL countCommands( \''+args.split(/\s/).join('\',\'')+'\' );';
 				return replyAgnostic( obj, procedure, title );
 			case 'servers':
 			case 'channels':
 			case 'setup':
-				title = 'Setup Report'
+				title = 'Monitor Setup Report'
 				procedure = 'CALL countSetup();';
 				return replyHeaders( obj, procedure, title );
 			case 'players':
@@ -77,7 +77,7 @@ async function replyAgnostic( obj, procedure, title ) {
 		replyObj.description = '```';
 		for( let r = 0; r < result.length; ++r ) {
 			for( let f in result[r] ) {
-				replyObj.description += result[r][f]+' '.repeat(12 - result[r][f].length)+' ';
+				replyObj.description += result[r][f]+'.'.repeat(20 - result[r][f].length)+' ';
 			}
 			replyObj.description += '\n';
 		}

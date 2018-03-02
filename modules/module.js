@@ -130,11 +130,13 @@ class Module {
     cmdlog( result, notes ) {
     	notes = notes || 'none';
     	try {
-    	    const DatabaseHandler = require(this.clientConfig.path+'/utilities/db-handler.js');
+    	    let cmd = this.cmdObj.prefix+this.cmdObj.cmd;
+    	    cmd += this.cmdObj.subcmd ? ' '+this.cmdObj.subcmd : '';
+    		const DatabaseHandler = require(this.clientConfig.path+'/utilities/db-handler.js');
     	    let commandLog = DatabaseHandler.setRows(
 	    		this.clientConfig.settings.database,
 	    		"INSERT INTO `cmdlog` VALUES (?, ?, ?, ?, ?, ?)",
-	    		[new Date(), this.cmdObj.prefix+this.cmdObj.cmd, this.message.channel.id, this.message.author.id, result, notes]
+	    		[new Date(), cmd, this.message.channel.id, this.message.author.id, result, notes]
     	    );
     	} catch(e) {	
     		console.warn("Command logger problem!");
