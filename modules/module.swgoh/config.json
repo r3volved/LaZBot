@@ -4,7 +4,7 @@
 
     "name":"SWGOH-Discord",
 
-    "version":"3.8",
+    "version":"3.9",
     
     "type":"command",
     
@@ -146,6 +146,19 @@
 	    	},
 	    	"subcommands":{}
 		},
+		"event":{
+			"aliases":["e","events"],
+			"procedure":"doEvent",
+			"args":["id"],
+			"color":"0x587f42",
+			"help":{
+	            "id":"event",
+	            "title":"SWGOH Event Schedule",
+	            "text":"Peek the currect event schedule\nNote: *subject to change*",
+	            "example":"*%PREFIX%%COMMAND%*"
+	    	},
+	    	"subcommands":{}
+		},
 		"guild":{
 			"aliases":["g","guilds"],
 			"procedure":"doGuild",
@@ -220,6 +233,13 @@
             "example":"*%PREFIX%%COMMAND%*"
         },
         
+		"event":{
+            "id":"event",
+            "title":"SWGOH Event Schedule",
+            "text":"Peek the currect event schedule\nNote: *subject to change*",
+            "example":"*%PREFIX%%COMMAND%*"
+    	},
+    	
         "unit":{
             "id":"unit",
             "title":"SWGOH Unit Details",

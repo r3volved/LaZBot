@@ -1,8 +1,8 @@
-async function zeta( obj ) {
+async function zeta( obj, register ) {
 
     try {
     	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-	    result = await DatabaseHandler.getRegister( obj );
+	    result = register || await DatabaseHandler.getRegister( obj );
         if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
     } catch(e) {
         return obj.error('doZetas.getRegister',e);
@@ -113,7 +113,7 @@ async function findZetas( obj, allyCode, unit, lang ) {
 
 /** EXPORTS **/
 module.exports = { 
-	zeta: async ( obj ) => { 
-    	return await zeta( obj ); 
+	zeta: async ( obj, register ) => { 
+    	return await zeta( obj, register ); 
     }
 }

@@ -1,9 +1,9 @@
-async function arena( obj ) {
+async function arena( obj, register ) {
 
     let result, discordId, playerId, playerName, allyCode, playerGuild = null;
     try {
     	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-	    result = await DatabaseHandler.getRegister( obj );
+	    result = register || await DatabaseHandler.getRegister( obj );
         if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
     } catch(e) {
         return obj.error('doArena.getRegister',e);
@@ -51,12 +51,12 @@ async function arena( obj ) {
                 
 }
 
-async function arenaUnits( obj ) {
+async function arenaUnits( obj, register ) {
 
     let result, discordId, playerId, playerName, allyCode, playerGuild = null;
     try {
     	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-	    result = await DatabaseHandler.getRegister( obj );
+	    result = register || await DatabaseHandler.getRegister( obj );
         if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
     } catch(e) {
         return obj.error('doArena.getRegister',e);
@@ -221,10 +221,10 @@ async function fetchPlayer( obj, allycode ) {
 
 /** EXPORTS **/
 module.exports = { 
-	arena: async ( obj ) => { 
-    	return await arena( obj ); 
+	arena: async ( obj, register ) => { 
+    	return await arena( obj, register ); 
     },
-	arenaUnits: async ( obj ) => { 
-    	return await arenaUnits( obj ); 
+	arenaUnits: async ( obj, register ) => { 
+    	return await arenaUnits( obj, register ); 
     }
 }

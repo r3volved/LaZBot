@@ -1,8 +1,10 @@
-async function mod( obj ) {
+async function mod( obj, register ) {
+
+    obj.message.react(obj.clientConfig.settings.reaction.THINKING);
 
     try {
     	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-	    result = await DatabaseHandler.getRegister( obj );
+	    result = register || await DatabaseHandler.getRegister( obj );
         if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
     } catch(e) {
         return obj.error('doMods.getRegister',e);
@@ -98,7 +100,7 @@ async function findMods( obj, allyCode ) {
 
 /** EXPORTS **/
 module.exports = { 
-	mod: async ( obj ) => { 
-    	return await mod( obj ); 
+	mod: async ( obj, register ) => { 
+    	return await mod( obj, register ); 
     }
 }

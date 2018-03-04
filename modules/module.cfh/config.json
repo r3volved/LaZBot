@@ -1,0 +1,60 @@
+{
+
+    "id":"cfh",
+
+    "name":"CubsFanHan Discord Fun",
+
+    "version":"1.3",
+    
+    "type":"command",
+    
+    "permission":"admin",
+    
+    "commands":{
+    
+    	"points":{
+			"aliases":["cfh","cfhp"],
+			"procedure":"karma",
+			"args":["text"],
+			"color":"0xFFDF00",
+			"help":{
+	    		"id":"points",
+		        "title":"CubsFanHan Points",
+		        "text":"Karma is a bitch...CFH shoots first",
+		        "example":"*%PREFIX%%COMMAND% <+-points> <mention>*\n*%PREFIX%%COMMAND% <mention>*"
+	    	},
+			"subcommands":{ 
+				"report":{
+					"aliases":["r"],
+					"procedure":"report",
+					"args":["num"],
+					"help":{
+			    		"id":"report",
+				        "title":"CubsFanHan Points",
+				        "text":"Report top or bottom points",
+				        "example":""
+			    	}
+			    }
+			}
+		}
+    
+    },
+    "help":{
+    	
+    	"points":{
+    		"id":"points",
+	        "title":"CFH Points",
+	        "text":"Karma is a bitch...CFH shoots first",
+	        "example":"*%PREFIX%%COMMAND% <+-points> <mention>*\n*%PREFIX%%COMMAND% <mention>*"
+    	}
+
+    },
+    
+    "queries":{
+    	
+    	"GET_KARMA":"SELECT * FROM `karma` WHERE `serverId` = ? AND `carrier` = ?",
+    	"SET_KARMA":"INSERT INTO `karma` (`serverId`, `carrier`, `karma`, `log`) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `karma`=(VALUES(`karma`)+`karma`), `log`=CONCAT(`log`,VALUES(`log`))"
+    	
+    }
+    
+}

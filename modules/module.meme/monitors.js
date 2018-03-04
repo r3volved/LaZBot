@@ -12,7 +12,7 @@ async function doMonitor( obj ) {
             //console.log(obj.message.content.match(/([z|b]arris|[z|b]ariss|[z|b]aris|[z|b|\s]+offee|[z|b|\s]+ofee)/gmi)); 
             try{                
             	//Slap zarriss
-                if(obj.message.content.match(/([z|b]arris|[z|b]ariss|[z|b]aris|[z|b]aeris|[z|b]aerris|[z|b|\s]+offee|[z|b|\s]+ofee)/gmi)) {
+                if(obj.message.content.replace(/\*/g,'').match(/([z|b]arris|[z|b]ariss|[z|b]aris|[z|b]aeris|[z|b]aerris|[z|b|\s]+offee|[z|b|\s]+ofee)/gmi)) {
                 	obj.cmdObj = { "module":"meme", "cmd":"barriss", "prefix":"" };
                 	obj.message.channel.send("Special message from CFH", {
                 	    file: "https://media.discordapp.net/attachments/381890989838827521/401137312999669760/image.png"
@@ -21,7 +21,7 @@ async function doMonitor( obj ) {
                 }
             
             	//Slap revan
-                if(obj.message.content.match(/(revan)/gmi)) {
+                if(obj.message.content.replace(/\*/g,'').match(/(revan)/gmi)) {
                 	obj.cmdObj = { "module":"meme", "cmd":"revan", "prefix":"" };
                 	obj.message.channel.send("Get outta here with your revan", {
                 	    file: "https://media.discordapp.net/attachments/381890989838827521/415904627519782943/getouttahere.png"

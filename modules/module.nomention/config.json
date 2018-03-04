@@ -1,0 +1,44 @@
+{
+
+    "id":"nomention",
+
+    "name":"No-mention monitor",
+
+    "version":"1.0",
+    
+    "type":"preMonitor",
+    
+    "permission":"admin",
+    
+    "commands":{
+    
+    	"nomention":{
+			"aliases":[],
+			"procedure":"",
+			"args":[],
+			"help":{
+	    		"id":"nomention",
+	        	"title":"Please do not mention gamechanger",
+		        "text":"We'd like to kindly ask that you avoid tagging the gamechangers here.\n\nWith 1500 members on this server it can be a bit overwhelming... CubsFanHan does a great job of participating in #Wrigley-Cantina - if you have a question, just ask when you see him around. \n\nThank you so much for supporting CubsFanHan's channel and for your understanding!",
+		        "example":""
+	    	},
+			"subcommands":{}
+		}
+    
+    },
+    
+    "help":{
+    
+        "meme":{
+    		"id":"nomention",
+        	"title":"Please do not mention gamechanger",
+	        "text":"We'd like to kindly ask that you avoid tagging the gamechangers here.\n\nWith 1500 members on this server it can be a bit overwhelming... CubsFanHan does a great job of participating in #Wrigley-Cantina - if you have a question, just ask when you see him around. \n\nThank you so much for supporting CubsFanHan's channel and for your understanding!",
+	        "example":""
+        }
+
+    },
+    
+    "queries":{
+    }    
+    
+}

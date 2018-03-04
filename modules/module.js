@@ -155,7 +155,7 @@ class Module {
     		let sent = this.reply( replyObj );
 	    	if( sent ) { 
 	    		this.cmdlog(1, this.message.content); 
-	            this.message.react(reaction);
+	            if( reaction !== 'none' ) this.message.react(reaction);
 	            return true;
 	    	}
 	    	return false;

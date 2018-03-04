@@ -53,7 +53,7 @@ async function getRegister( obj ) {
 }
 
 
-function doSQL( database, sql, args ) {
+async function doSQL( database, sql, args ) {
     
     return new Promise((resolve, reject) => {
         
@@ -88,10 +88,13 @@ module.exports = {
 		setRows: async ( database, sql, args ) => { 
 	    	return await setRows( database, sql, args ); 
 	    },
-	    doStoredProcedure: ( database, procedure ) => {
-	    	return doStoredProcedure( database, procedure );
+	    doStoredProcedure: async ( database, procedure ) => {
+	    	return await doStoredProcedure( database, procedure );
 	    },
-	    getRegister: ( obj ) => {
-	    	return getRegister( obj );
+	    getRegister: async ( obj ) => {
+	    	return await getRegister( obj );
+	    },
+	    doSQL: async (db, sql, args) => {
+	    	return await doSQL(db, sql, args);
 	    }
 }

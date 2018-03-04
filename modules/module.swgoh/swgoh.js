@@ -1,11 +1,13 @@
-async function add( obj ) {
+async function add( obj, register ) {
 	
 	try {
 		
-		let discordId, playerId, playerName, allycode, playerGuild = null;
+		let discordId, playerId, playerName, allycode, playerGuild, playerPrivate = null;
 
 		discordId = obj.cmdObj.args.discordId;
 		allycode = obj.cmdObj.args.allycode;
+		
+		playerPrivate = register[0].private || 0;
 		
 		let result = null;    
 	    try {
@@ -20,7 +22,8 @@ async function add( obj ) {
 		playerId 	= result[0].playerId;
 		playerName 	= result[0].name;
 		playerGuild = result[0].guildName;
-		playerPrivate = obj.cmdObj.args.text.includes('private') ? 1 : 0;
+		playerPrivate = obj.cmdObj.args.text.includes('private') ? 1 : playerPrivate;
+		playerPrivate = obj.cmdObj.args.text.includes('public') && discordId === obj.message.author.id ? 0 : playerPrivate;
 				
 		try {
 			const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
@@ -36,7 +39,7 @@ async function add( obj ) {
 	
 }
 
-async function remove( obj ) {
+async function remove( obj, register ) {
 
 	try {
 	    let discordId, playerId, playerName, allycode, playerGuild = null;
@@ -61,7 +64,7 @@ async function remove( obj ) {
 	
 }
 
-async function update( obj ) {
+async function update( obj, register ) {
 	
 	try {
 		
@@ -69,7 +72,7 @@ async function update( obj ) {
 
 	    try {
 	    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-		    result = await DatabaseHandler.getRegister( obj );
+		    result = register || await DatabaseHandler.getRegister( obj );
 		    if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
 	    } catch(e) {
 	        return obj.error('sync.getRegister',e);
@@ -80,6 +83,7 @@ async function update( obj ) {
 		allycode = result[0].allyCode.toString();
 	    playerGuild = result[0].playerGuild;
 		playerPrivate = obj.cmdObj.args.text.includes('private') ? 1 : result[0].private;
+		playerPrivate = obj.cmdObj.args.text.includes('public') && discordId === obj.message.author.id ? 0 : playerPrivate;
 		
 	    try {
 	    	result = await require('./utilities.js').fetchPlayer( allycode, obj );        
@@ -109,14 +113,14 @@ async function update( obj ) {
 }
 
 
-async function find( obj ) {
+async function find( obj, register ) {
 	
 	try {
 	    let result, discordId, playerId, playerName, allycode, playerGuild = null;
 	    
 	    try {
 	    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-		    result = await DatabaseHandler.getRegister( obj );
+		    result = register || await DatabaseHandler.getRegister( obj );
 		    if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
 	    } catch(e) {
 	        return obj.error('find.getRegister',e);
@@ -148,16 +152,16 @@ async function find( obj ) {
 
 /** EXPORTS **/
 module.exports = { 
-	add: async ( obj ) => { 
-    	return await add( obj ); 
+	add: async ( obj, register ) => { 
+    	return await add( obj, register ); 
     },
-    remove: async ( obj ) => { 
-    	return await remove( obj ); 
+    remove: async ( obj, register ) => { 
+    	return await remove( obj, register ); 
     },
-    update: async ( obj ) => { 
-    	return await update( obj ); 
+    update: async ( obj, register ) => { 
+    	return await update( obj, register ); 
     },
-    find: async ( obj ) => { 
-    	return await find( obj ); 
+    find: async ( obj, register ) => { 
+    	return await find( obj, register ); 
     }
 }

@@ -24,6 +24,10 @@ async function report( obj ) {
 				title = 'Registration Report'
 				procedure = 'CALL countRegistration();';
 				return replyHeaders( obj, procedure, title );
+			case 'cfh':
+				title = 'CFH Report for last 10 days'
+				procedure = 'CALL countCFH();';
+				return replyAgnostic( obj, procedure, title );
 			default:
 		}
 		
