@@ -108,7 +108,7 @@
 	    	},
 			"subcommands":{ 
 				"details":{
-					"aliases":["u","unit"],
+					"aliases":["d","u","unit"],
 					"procedure":"zeta",
 					"args":["id","text"],
 					"help":{

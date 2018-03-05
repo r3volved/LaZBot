@@ -52,13 +52,13 @@ async function updateData( obj ) {
 	
 	let message = null;
     try {
-        message = await obj.message.reply('Updating client, please wait...');
+        message = await obj.message.reply('Updating client - please wait...');
     } catch(e) { obj.error('updateData.message',e); }
      
 	try {
 	    const swgoh = require(obj.clientConfig.path+'/compiled/swgoh.js');
 		let result = await swgoh.updateData();
-		result = !result ? 'Data is already up-to-date' : 'Data has been updated';
+		result = !result ? 'Client is already up-to-date' : 'Client has been updated';
 		message.edit(result);
 	    return obj.success();
 	    

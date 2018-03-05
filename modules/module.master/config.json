@@ -50,8 +50,8 @@
 						"example":"%PREFIX%%COMMAND% <num>"
 			    	}
 				},
-				"data":{
-					"aliases":["game"],
+				"client":{
+					"aliases":["game","data"],
 					"procedure":"updateData",
 					"args":[],
 					"help":{
