@@ -51,7 +51,7 @@
 			    	}
 				},
 				"data":{
-					"aliases":[],
+					"aliases":["game"],
 					"procedure":"updateData",
 					"args":[],
 					"help":{

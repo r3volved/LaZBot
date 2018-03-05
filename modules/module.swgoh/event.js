@@ -24,6 +24,8 @@ async function event( obj ) {
  
         if( nameKey && descKey ) {
             
+        	//console.log(nameKey);
+
             let schedule = ''                        
             for( let s = 0; s < result[i].instanceList.length; ++s ) {
                 let sDate = new Date();

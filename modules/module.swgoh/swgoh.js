@@ -7,7 +7,7 @@ async function add( obj, register ) {
 		discordId = obj.cmdObj.args.discordId;
 		allycode = obj.cmdObj.args.allycode;
 		
-		playerPrivate = register[0].private || 0;
+		playerPrivate = register && register[0] && register[0].private ? register[0].private : 0;
 		
 		let result = null;    
 	    try {

@@ -5,7 +5,7 @@ async function update( obj ) {
 		let process = obj.moduleConfig.commands[obj.cmdObj.cmd].subcommands[obj.cmdObj.subcmd].procedure
 		return require('./swUpdate.js')[process]( obj ); 
 	} else {
-		return require('./swUpdate.js')["updatePlayers"]( obj, 10 );
+		return require('./swUpdate.js')[process]( obj );
 	}
 	return false;
 }

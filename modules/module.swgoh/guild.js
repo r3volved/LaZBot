@@ -20,7 +20,7 @@ async function guild( obj ) {
     else if( !result ) { return obj.fail('No guilds found with this name'); }
     result = result[0];
     
-    let threshold = args && args.length > 1 ? 1 : 3;
+    let threshold = args && args.length > 1 ? 1 : 4;
     
     let reply = {};
     reply.title = "I found "+result.length+" guilds";
@@ -36,8 +36,8 @@ async function guild( obj ) {
     
     let field = {};
     field.title = "Showing "+count;
-    field.text = "For guild details, see:\n"+obj.cmdObj.prefix+obj.cmdObj.cmd+" details <allycode|guild>";
-    field.text += "For gp stats, see:\n"+obj.cmdObj.prefix+obj.cmdObj.cmd+" stats <allycode|guild>";
+    field.text = "For details, see:\n"+obj.cmdObj.prefix+obj.cmdObj.cmd+" details <allycode|guild>\n";
+    field.text += "For gp stats, see:\n"+obj.cmdObj.prefix+obj.cmdObj.cmd+" stats <allycode|guild>\n";
     
     reply.fields = [field];
     

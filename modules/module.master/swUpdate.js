@@ -48,6 +48,26 @@ async function updatePlayers( obj ) {
 }
 
 
+async function updateData( obj ) {
+	
+	let message = null;
+    try {
+        message = await obj.message.reply('Updating client, please wait...');
+    } catch(e) { obj.error('updateData.message',e); }
+     
+	try {
+	    const swgoh = require(obj.clientConfig.path+'/compiled/swgoh.js');
+		let result = await swgoh.updateData();
+		result = !result ? 'Data is already up-to-date' : 'Data has been updated';
+		message.edit(result);
+	    return obj.success();
+	    
+	} catch(e) {
+		message.edit('Game data could not be updated');
+		obj.error('updateData',e);
+	}
+}
+
 
 /** EXPORTS **/
 module.exports = { 

@@ -15,8 +15,9 @@ async function heist( obj ) {
     let credit = '`Not scheduled`';
     
     for( let i = 0; i < result.length; ++i ) {
+    	//console.log(result[i].nameKey);
         if( result[i].nameKey === 'EVENT_CREDIT_HEIST_GETAWAY_NAME' ) {
-            for( let s = 0; s < result[i].instanceList.length; ++s ) {
+    		for( let s = 0; s < result[i].instanceList.length; ++s ) {
                 let sDate = new Date();
                 if( sDate.getTime() < result[i].instanceList[s].endTime ) { 
 	                sDate.setTime( result[i].instanceList[s].startTime );
