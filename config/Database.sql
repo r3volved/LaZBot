@@ -155,6 +155,34 @@ CREATE TABLE IF NOT EXISTS `reminder` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `rssLog`
+--
+
+DROP TABLE IF EXISTS `rssLog`;
+CREATE TABLE IF NOT EXISTS `rssLog` (
+  `id` varchar(32) NOT NULL,
+  `url` longtext NOT NULL,
+  `lastUpdate` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rss`
+--
+
+DROP TABLE IF EXISTS `rss`;
+CREATE TABLE IF NOT EXISTS `rss` (
+  `rssId` varchar(32) NOT NULL,
+  `channel` varchar(32) NOT NULL,
+  `mentions` longtext NOT NULL,
+  PRIMARY KEY (`rssId`,`channel`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `swgoh`
 --
 
@@ -171,6 +199,8 @@ CREATE TABLE IF NOT EXISTS `swgoh` (
   PRIMARY KEY (`discordId`,`playerId`,`allyCode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SET FOREIGN_KEY_CHECKS=1;
+
+
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
