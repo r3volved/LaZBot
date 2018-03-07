@@ -1,4 +1,13 @@
-async function fetchRSS( client, rssId ) {
+async function truncate( n, useWordBoundary ){
+    if (this.length <= n) { return this; }
+    var subString = this.substr(0, n-1);
+    return (useWordBoundary 
+       ? subString.substr(0, subString.lastIndexOf(' ')) 
+       : subString) + "...";
+};
+
+
+async function fetchRSS( db, rssId ) {
     try {
         
         const parser = require('rss-parser-browser');
@@ -8,11 +17,10 @@ async function fetchRSS( client, rssId ) {
         let mentions = [];
         let lastUpdate, url, result = null;
         
-        let db = require(process.cwd()+'/config/'+process.argv[2]).database;
-        let sql = 'SELECT * FROM `rss` JOIN `rssLog` ON `rssLog`.`id` = `rss`.`rssId` WHERE `rss`.`rssId` = ? AND `rss`.`client` = ?';
+        let sql = 'SELECT `rssLog`.`url`, `rssLog`.`lastUpdate`, `rss`.`id`, `rss`.`rssId`, `rss`.`channel`, `rss`.`mentions` FROM `rssLog` JOIN `rss` ON `rss`.`rssId` = `rssLog`.`id` WHERE `rssLog`.`id` = ? AND `rss`.`active` = 1';
         
         try { 
-            result = await dbHandler.getRows(db,sql,[rssId, client.user.id]);
+            result = await dbHandler.getRows(db,sql,[rssId]);
             if( result.length > 0 ) {
                 url = result[0].url;
                 lastUpdate = parseInt(result[0].lastUpdate); 
@@ -24,18 +32,20 @@ async function fetchRSS( client, rssId ) {
         } catch(e) {
             throw e;
         }
-        
+
         if( url && lastUpdate > 10 ) {
-            parser.parseURL(url, function(err, parsed) {		        
-		        parsed.feed.entries.forEach(function(entry) {
+        
+            parser.parseURL(url, function(err, parsed) {
+                
+		        parsed.feed.entries.forEach(async function(entry) {
 		        
                     //Check if new
                     let thisEntry = new Date(entry.pubDate).getTime();
                     if( thisEntry > lastUpdate ) { 
-                        console.log( 'Found new '+rssId+'!' );
-                        embedRSS( client, channels, entry, mentions );
-                        sql = 'UPDATE `rss` SET `rss`.`lastUpdate` = ? WHERE `rss`.`rssId` = ? AND `rss`.`client` = ? ';
-                        result = dbHandler.setRows(db,sql,[parseInt(thisEntry), rssId, client.user.id]);
+                        console.info('Found new content!');
+                        await embedRSS( channels, entry, mentions );
+                        sql = 'UPDATE `rssLog` SET `rssLog`.`lastUpdate` = ? WHERE `rssLog`.`id` = ?';
+                        result = dbHandler.setRows(db,sql,[parseInt(thisEntry), rssId]);
                     }
 		             
 		        });
@@ -48,7 +58,7 @@ async function fetchRSS( client, rssId ) {
 } 
 
 
-async function embedRSS( client, channels, entry, mentions ) {
+async function embedRSS( channels, entry, mentions ) {
     try {
     
         mentions = mentions || []; 
@@ -68,7 +78,7 @@ async function embedRSS( client, channels, entry, mentions ) {
 	        disContent = disContent.replace(/(\<[\/]*ul\>)|(\<\/li\>)/g,'');
 	        disContent = disContent.replace(/(\<li\>)/g,'- ');
 	        disContent = '`'+entry.pubDate+'`\n\n'+disContent;
-	        disContent = disContent.length > 1900 ? disContent.substr(0,1900)+'...' : disContent;
+	        disContent = disContent.length > 500 ? await truncate.apply(disContent, [500, true]) : disContent;
         
         embed.setDescription(disContent);
         
@@ -79,8 +89,18 @@ async function embedRSS( client, channels, entry, mentions ) {
         
         for( let i = 0; i < channels.length; ++i ) {
             try {
-                if( mentions[i] ) { client.channels.get(channels[i]).send(mentions[i], embed); }
-                else { client.channels.get(channels[i]).send(embed); }
+                
+                const whPcs = channels[i].split(/\//g);
+                let whId = whPcs[whPcs.length-2];
+                let whToken = whPcs[whPcs.length-1]; 
+                
+                const Discord = require("discord.js");
+				const client = new Discord.Client();
+				const mentionHook = new Discord.WebhookClient(whId, whToken);
+				                
+                if( mentions[i] ) { mentionHook.send(mentions[i], embed); }
+                else { mentionHook.send(embed); }
+                
             } catch(e) {
                 console.error(e);
             }
@@ -94,8 +114,8 @@ async function embedRSS( client, channels, entry, mentions ) {
 
 /** EXPORTS **/
 module.exports = { 
-    fetchRSS: async ( client, rssId ) => { 
-        return await fetchRSS( client, rssId ); 
+    fetchRSS: async ( db, rssId ) => { 
+        return await fetchRSS( db, rssId ); 
     },
     embedRSS: async ( client, channels, entry ) => { 
         return await embedRSS( client, channels, entry ); 

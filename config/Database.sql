@@ -164,7 +164,7 @@ CREATE TABLE IF NOT EXISTS `rssLog` (
   `url` longtext NOT NULL,
   `lastUpdate` bigint(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -174,11 +174,13 @@ CREATE TABLE IF NOT EXISTS `rssLog` (
 
 DROP TABLE IF EXISTS `rss`;
 CREATE TABLE IF NOT EXISTS `rss` (
-  `rssId` varchar(32) NOT NULL,
-  `channel` varchar(32) NOT NULL,
-  `mentions` longtext NOT NULL,
-  PRIMARY KEY (`rssId`,`channel`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `id` varchar(32) NOT NULL,
+  `rssId` varchar(32) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `channel` varchar(150) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `mentions` longtext CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `active` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`,`rssId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 

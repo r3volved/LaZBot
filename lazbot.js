@@ -91,18 +91,6 @@ client.on('ready', async () => {
 	    
 	} catch(e) { console.error(e); }
 
-    
-    //Initialize the RSS reader
-    let rssIds = ['swgohUpdates','swgohAnnouncements'];
-    let interval = null;
-    if( rssIds.length > 0 ) {
-	    interval = setInterval(function(client, arrIds) {
-	        for( let id of arrIds ) { 
-	            let rss = require(process.cwd()+'/utilities/rss-handler.js').fetchRSS( client, id ); 
-	        }
-		}, 1000*60*10, client, rssIds);
-    }
-    
 }); 
 
 

@@ -1,12 +1,12 @@
-INSERT INTO `rss` (`rssId`, `channel`, `mentions`) VALUES
-('swgohAnnouncements', '416390341533368321', '<@&369290043485061130>'),
-('swgohUpdates', '385161326831468556', ''),
-('swgohUpdates', '416390341533368321', '<@305465187799007232> ');
-
-
 INSERT INTO `rssLog` (`id`, `url`, `lastUpdate`) VALUES
 ('swgohAnnouncements', 'https://forums.galaxy-of-heroes.starwars.ea.com/categories/news-and-announcements-/feed.rss', 1519784620000),
 ('swgohUpdates', 'https://forums.galaxy-of-heroes.starwars.ea.com/categories/game-updates/feed.rss', 1520291553000);
+
+
+INSERT INTO `rss` (`id`, `rssId`, `channel`, `mentions`, `active`) VALUES
+('SB-ftransfer', 'swgohUpdates', 'https://discordapp.com/api/webhooks/420956722014978054/X7tT3pAD9PMnnf1RnH_T2STZBAqrlCVXRW7j1BM2Z6F7nJhfhv3ectZsfcljpPMdj5Gu', '', 0),
+('SB-fuckery', 'swgohAnnouncements', 'https://discordapp.com/api/webhooks/420951351154180106/MhhF9_0Q7cx3MuWl8Nv29hnq5POKJtlAxixDTBYuu0_x63gh0unLiH84FjELsIlmbvgK', '<@&369290043485061130>', 0),
+('SB-swDevUpdates', 'swgohUpdates', 'https://discordapp.com/api/webhooks/420970522818510849/aPLTXIntlgSP8r8s4XrTD2nVme1cRJIifQnhsgX6ErI6B0yqpmF-MS13Xm1gulJpwJbp', '<@&369290043485061130>', 1);
 
 
 INSERT INTO `channel` (`channelID`, `serverID`, `server`, `region`, `memberCount`, `spreadsheet`, `webhook`, `modrole`, `qmonitor`) VALUES

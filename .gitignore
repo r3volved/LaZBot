@@ -64,3 +64,4 @@ logs/
 spreadsheet/
 compiled/
 test.js
+.project
