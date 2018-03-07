@@ -2,14 +2,16 @@ async function doMonitor( obj ) {
 	
 	try {
 
-        const ids = [ '269167743150981120', '194702668751568896', '173560724969357312', '227912301301202944' ]; 
+		if( !obj.message.guild.available || !['242184147257393153','333971980497977345'].includes(obj.message.guild.id) ) { return; }
+        
+		const ids = [ '269167743150981120', '194702668751568896', '173560724969357312', '227912301301202944' ]; 
         let reply = {};
         reply.title = "Hey there! I noticed that you tagged a gamechanger";
         reply.description = "";         
         reply.fields = [];
         
         try{                
-        	//Slap zarriss
+        	
         	for( let i = 0; i < ids.length; ++i ) {
         	   if( obj.message.content.includes( '<@'+ids[i]+'>' ) || obj.message.content.includes( '<@!'+ids[i]+'>' ) ) {
         	       obj.cmdObj = { "module":"nomention", "cmd":"nomention", "prefix":"" };
@@ -18,7 +20,13 @@ async function doMonitor( obj ) {
 	               const embed = new Discord.RichEmbed();
 	               embed.setColor(0x6F9AD3);
 	               embed.setTitle('Hey there! I noticed that you tagged a gamechanger');
-	               embed.setDescription('We\'d like to kindly ask that you avoid tagging CubsFanHan or other gamechangers on this server.\n\nWith 1500 members on this server it can be a bit overwhelming... CubsFanHan does a great job of participating in <#333971980497977345>. If you have a question, just ask when you see him around - no tag necessary :smiley:. \n\nThank you so much for supporting CubsFanHan\'s channel and for your understanding!');
+	               if( obj.message.guild.id === '242184147257393153') {
+	            	   //mobilegamer
+		               embed.setDescription('We\'d like to kindly ask that you avoid tagging MobileGamer or other gamechangers on this server.\n\nWith so many members on this server it can be a bit overwhelming... MobileGamer does a great job of participating in <#360507654902382593>. If you have a question, just ask when you see him around - no tag necessary :smiley:. \n\nThank you so much for supporting MobileGamer\'s channel and for your understanding!');
+	               } else if(obj.message.guild.id === '333971980497977345') {
+	            	   //cubsfanhan
+		               embed.setDescription('We\'d like to kindly ask that you avoid tagging CubsFanHan or other gamechangers on this server.\n\nWith 1500 members on this server it can be a bit overwhelming... CubsFanHan does a great job of participating in <#333971980497977345>. If you have a question, just ask when you see him around - no tag necessary :smiley:. \n\nThank you so much for supporting CubsFanHan\'s channel and for your understanding!');
+	               }
 	               obj.message.author.send({embed});
 
 	               obj.message.react(obj.clientConfig.settings.reaction.DM);

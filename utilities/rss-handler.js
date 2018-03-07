@@ -9,13 +9,13 @@ async function fetchRSS( client, rssId ) {
         let lastUpdate, url, result = null;
         
         let db = require(process.cwd()+'/config/'+process.argv[2]).database;
-        let sql = 'SELECT * FROM `rss` JOIN `rssLog` ON `rssLog`.`id` = `rss`.`rssId` WHERE `rss`.`rssId` = ?';
-
+        let sql = 'SELECT * FROM `rss` JOIN `rssLog` ON `rssLog`.`id` = `rss`.`rssId` WHERE `rss`.`rssId` = ? AND `rss`.`client` = ?';
+        
         try { 
-            result = await dbHandler.getRows(db,sql,[rssId]);
+            result = await dbHandler.getRows(db,sql,[rssId, client.user.id]);
             if( result.length > 0 ) {
                 url = result[0].url;
-                lastUpdate = result[0].lastUpdate;
+                lastUpdate = parseInt(result[0].lastUpdate); 
                 for( let r of result ) {
                     channels.push( r.channel );
                     mentions.push( r.mentions || null );
@@ -25,7 +25,7 @@ async function fetchRSS( client, rssId ) {
             throw e;
         }
         
-        if( url ) {
+        if( url && lastUpdate > 10 ) {
             parser.parseURL(url, function(err, parsed) {		        
 		        parsed.feed.entries.forEach(function(entry) {
 		        
@@ -33,11 +33,9 @@ async function fetchRSS( client, rssId ) {
                     let thisEntry = new Date(entry.pubDate).getTime();
                     if( thisEntry > lastUpdate ) { 
                         console.log( 'Found new '+rssId+'!' );
-                        embedRSS( client, channels, entry, mentions ); 
-                        sql = 'UPDATE `rssLog` SET `lastUpdate` = ? WHERE `rssLog`.`id` = ?';
-                        result = dbHandler.setRows(db,sql,[thisEntry, rssId]);
-                    } else {
-                        console.log( 'Nothing new here: '+rssId );
+                        embedRSS( client, channels, entry, mentions );
+                        sql = 'UPDATE `rss` SET `rss`.`lastUpdate` = ? WHERE `rss`.`rssId` = ? AND `rss`.`client` = ? ';
+                        result = dbHandler.setRows(db,sql,[parseInt(thisEntry), rssId, client.user.id]);
                     }
 		             
 		        });
