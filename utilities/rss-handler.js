@@ -3,7 +3,7 @@ async function truncate( n, useWordBoundary ){
     var subString = this.substr(0, n-1);
     return (useWordBoundary 
        ? subString.substr(0, subString.lastIndexOf(' ')) 
-       : subString) + "...";
+       : subString) + " ...";
 };
 
 
@@ -95,7 +95,6 @@ async function embedRSS( channels, entry, mentions ) {
                 let whToken = whPcs[whPcs.length-1]; 
                 
                 const Discord = require("discord.js");
-				const client = new Discord.Client();
 				const mentionHook = new Discord.WebhookClient(whId, whToken);
 				                
                 if( mentions[i] ) { mentionHook.send(mentions[i], embed); }

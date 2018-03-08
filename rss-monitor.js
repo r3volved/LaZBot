@@ -22,11 +22,11 @@ async function run() {
 	    let interval = setInterval(async function(client, arrIds) {
 	        //Get the available rss feeds 
 	        let rssLogs = await require(process.cwd()+'/utilities/db-handler.js').getRows( db, sql, null );  
-	        console.info('Polling '+rssLogs.length+' feeds');
+	        console.info('Polling '+rssLogs.length+' feeds: '+(new Date()));
 	        for( let r of rssLogs ) { 
                 let rss = await require(process.cwd()+'/utilities/rss-handler.js').fetchRSS( db, r.id ); 
             }
-        }, cadence);
+        }, cadence );
 
     } catch(e) {
         console.error(e);

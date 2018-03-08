@@ -38,11 +38,12 @@ async function updatePlayer( allycode ) {
 		let result, discordId, playerId, playerName, playerGuild = null;
 		try {
 	    	result = await getRegister( {"allycode":allycode} );
-	    } catch(e) {
+	    	if( !result || !result[0] || !result[0].discordId ) return false;
+		} catch(e) {
 	        console.error('swgoh.utilities.updatePlayer',e);
 	        return false;
 	    }
-	    
+	    	    
 	    discordId = result[0].discordId;
 		playerName = result[0].playerName;
 		allycode = result[0].allyCode.toString();

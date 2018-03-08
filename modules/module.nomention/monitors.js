@@ -2,7 +2,7 @@ async function doMonitor( obj ) {
 	
 	try {
 
-		if( !obj.message.guild.available || !['242184147257393153','333971980497977345', '365502000043130880'].includes(obj.message.guild.id) ) { return; }
+		if( !obj.message.guild || !['242184147257393153','333971980497977345', '365502000043130880'].includes(obj.message.guild.id) ) { return; }
 
         const PermissionHandler = require(obj.clientConfig.path+'/utilities/permission-handler.js');
         let pHandler = new PermissionHandler(obj.clientConfig, obj.ModuleConfig, obj.message);
