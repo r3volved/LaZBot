@@ -185,6 +185,21 @@ CREATE TABLE IF NOT EXISTS `rss` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `guildActivities`
+--
+
+DROP TABLE IF EXISTS `guildActivities`;
+CREATE TABLE IF NOT EXISTS `guildActivities` (
+  `id` int(11) NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `description` longtext NOT NULL,
+  `language` varchar(6) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `swgoh`
 --
 

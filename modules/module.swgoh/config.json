@@ -159,6 +159,55 @@
 	    	},
 	    	"subcommands":{}
 		},
+		"daily":{
+			"aliases":["ga","activities"],
+			"procedure":"doDaily",
+			"args":[],
+			"color":"0xFF8C00",
+			"help":{
+	            "id":"daily",
+	            "title":"SWGOH Guild Activities",
+	            "text":"Check today's current guild activity",
+	            "example":"*%PREFIX%%COMMAND%*"
+	    	},
+	    	"subcommands":{}
+		},
+		"rss":{
+			"aliases":[],
+			"procedure":"doRSS",
+			"args":["text"],
+			"color":"0xFF8C00",
+			"help":{
+	            "id":"rss",
+	            "title":"SWGOH-EA Forums Watch",
+	            "text":"Set up a channel for auto-posting new dev announcements from the SWGOH-EA forums\nhttps://forums.galaxy-of-heroes.starwars.ea.com/",
+	            "example":"*%PREFIX%%COMMAND% add <webhook> [<@mentions> ...]*\n*%PREFIX%%COMMAND% remove <webhook>*"
+	    	},
+	    	"subcommands":{
+	    		"add":{
+					"aliases":["a","start"],
+					"procedure":"rssAdd",
+					"args":["id","text"],
+					"help":{
+			            "id":"rss",
+			            "title":"SWGOH-EA Forums Watch",
+			            "text":"Set up a channel for auto-posting new dev announcements from the SWGOH-EA forums\nhttps://forums.galaxy-of-heroes.starwars.ea.com/",
+			            "example":"*%PREFIX%%COMMAND% add <webhook> [<@mentions> ...]*"
+			    	}
+				},
+	    		"remove":{
+					"aliases":["r","stop"],
+					"procedure":"rssRemove",
+					"args":["id","text"],
+					"help":{
+			            "id":"rss",
+			            "title":"SWGOH-EA Forums Watch",
+			            "text":"Stop posting automatic updates to your webhook",
+			            "example":"*%PREFIX%%COMMAND% remove <webhook>*"
+			    	}
+				}
+	    	}
+		},
 		"guild":{
 			"aliases":["g","guilds"],
 			"procedure":"doGuild",
@@ -252,7 +301,19 @@
         	"title":"SWGOH Guild Lookup",
         	"text":"Lookup details around a specified guild.\n\nGuild identifier can be the guild name, or an allycode or of a guild member",
         	"example":"*%PREFIX%%COMMAND% <identifier>*\n*%PREFIX%%COMMAND% <identifier>*\n"
-        }
+        },
+		"rss":{
+            "id":"rss",
+            "title":"SWGOH-EA Forums Watch",
+            "text":"Set up a channel for auto-posting new dev announcements from the SWGOH-EA forums\nhttps://forums.galaxy-of-heroes.starwars.ea.com/",
+            "example":"*%PREFIX%%COMMAND% add <webhook> [<@mentions> ...]*\n*%PREFIX%%COMMAND% remove <webhook>*"
+    	},
+		"daily":{
+            "id":"daily",
+            "title":"SWGOH Guild Activities",
+            "text":"Check today's current guild activity",
+            "example":"*%PREFIX%%COMMAND%*"
+    	}
 
     },
     

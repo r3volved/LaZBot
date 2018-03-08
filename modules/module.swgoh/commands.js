@@ -37,6 +37,17 @@ async function doEvent( obj ) {
     return false;
 }
 
+async function doDaily( obj ) {
+    if( obj.cmdObj.args.id === 'help' ) { return obj.help(obj.cmdObj.help); }
+    if( obj.cmdObj.subcmd ) {
+        let process = obj.moduleConfig.commands[obj.cmdObj.cmd].subcommands[obj.cmdObj.subcmd].procedure
+        return require('./daily.js')[process]( obj ); 
+    } else {
+        return require('./daily.js')["daily"]( obj );
+    }
+    return false;
+}
+
 async function doMod( obj ) {
 	if( obj.cmdObj.args.id === 'help' ) { return obj.help(obj.cmdObj.help); }
 	let register = null;
@@ -99,6 +110,22 @@ async function doGuild( obj ) {
 	return false;
 }
 
+async function doRSS( obj ) {
+    const PermissionHandler = require(obj.clientConfig.path+'/utilities/permission-handler.js');
+    let pHandler = new PermissionHandler(obj.clientConfig, obj.ModuleConfig, obj.message);
+    if( await pHandler.authorIs('admin') ) { 
+	    if( obj.cmdObj.args.id === 'help' || obj.cmdObj.args.text === 'help' ) { return obj.help(obj.cmdObj.help); }
+	    if( obj.cmdObj.subcmd ) {
+	        let process = obj.moduleConfig.commands[obj.cmdObj.cmd].subcommands[obj.cmdObj.subcmd].procedure
+	        return require('./rss.js')[process]( obj ); 
+	    } else {
+	        return require('./rss.js')["rssAdd"]( obj );
+	    }
+    } else { 
+        return obj.message.react(obj.clientConfig.settings.reaction.DENIED);        
+    }
+    return false;
+}
 
 async function getRegister( obj ) {
 	
@@ -154,5 +181,11 @@ module.exports = {
     },
     doGuild: async ( obj ) => { 
     	return await doGuild( obj ); 
+    },
+    doDaily: async ( obj ) => {
+        return await doDaily( obj );
+    },
+    doRSS: async (obj ) => {
+        return await doRSS( obj );
     }
 }

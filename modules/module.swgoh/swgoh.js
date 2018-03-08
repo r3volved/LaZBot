@@ -5,6 +5,8 @@ async function add( obj, register ) {
 		let discordId, playerId, playerName, allycode, playerGuild, playerPrivate = null;
 
 		discordId = obj.cmdObj.args.discordId;
+		if( !discordId ) { return obj.fail('Sorry, I cannot find a discordId for this user.'); }
+		
 		allycode = obj.cmdObj.args.allycode;
 		
 		playerPrivate = register && register[0] && register[0].private ? register[0].private : 0;
