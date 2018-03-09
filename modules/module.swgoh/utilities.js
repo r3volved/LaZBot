@@ -18,8 +18,9 @@ async function getRegister( cmdArgs ) {
 	    let db = require(process.cwd().replace(/\\/g,'\/')+'/config/'+process.argv[2].replace(/(\.json)/,'')+'.json').database
 	    try {
 	        let result = null;
-	        const dbHandler = 
 	        result = await require(process.cwd().replace(/\\/g,'\/')+'/utilities/db-handler.js').getRows(db, query, args);
+	        console.log( result );
+	        
 	        if( result.length === 0 ) { return false; }
 	        return result;
 	    } catch(e) {

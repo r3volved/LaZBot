@@ -121,23 +121,31 @@ async function find( obj, register ) {
 	    let result, discordId, playerId, playerName, allycode, playerGuild = null;
 	    
 	    try {
-	    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-		    result = register || await DatabaseHandler.getRegister( obj );
+	    	result = register;
 		    if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
 	    } catch(e) {
 	        return obj.error('find.getRegister',e);
 	    }
 	                      	
 	    let replyObj = {};
-	    replyObj.title = 'Results for ';
-	    replyObj.title += result[0].playerName;
+	    replyObj.title = 'Results for \''+obj.cmdObj.args.id+'\'';
+	    //replyObj.title += result[0].playerName;
+	    replyObj.description = '';
 	    
-	    let ac = result[0].private === 1 ? '---------' : result[0].allyCode;
-	    replyObj.description = '**Discord**   : '+result[0].discordId+'\n';
-	    replyObj.description += '**Player**      : '+result[0].playerName+'\n';
-	    replyObj.description += '**Guild**        : '+result[0].playerGuild+'\n';
-	    replyObj.description += '**AllyCode** : '+ac+'\n';
-	            
+	    for( let r = 0; r < result.length; ++r ) {	       
+		    let ac = result[r].private === 1 ? '---------' : result[r].allyCode;
+		    replyObj.description += r === 0 ? '' : '-'.repeat(30)+'\n'; 
+		    replyObj.description += '**Discord**   : '+result[r].discordId+'\n';
+		    replyObj.description += '**Player**      : '+result[r].playerName+'\n';
+		    replyObj.description += '**Guild**        : '+result[r].playerGuild+'\n';
+		    replyObj.description += '**AllyCode** : '+ac+'\n';
+		    if( replyObj.description.length > 1000 ) {
+		      replyObj.description += '-'.repeat(30)+'\n';
+		      replyObj.description += '**Too many results**\n*'+(result.length - r)+' other matches not shown*';
+		      break;
+		    } 
+        }
+        	            
 	    let ud = new Date();
 		ud.setTime(result[0].updated);
 		ud = ud.toISOString().replace(/T/g,' ').replace(/\..*/g,'');

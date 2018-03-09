@@ -145,8 +145,7 @@ async function getRegister( obj ) {
 	    }
 	    
 	    try {
-	    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-	        let result = await DatabaseHandler.doSQL(obj.clientConfig.settings.database, query, args);
+	        let result = await require(obj.clientConfig.path+'/utilities/db-handler.js').doSQL(obj.clientConfig.settings.database, query, args);
 	        if( result.length === 0 ) { return false; }
 	        return result;
 	    } catch(e) {
