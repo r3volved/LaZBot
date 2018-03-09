@@ -30,6 +30,9 @@ async function guild( obj ) {
     let count = 0;
     for( let i of result ) {
     	if( i.playerCount < threshold ) { continue; }
+    	if( !i.guildName || i.guildName.length === 0 ) {
+    		i.guildName = '*no guild*';
+    	}
     	reply.description += '`['+nbsp.repeat(2 - i.playerCount.toString().length)+i.playerCount+']` - '+i.guildName+'\n';
     	++count;
     }
@@ -139,7 +142,7 @@ async function guildStats( obj ) {
     	gpLowest  = parseInt(i.totalGP) < gpLowest ? parseInt(i.totalGP) : gpLowest;
     }
     
-    reply.description  += '**Players:** '+result.length+" registerd\n";
+    reply.description  += '**Players:** '+result.length+" registered\n";
     reply.description  += '**Lowest GP:** '+gpLowest.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+'\n';
     reply.description  += '**Highest GP:** '+gpHighest.toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+'\n';
     reply.description  += '**Average GP:** '+(gpTotal / result.length).toFixed(0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")+'\n';

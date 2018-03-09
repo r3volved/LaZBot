@@ -12,6 +12,155 @@
     
 	"commands":{
 	
+		"arena":{
+			"aliases":["a","rank"],
+			"procedure":"doArena",
+			"args":["id"],
+			"color":"0xf9e66b",
+			"help":{
+	    		"id":"arena",
+	            "title":"SWGOH Arena",
+	            "text":"Check a player's live arena rank",
+	            "example":"*%PREFIX%%COMMAND% <player>*\n*%PREFIX%%COMMAND% details <player>*"
+	    	},
+			"subcommands":{ 
+				"details":{
+					"aliases":["d","detail"],
+					"procedure":"arenaUnits",
+					"args":["id"],
+					"help":{
+			    		"id":"arena details",
+			            "title":"SWGOH Arena Details",
+			            "text":"See a player's live arena-squad(s) breakdown",
+			            "example":"*%PREFIX%%COMMAND% <player>*"
+			    	}
+				}
+			}
+		},
+		"daily":{
+			"aliases":["d","ga"],
+			"procedure":"doDaily",
+			"args":["id"],
+			"color":"0xFF8C00",
+			"help":{
+	            "id":"daily",
+	            "title":"SWGOH Guild Activities",
+	            "text":"Check today's current guild activity",
+	            "example":"*%PREFIX%%COMMAND%*"
+	    	},
+	    	"subcommands":{}
+		},
+		"event":{
+			"aliases":["e","events"],
+			"procedure":"doEvent",
+			"args":["id"],
+			"color":"0x587f42",
+			"help":{
+	            "id":"event",
+	            "title":"SWGOH Event Schedule",
+	            "text":"Peek the currect event schedule\nNote: *subject to change*",
+	            "example":"*%PREFIX%%COMMAND%*"
+	    	},
+	    	"subcommands":{}
+		},
+		"guild":{
+			"aliases":["g","guilds"],
+			"procedure":"doGuild",
+			"args":["text"],
+			"color":"0x#9e8769",
+			"help":{
+				"id":"guild",
+	    	    "title":"SWGOH Guild Lookup",
+		        "text":"Find guilds by name or see guild member breakdown by guild name or member allycode",
+		        "example":"*%PREFIX%%COMMAND% <guild>*\n*%PREFIX%%COMMAND% details <allycode|guild>*\n*%PREFIX%%COMMAND% stats <allycode|guild>*"
+	    	},
+			"subcommands":{ 
+				"details":{
+					"aliases":["d","players","roster"],
+					"procedure":"guildDetails",
+					"args":["text"],
+					"help":{
+						"id":"guild details",
+			    	    "title":"SWGOH Guild Lookup Details",
+				        "text":"List all registered players in a guild ordered by GP\nGuild can be searched by name, or by any allycode of a guild member",
+				        "example":"*%PREFIX%%COMMAND% <allycode|guild>*"
+			    	}
+				},
+				"stats":{
+					"aliases":["s", "stat"],
+					"procedure":"guildStats",
+					"args":["text"],
+					"help":{
+						"id":"guild stats",
+			    	    "title":"SWGOH Guild Lookup Stats",
+				        "text":"Show round-up stats for a specified guild\nGuild can be searched by name, or by any allycode of a guild member",
+				        "example":"*%PREFIX%%COMMAND% <allycode|guild>*"
+			    	}
+				}
+			}
+		},
+		"heist":{
+			"aliases":["$","heists"],
+			"procedure":"doHeist",
+			"args":["id"],
+			"color":"0x587f42",
+			"help":{
+	            "id":"heist",
+	            "title":"SWGOH Heist Schedule",
+	            "text":"Peek the next credit and droid heists",
+	            "example":"*%PREFIX%%COMMAND%*"
+	    	},
+	    	"subcommands":{}
+		},
+		"mod":{
+			"aliases":["m","mods"],
+			"procedure":"doMod",
+			"args":["id"],
+			"color":"0x8e8e8e",
+			"help":{
+	    	    "id":"mod",
+	            "title":"SWGOH Mod Management",
+	            "text":"Receive a formatted player-mods file for use with the Crouching Rancor Mod Management tool at:\nhttp://apps.crouchingrancor.com/",
+	            "example":"*%PREFIX%%COMMAND% <player>*"
+	    	},
+	    	"subcommands":{}
+		},
+		"rss":{
+			"aliases":[],
+			"procedure":"doRSS",
+			"args":["text"],
+			"color":"0xFF8C00",
+			"help":{
+	            "id":"rss",
+	            "title":"SWGOH-EA Forums Watch",
+	            "text":"Set up a channel for auto-posting new dev announcements from the SWGOH-EA forums\nhttps://forums.galaxy-of-heroes.starwars.ea.com/",
+	            "example":"*%PREFIX%%COMMAND% add <webhook> [<@mentions> ...]*\n*%PREFIX%%COMMAND% remove <webhook>*"
+	    	},
+	    	"subcommands":{
+	    		"add":{
+					"aliases":["a","start"],
+					"procedure":"rssAdd",
+					"args":["id","text"],
+					"help":{
+			            "id":"rss",
+			            "title":"SWGOH-EA Forums Watch",
+			            "text":"Set up a channel for auto-posting new dev announcements from the SWGOH-EA forums\nhttps://forums.galaxy-of-heroes.starwars.ea.com/",
+			            "example":"*%PREFIX%%COMMAND% add <webhook> [<@mentions> ...]*"
+			    	}
+				},
+	    		"remove":{
+					"aliases":["r","stop"],
+					"procedure":"rssRemove",
+					"args":["id","text"],
+					"help":{
+			            "id":"rss",
+			            "title":"SWGOH-EA Forums Watch",
+			            "text":"Stop posting automatic updates to your webhook",
+			            "example":"*%PREFIX%%COMMAND% remove <webhook>*"
+			    	}
+				}
+	    	}
+		},
 		"swgoh":{
 			"aliases":["sw","goh"],
 			"procedure":"doSwgoh",
@@ -70,31 +219,6 @@
 				}
 			}
 		},
-		"arena":{
-			"aliases":["a","arene","rank"],
-			"procedure":"doArena",
-			"args":["id"],
-			"color":"0xf9e66b",
-			"help":{
-	    		"id":"arena",
-	            "title":"SWGOH Arena",
-	            "text":"Check a player's live arena rank",
-	            "example":"*%PREFIX%%COMMAND% <player>*\n*%PREFIX%%COMMAND% details <player>*"
-	    	},
-			"subcommands":{ 
-				"details":{
-					"aliases":["d","detail","squads","units"],
-					"procedure":"arenaUnits",
-					"args":["id"],
-					"help":{
-			    		"id":"arena details",
-			            "title":"SWGOH Arena Details",
-			            "text":"See a player's live arena-squad(s) breakdown",
-			            "example":"*%PREFIX%%COMMAND% <player>*"
-			    	}
-				}
-			}
-		},
 		"zeta":{
 			"aliases":["z","zetas"],
 			"procedure":"doZeta",
@@ -119,131 +243,7 @@
 			    	}
 				}
 			}
-		},
-		"mod":{
-			"aliases":["m","mods"],
-			"procedure":"doMod",
-			"args":["id"],
-			"color":"0x8e8e8e",
-			"help":{
-	    	    "id":"mod",
-	            "title":"SWGOH Mod Management",
-	            "text":"Receive a formatted player-mods file for use with the Crouching Rancor Mod Management tool at:\nhttp://apps.crouchingrancor.com/",
-	            "example":"*%PREFIX%%COMMAND% <player>*"
-	    	},
-	    	"subcommands":{}
-		},
-		"heist":{
-			"aliases":["$","heists"],
-			"procedure":"doHeist",
-			"args":["id"],
-			"color":"0x587f42",
-			"help":{
-	            "id":"heist",
-	            "title":"SWGOH Heist Schedule",
-	            "text":"Peek the next credit and droid heists",
-	            "example":"*%PREFIX%%COMMAND%*"
-	    	},
-	    	"subcommands":{}
-		},
-		"event":{
-			"aliases":["e","events"],
-			"procedure":"doEvent",
-			"args":["id"],
-			"color":"0x587f42",
-			"help":{
-	            "id":"event",
-	            "title":"SWGOH Event Schedule",
-	            "text":"Peek the currect event schedule\nNote: *subject to change*",
-	            "example":"*%PREFIX%%COMMAND%*"
-	    	},
-	    	"subcommands":{}
-		},
-		"daily":{
-			"aliases":["ga","activities"],
-			"procedure":"doDaily",
-			"args":[],
-			"color":"0xFF8C00",
-			"help":{
-	            "id":"daily",
-	            "title":"SWGOH Guild Activities",
-	            "text":"Check today's current guild activity",
-	            "example":"*%PREFIX%%COMMAND%*"
-	    	},
-	    	"subcommands":{}
-		},
-		"rss":{
-			"aliases":[],
-			"procedure":"doRSS",
-			"args":["text"],
-			"color":"0xFF8C00",
-			"help":{
-	            "id":"rss",
-	            "title":"SWGOH-EA Forums Watch",
-	            "text":"Set up a channel for auto-posting new dev announcements from the SWGOH-EA forums\nhttps://forums.galaxy-of-heroes.starwars.ea.com/",
-	            "example":"*%PREFIX%%COMMAND% add <webhook> [<@mentions> ...]*\n*%PREFIX%%COMMAND% remove <webhook>*"
-	    	},
-	    	"subcommands":{
-	    		"add":{
-					"aliases":["a","start"],
-					"procedure":"rssAdd",
-					"args":["id","text"],
-					"help":{
-			            "id":"rss",
-			            "title":"SWGOH-EA Forums Watch",
-			            "text":"Set up a channel for auto-posting new dev announcements from the SWGOH-EA forums\nhttps://forums.galaxy-of-heroes.starwars.ea.com/",
-			            "example":"*%PREFIX%%COMMAND% add <webhook> [<@mentions> ...]*"
-			    	}
-				},
-	    		"remove":{
-					"aliases":["r","stop"],
-					"procedure":"rssRemove",
-					"args":["id","text"],
-					"help":{
-			            "id":"rss",
-			            "title":"SWGOH-EA Forums Watch",
-			            "text":"Stop posting automatic updates to your webhook",
-			            "example":"*%PREFIX%%COMMAND% remove <webhook>*"
-			    	}
-				}
-	    	}
-		},
-		"guild":{
-			"aliases":["g","guilds"],
-			"procedure":"doGuild",
-			"args":["text"],
-			"color":"0x#9e8769",
-			"help":{
-				"id":"guild",
-	    	    "title":"SWGOH Guild Lookup",
-		        "text":"Find guilds by name or see guild member breakdown by guild name or member allycode",
-		        "example":"*%PREFIX%%COMMAND% <guild>*\n*%PREFIX%%COMMAND% details <allycode|guild>*\n*%PREFIX%%COMMAND% stats <allycode|guild>*"
-	    	},
-			"subcommands":{ 
-				"details":{
-					"aliases":["d","players","roster"],
-					"procedure":"guildDetails",
-					"args":["text"],
-					"help":{
-						"id":"guild details",
-			    	    "title":"SWGOH Guild Lookup Details",
-				        "text":"List all registered players in a guild ordered by GP\nGuild can be searched by name, or by any allycode of a guild member",
-				        "example":"*%PREFIX%%COMMAND% <allycode|guild>*"
-			    	}
-				},
-				"stats":{
-					"aliases":["s", "stat"],
-					"procedure":"guildStats",
-					"args":["text"],
-					"help":{
-						"id":"guild stats",
-			    	    "title":"SWGOH Guild Lookup Stats",
-				        "text":"Show round-up stats for a specified guild\nGuild can be searched by name, or by any allycode of a guild member",
-				        "example":"*%PREFIX%%COMMAND% <allycode|guild>*"
-			    	}
-				}
-			}
-		}
+		}		
 		
 	},
 	

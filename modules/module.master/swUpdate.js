@@ -1,3 +1,52 @@
+async function updateGuilds( obj ) {
+	try {
+				
+	    let db = require(process.cwd().replace(/\\/g,'\/')+'/config/'+process.argv[2].replace(/(\.json)/,'')+'.json').database;
+	    let result = null;
+        try {
+	        let procedure = 'CALL getGuildList()';
+	        result = await require(process.cwd().replace(/\\/g,'\/')+'/utilities/db-handler.js').doStoredProcedure(db, procedure);
+	        result = result[0];
+	    } catch(e) {
+    		obj.error('master.updateGuilds.getSyncList',e);
+	    }
+		
+	    let message = null;
+	    let success = 0;
+	    try {
+	        message = await obj.message.reply('Updating '+result.length+' guilds...'+(result.length - success)+' remaining');
+	    } catch(e) { obj.error('doSearch.searching',e); }
+	        
+	    for( let i = 0; i < result.length; ++i ) {
+	    	
+	    	try {
+	    		
+	    		if( !result[i].guildName ) { continue; }
+
+	    		let gname = result[i].guildName.replace(/\'/g,"\\\'");
+	    		let procedure = 'CALL updateGuildRoster(\''+gname+'\')';
+	    		let syncResult = await require(process.cwd().replace(/\\/g,'\/')+'/utilities/db-handler.js').doStoredProcedure(db, procedure);
+	    		if( syncResult ) { 
+	    			++success;
+	    		}
+	    	    
+	    	} catch(e) {
+	    		obj.error('master.updatePlayers.updatePlayer',e);
+	    	}
+	    	
+	    	message.edit('Updating '+result.length+' guilds...'+(result.length - success)+' remaining');
+	    	
+	    }
+
+	    message.edit(success+' guilds have been updated');
+	    return obj.success();
+	    
+	} catch(e) {
+		obj.error('master.updateGuilds',e)
+	}
+}
+
+
 async function updatePlayers( obj ) {
 	try {
 				
@@ -71,6 +120,9 @@ async function updateData( obj ) {
 
 /** EXPORTS **/
 module.exports = { 
+	updateGuilds: async ( obj ) => { 
+    	return await updateGuilds( obj ); 
+    },
 	updatePlayers: async ( obj ) => { 
     	return await updatePlayers( obj ); 
     },

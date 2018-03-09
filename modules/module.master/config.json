@@ -39,6 +39,17 @@
 				"text":"*---------help text----------*"
 	    	},
 	    	"subcommands":{ 
+				"guilds":{
+					"aliases":[],
+					"procedure":"updateGuilds",
+					"args":[],
+					"help":{
+						"id":"Update swgoh player guilds",
+			    	    "title":"SWGOH Players update",
+				        "text":"",
+						"example":"%PREFIX%%COMMAND% <num>"
+			    	}
+				},
 				"players":{
 					"aliases":[],
 					"procedure":"updatePlayers",

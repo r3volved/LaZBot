@@ -23,8 +23,8 @@ async function doHelp( obj ) {
             extra.text = 'Command       Aliases\n';
             extra.text += '`------------------------------`\n';
             for( let c in modl.commands ) {
-                let aliases = modl.commands[c].aliases.join(', ');
-                    aliases += space.repeat(aliasW-aliases.length);
+                let aliases = modl.commands[c].aliases.join(', ') || '';
+                    aliases += space.repeat(aliasW - aliases.length);
                 let cmd = obj.clientConfig.settings.prefix+c+space.repeat(cmdW-c.length);
                 extra.text += '` '+cmd+' | '+aliases+'`\n';
             }
