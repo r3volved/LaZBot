@@ -28,10 +28,10 @@
     "help":{
     
     	"poll":{
-    		"id":"",
-    		"title":"",
-            "text":"",
-            "example":""
+    		"id":"poll",
+    		"title":"Poll",
+            "text":"Add a simple straw poll",
+            "example":"*%PREFIX%%COMMAND% +poll <question> | <answer 1> [ | <answer 2> ... ]"
     	}
 
     },
