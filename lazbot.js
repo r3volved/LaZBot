@@ -39,8 +39,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 client.on('guildCreate', guild => {
   
 	try {
-	    const botLog = require(instance.path+'/utilities/db-handler.js');
-	    botLog.setRows(instance.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), ` ! ${instance.client.user.username} joined ${guild.name}`]);
+	    instance.dbHandler.setRows(instance.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), ` ! ${instance.client.user.username} joined ${guild.name}`]);
 	} catch(e) {	
 		console.warn("Message listener problem!");
 		console.error(e);		
@@ -158,6 +157,8 @@ async function doLogin() {
         
         instance.path     = process.cwd().toString().replace(/\\/g,'\/');
         instance.settings = require(instance.path+'/config/'+process.argv[2].replace(/(\.json)/,'')+'.json');
+        instance.settings.version = require(instance.path+'/config/base/version.json');
+        instance.settings.reaction = require(instance.path+'/config/base/reactions.json');
         
         let utilities = instance.path+'/utilities/';
     	instance.cmdHandler = require(utilities+'command-handler.js');
