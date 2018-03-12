@@ -1,8 +1,7 @@
 async function zeta( obj, register ) {
 
     try {
-    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-	    result = register || await DatabaseHandler.getRegister( obj );
+    	result = register || await obj.instance.dbHandler.getRegister( obj );
         if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
     } catch(e) {
         return obj.error('doZetas.getRegister',e);
@@ -13,7 +12,7 @@ async function zeta( obj, register ) {
     updated     = result[0].updated;
     let ac = result[0].private === 1 ? '---------' : result[0].allyCode;
 
-    let unit = obj.cmdObj.args.text || null;
+    let unit = obj.command.args.text || null;
     
     try {
     	result = await findZetas( obj, allycode, unit );
@@ -76,7 +75,7 @@ async function zeta( obj, register ) {
     if( !unit ) {
     	let extra = {};
     	extra.title = '**Total '+count+'**';
-    	extra.text = 'For unit details, see:\n*'+obj.clientConfig.settings.prefix+obj.cmdObj.cmd+' unit <player> <unit>*';
+    	extra.text = 'For unit details, see:\n*'+obj.instance.settings.prefix+obj.command.cmd+' unit <player> <unit>*';
     	
     	replyObj.fields.push( extra );
     }
@@ -88,8 +87,7 @@ async function zeta( obj, register ) {
 async function zetaSuggest( obj, register ) {
 
     try {
-    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-	    result = register || await DatabaseHandler.getRegister( obj );
+	    result = register || await obj.instance.dbHandler.getRegister( obj );
         if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
     } catch(e) {
         return obj.error('doZetas.getRegister',e);
@@ -100,7 +98,7 @@ async function zetaSuggest( obj, register ) {
     updated     = result[0].updated;
     let ac = result[0].private === 1 ? '---------' : result[0].allyCode;
 
-    let lim = obj.cmdObj.args.num || 10;
+    let lim = obj.command.args.num || 10;
     	lim = lim > 20 ? 20 : lim;
     
     try {
@@ -170,11 +168,10 @@ async function findZetaSuggestions( obj, allyCode, lim, lang ) {
         
     	lang  	= lang || 'ENG_US';
     	lim 	= lim  || 10;
-    	let query = obj.moduleConfig.queries.GET_ZETA_SUGGEST;
+    	let query = obj.module.queries.GET_ZETA_SUGGEST;
     	let args  = [allyCode, lim, lang];
     	
-        const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-        DatabaseHandler.getRows(obj.clientConfig.settings.datadb, query, args).then((result) => {
+        obj.instance.dbHandler.getRows(obj.instance.settings.datadb, query, args).then((result) => {
             if( result.length === 0 ) { 
                 resolve(false);
             } else {
@@ -193,11 +190,10 @@ async function findZetas( obj, allyCode, unit, lang ) {
     return new Promise((resolve,reject) => {
         
     	lang  = lang || 'ENG_US';
-    	let query = !unit ? obj.moduleConfig.queries.GET_ZETAS : obj.moduleConfig.queries.GET_UNIT_ZETAS;
+    	let query = !unit ? obj.module.queries.GET_ZETAS : obj.module.queries.GET_UNIT_ZETAS;
     	let args  = !unit ? [allyCode, lang] : [allyCode,'%'+unit+'%', lang];
     	
-        const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-        DatabaseHandler.getRows(obj.clientConfig.settings.datadb, query, args).then((result) => {
+        obj.instance.dbHandler.getRows(obj.instance.settings.datadb, query, args).then((result) => {
             if( result.length === 0 ) { 
                 resolve(false);
             } else {

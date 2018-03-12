@@ -1,13 +1,13 @@
 async function doSearch( obj ) {
 
-    if( !obj.cmdObj.args.text || obj.cmdObj.args.text === 'help' ) { return obj.help( obj.moduleConfig.commands.search.help ); }
+    if( !obj.command.args.text || obj.command.args.text === 'help' ) { return obj.help( obj.module.commands.search.help ); }
     
     let result, message = null;
     try {
-        message = await obj.message.reply('Searching for \''+obj.cmdObj.args.text+'\'... ');
+        message = await obj.message.reply('Searching for \''+obj.command.args.text+'\'... ');
     } catch(e) { obj.error('doSearch.searching',e); }
         
-    let searchUrl = `https://www.google.com/search?q=${encodeURIComponent(obj.cmdObj.args.text)}`;
+    let searchUrl = `https://www.google.com/search?q=${encodeURIComponent(obj.command.args.text)}`;
     try {
         result = await fetchGoogle(searchUrl);
         if( !result ) { return obj.fail('Sorry, I could not find any adequate results'); }
@@ -20,21 +20,21 @@ async function doSearch( obj ) {
 
 async function doTranslate( obj ) {
 
-	if( !obj.cmdObj.args.lang || obj.cmdObj.args.lang === 'help' ) { return obj.help( obj.moduleConfig.commands.translate.help ); }
-	if( !obj.cmdObj.args.discordId ) { return obj.fail("Please specify a user by mention or discord Id, then a language"); }
-	if( !obj.cmdObj.args.num || isNaN(obj.cmdObj.args.num) ) { 
-		obj.cmdObj.args.num = 1;
+	if( !obj.command.args.lang || obj.command.args.lang === 'help' ) { return obj.help( obj.module.commands.translate.help ); }
+	if( !obj.command.args.discordId ) { return obj.fail("Please specify a user by mention or discord Id, then a language"); }
+	if( !obj.command.args.num || isNaN(obj.command.args.num) ) { 
+		obj.command.args.num = 1;
 	}
 
 	let result, authorName, filteredMessages = null;
 
 	try {
-        authorName = await fetchDiscordUser( obj, obj.cmdObj.args.discordId );
+        authorName = await fetchDiscordUser( obj, obj.command.args.discordId );
     } catch(e) { obj.error('doTranslate.fetchDiscordUser',e); }
     if( !authorName ) { return obj.fail('I could not find this user in this channel'); } 
     
     try {
-        filteredMessages = await fetchMessages( obj, obj.cmdObj.args.discordId, parseInt(obj.cmdObj.args.num) )
+        filteredMessages = await fetchMessages( obj, obj.command.args.discordId, parseInt(obj.command.args.num) )
     } catch(e) { obj.error('doTranslate.filterMessages',e); }
     if( !filteredMessages ) { return obj.fail('Author is not present in this channel'); } 
     
@@ -45,15 +45,15 @@ async function doTranslate( obj ) {
     
     try {
         const translate = require('google-translate-api');
-        result = await translate(ogcontent, {to: obj.cmdObj.args.lang});
+        result = await translate(ogcontent, {to: obj.command.args.lang});
     } catch(e) { obj.error('doTranslate.translate',e); }
     if( !result.text ) { return obj.fail('No messages have been translated - I don\'t translate embeds'); } 
     if( result.text.length > 2000 ) { return obj.fail('Translated copy is too long, please try less messages'); } 
 
     let replyObj = {};
-    replyObj.title = `Translation of ${authorName}'s last ${obj.cmdObj.args.num} message(s)`;
+    replyObj.title = `Translation of ${authorName}'s last ${obj.command.args.num} message(s)`;
     replyObj.description = result.text;
-    replyObj.description += '\n`------------------------------`\n'+result.from.language.iso+' => '+obj.cmdObj.args.lang;
+    replyObj.description += '\n`------------------------------`\n'+result.from.language.iso+' => '+obj.command.args.lang;
 
     return obj.success(replyObj);
                 
@@ -98,7 +98,7 @@ async function fetchDiscordUser( obj, discordId ) {
 
     return new Promise((resolve, reject) => {
     
-    	obj.clientConfig.client.fetchUser(discordId).then( (user) => {
+    	obj.instance.client.fetchUser(discordId).then( (user) => {
              if( !user || !user.username ) { resolve(false); }
              resolve(user.username);
         }).catch((err) => {

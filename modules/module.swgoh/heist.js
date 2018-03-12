@@ -8,7 +8,7 @@ async function heist( obj ) {
     }
     
     let replyObj = {};
-    replyObj.title = obj.moduleConfig.help.heist.title;
+    replyObj.title = obj.module.help.heist.title;
     replyObj.description = '';
     
     let droid = '`Not scheduled`';
@@ -62,7 +62,7 @@ async function fetchEvents( obj ) {
             /** Start the RPC Service - with no logging**/
             await rpc.start(`Fetching events...\n`, false);
             
-        	await obj.message.react(obj.clientConfig.settings.reaction.THINKING);
+        	await obj.message.react(obj.instance.settings.reaction.THINKING);
             let iData = await rpc.Player( 'GetInitialData' );
             
             /** End the RPC Service **/

@@ -1,13 +1,13 @@
 class Module {
     
-    constructor(config, reqModule, message, cmdObj) {
+    constructor(instance, inModule, message, command) {
         
         try {
                         
-            this.clientConfig = config || null;
-            this.moduleConfig = reqModule || null;
+            this.instance = instance || null;
+            this.module = inModule || null;
             this.message = message || null;
-            this.cmdObj = cmdObj || null;
+            this.command = command || null;
                         
         } catch(e) {
         	this.error("module.init",e);
@@ -16,32 +16,24 @@ class Module {
     }
     
     
-    async doCommand() {
-    
+    async doCommand() {  
     	try {
-    		let result = await require(__dirname+'/module.'+this.cmdObj.module+'/main.js').doCommand( this );
-    	} catch(e) {
-    		this.error('doCommand',e);
-    	}
-    	
+        	let process = this.module.commands[this.command.cmd].procedure;
+        	return await require(__dirname+'/module.'+this.command.module+'/commands.js')[process]( this ); 
+    	} catch(e) { this.error('doCommand',e); }    	
     }
     
     
-    async doMonitor() {
-        
+    async doMonitor() {        
     	try {
-    		let result = await require(__dirname+'/module.'+this.moduleConfig.id+'/main.js').doMonitor( this );
-    	} catch(e) {
-    		this.error('doCommand',e);
-    	}
-    	
+        	return await require(__dirname+'/module.'+this.module.id+'/monitors.js').doMonitor( this ); 
+    	} catch(e) { this.error('doCommand',e); }    	
     }
     
     async auth() {
-    	const PermissionHandler = require(this.clientConfig.path+'/utilities/permission-handler.js');
-        let pHandler = new PermissionHandler(this.clientConfig, this.moduleConfig, this.message);
+        let pHandler = new this.instance.permHandler(this.instance, this.module, this.message);
         try {
-        	return await pHandler.authorIs( this.moduleConfig.permission ); 
+        	return await pHandler.authorIs( this.module.permission ); 
         } catch(e) {
         	this.error("module.auth",e);
         	return false;
@@ -49,24 +41,25 @@ class Module {
     }
     
     reply( replyObj ) {
-            
+    	
+    	//If reply is a string, pipe through and skip the embed
         if( typeof replyObj === 'string' ) {
         	this.message.channel.send( replyObj );
         	return true;
         }
         
+        //Otherwise build embed
     	const Discord = require('discord.js');
         const embed = new Discord.RichEmbed();
         
-        let color = this.moduleConfig.commands[this.cmdObj.cmd].color || '0x6F9AD3';
+        let color = this.module.commands[this.command.cmd].color || '0x6F9AD3';
         replyObj.color = replyObj.color || color;
-        
         embed.setColor(replyObj.color);
         
-        replyObj.title = replyObj.title || this.moduleConfig.name;
+        replyObj.title = replyObj.title || this.module.name;
         embed.setTitle(replyObj.title);         
         
-        replyObj.footer = replyObj.footer || this.clientConfig.client.user.username+'  ['+this.clientConfig.settings.version+']';
+        replyObj.footer = replyObj.footer || this.instance.client.user.username+'  ['+this.instance.settings.version+']';
         embed.setFooter(replyObj.footer);           
         //embed.setURL('https://discord.gg/XB4DKCt');
         
@@ -98,7 +91,7 @@ class Module {
 	        
 	        replyObj.description = helpJson.text;
 	        //replyObj.description += '\n\nFor further assistance, bug reports or suggestions - come visit my master at https://discord.gg/XB4DKCt';
-	        replyObj.description = replyObj.description.replace(/%PREFIX%/g, this.clientConfig.settings.prefix);
+	        replyObj.description = replyObj.description.replace(/%PREFIX%/g, this.instance.settings.prefix);
 	        replyObj.description = replyObj.description.replace(/%COMMAND%/g, helpJson.id);
 	        
 	        replyObj.fields = replyObj.fields || [];
@@ -114,12 +107,12 @@ class Module {
 		        let exampleField = {};
 		        exampleField.title = 'Example';
 		        exampleField.text  = helpJson.example;
-		        exampleField.text  = exampleField.text.replace(/%PREFIX%/g, this.clientConfig.settings.prefix);
+		        exampleField.text  = exampleField.text.replace(/%PREFIX%/g, this.instance.settings.prefix);
 		        exampleField.text  = exampleField.text.replace(/%COMMAND%/g, helpJson.id);
 		        replyObj.fields.push(exampleField);
 	        }
         
-	        return this.success( replyObj, this.clientConfig.settings.reaction.INFO );
+	        return this.success( replyObj, this.instance.settings.reaction.INFO );
 	        
     	} catch(e) {
     		return this.error('module.help',e);
@@ -130,11 +123,11 @@ class Module {
     cmdlog( result, notes ) {
     	notes = notes || 'none';
     	try {
-    	    let cmd = this.cmdObj.prefix+this.cmdObj.cmd;
-    	    cmd += this.cmdObj.subcmd ? ' '+this.cmdObj.subcmd : '';
-    		const DatabaseHandler = require(this.clientConfig.path+'/utilities/db-handler.js');
-    	    let commandLog = DatabaseHandler.setRows(
-	    		this.clientConfig.settings.database,
+    	    let cmd = this.command.prefix+this.command.cmd;
+    	    	cmd += this.command.subcmd ? ' '+this.command.subcmd : '';
+    	    
+    	    this.instance.dbHandler.setRows(
+	    		this.instance.settings.database,
 	    		"INSERT INTO `cmdlog` VALUES (?, ?, ?, ?, ?, ?)",
 	    		[new Date(), cmd, this.message.channel.id, this.message.author.id, result, notes]
     	    );
@@ -150,7 +143,7 @@ class Module {
     
     success(replyObj, reaction) {
     	
-    	reaction = reaction || this.clientConfig.settings.reaction.SUCCESS;
+    	reaction = reaction || this.instance.settings.reaction.SUCCESS;
     	if( replyObj ) {
     		let sent = this.reply( replyObj );
 	    	if( sent ) { 
@@ -173,7 +166,7 @@ class Module {
     fail(reason) {
     	
     	this.cmdlog(2,reason);
-        this.message.react(this.clientConfig.settings.reaction.WARNING);
+        this.message.react(this.instance.settings.reaction.WARNING);
     	this.reply( reason );
     	return false;
 
@@ -182,8 +175,8 @@ class Module {
     error(process, err) {
     	
     	this.cmdlog(3,err.message);
-        this.message.react(this.clientConfig.settings.reaction.ERROR);                    
-        console.warn(`[Error] : ${this.moduleConfig.id} => ${process}`);
+        this.message.react(this.instance.settings.reaction.ERROR);                    
+        console.warn(`[Error] : ${this.module.id} => ${process}`);
     	console.error( err );
     	return false;
     	

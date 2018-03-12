@@ -2,20 +2,19 @@ async function doMonitor( obj ) {
     
     try {
         
-    	if( !obj.message.content.match(obj.clientConfig.client.user.id) ) { return false; }
+    	if( !obj.message.content.match(obj.instance.client.user.id) ) { return false; }
     	
     	let space = ' ';
         let nbsp  = ' ';
         let extras = [];
         
-        const PermissionHandler = require(obj.clientConfig.path+'/utilities/permission-handler.js');
-        let pHandler = new PermissionHandler(obj.clientConfig, obj.moduleConfig, obj.message);
+        let pHandler = new obj.instance.permHandler(obj.instance, obj.module, obj.message);
 
         let cmdW = 9;
         let aliasW = 15; 
-        for( let k in obj.clientConfig.registry.modules ) {
+        for( let k in obj.instance.registry.modules ) {
 
-            let modl = obj.clientConfig.registry.modules[k];
+            let modl = obj.instance.registry.modules[k];
 
             if( !await pHandler.authorIs(modl.permission) ) { continue; }
             
@@ -27,7 +26,7 @@ async function doMonitor( obj ) {
             for( let c in modl.commands ) {
                 let aliases = modl.commands[c].aliases.join(', ');
                     aliases += space.repeat(aliasW-aliases.length);
-                let cmd = obj.clientConfig.settings.prefix+c+space.repeat(cmdW-c.length);
+                let cmd = obj.instance.settings.prefix+c+space.repeat(cmdW-c.length);
                 extra.text += '` '+cmd+' | '+aliases+'`\n';
             }
             extra.text  += '`------------------------------`\n';
@@ -36,7 +35,7 @@ async function doMonitor( obj ) {
             
         }
         
-        return obj.help( obj.moduleConfig.help.help, extras );
+        return obj.help( obj.module.help.help, extras );
     
     } catch(e) {
         

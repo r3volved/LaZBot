@@ -2,8 +2,7 @@ async function arena( obj, register ) {
 
     let result, discordId, playerId, playerName, allyCode, playerGuild = null;
     try {
-    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-	    result = register || await DatabaseHandler.getRegister( obj );
+	    result = register || await obj.instance.dbHandler.getRegister( obj );
         if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
     } catch(e) {
         return obj.error('doArena.getRegister',e);
@@ -43,7 +42,7 @@ async function arena( obj, register ) {
     desc += '**Ship Arena rank** : `'+squads.ships.rank+'`\n';
     desc += '`------------------------------`\n';
     desc += 'For details, see:\n';
-    desc += '*'+obj.clientConfig.settings.prefix+obj.cmdObj.cmd+' details '+playerName+'*'
+    desc += '*'+obj.instance.settings.prefix+obj.command.cmd+' details '+playerName+'*'
     replyObj.description = desc;
     replyObj.fields = [];
     
@@ -55,8 +54,7 @@ async function arenaUnits( obj, register ) {
 
     let result, discordId, playerId, playerName, allyCode, playerGuild = null;
     try {
-    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-	    result = register || await DatabaseHandler.getRegister( obj );
+	    result = register || await obj.instance.dbHandler.getRegister( obj );
         if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
     } catch(e) {
         return obj.error('doArena.getRegister',e);
@@ -162,10 +160,9 @@ async function findUnitDefs( obj, units ) {
     return new Promise((resolve,reject) => {
         
         //find discordID in lazbot db
-        const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-        DatabaseHandler.getRows(obj.clientConfig.settings.datadb, obj.moduleConfig.queries.GET_UNITNAMES, [units]).then((result) => {
+        obj.instance.dbHandler.getRows(obj.instance.settings.datadb, obj.module.queries.GET_UNITNAMES, [units]).then((result) => {
             if( result.length === 0 ) { 
-                obj.message.react(obj.clientConfig.settings.reaction.ERROR);
+                obj.message.react(obj.instance.settings.reaction.ERROR);
                 let replyStr = "There was an error retriving your units";
                 reject(replyStr);
             
@@ -173,7 +170,7 @@ async function findUnitDefs( obj, units ) {
                 resolve(result);
             }
         }).catch((reason) => {                  
-            obj.message.react(obj.clientConfig.settings.reaction.ERROR);                    
+            obj.message.react(obj.instance.settings.reaction.ERROR);                    
             reject(reason);
         });
         
@@ -201,7 +198,7 @@ async function fetchPlayer( obj, allycode ) {
 	        /** Start the RPC Service - with no logging**/
 	        await rpc.start(`Fetching ${allycode}...\n`, false);
 	        
-	    	await obj.message.react(obj.clientConfig.settings.reaction.THINKING);
+	    	await obj.message.react(obj.instance.settings.reaction.THINKING);
 	        profile = await rpc.Player( 'GetPlayerProfile', { "identifier":parseInt(allycode) } );
 	        
 	        /** End the RPC Service **/

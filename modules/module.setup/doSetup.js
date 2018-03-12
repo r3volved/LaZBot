@@ -1,11 +1,11 @@
 async function doSetup( obj ) {
 	
 	try{ 
-		if( !await obj.auth() ) { return obj.message.react(obj.clientConfig.settings.reaction.DENIED); }
+		if( !await obj.auth() ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }
 	
 	    const content = obj.message.content.split(/\s+/g);
 	    
-	    if( content[1] && content[1] === 'help' ) { return obj.help( obj.moduleConfig.help.setup ); }
+	    if( content[1] && content[1] === 'help' ) { return obj.help( obj.module.help.setup ); }
 	    
 	    let result = null;
 	    try {

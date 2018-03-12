@@ -2,18 +2,18 @@ async function eval( obj ) {
     
     try {
         
-        if( !await obj.auth() ) { return obj.message.react(obj.clientConfig.settings.reaction.DENIED); }
-    	if( obj.cmdObj.subcmd === "help" ) { return obj.help( obj.moduleConfig.help.eval ); }
+        if( !await obj.auth() ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }
+    	if( obj.command.subcmd === "help" ) { return obj.help( obj.module.help.eval ); }
 
-	    let prevaled = obj.cmdObj.args.text;
+	    let prevaled = obj.command.args.text;
     	let evaled = "undefined";    	
     	
     	try {
     		evaled = await calcEval( prevaled ); 
-    		obj.message.react(obj.clientConfig.settings.reaction.SUCCESS);
+    		obj.message.react(obj.instance.settings.reaction.SUCCESS);
     	} catch(e) {
     		evaled = e;
-    		obj.message.react(obj.clientConfig.settings.reaction.ERROR);
+    		obj.message.react(obj.instance.settings.reaction.ERROR);
     	}
   
     	if( evaled && typeof evaled === "object" ) {
@@ -97,7 +97,7 @@ async function replyValue( obj, replyStr ) {
     //If already sent chunks to DM, send last bit to DM
     if( dm ) { 
         obj.message.author.send({embed}); 
-        obj.message.react(obj.clientConfig.settings.reaction.DM);
+        obj.message.react(obj.instance.settings.reaction.DM);
     } else { 
         obj.message.channel.send({embed}); 
     }

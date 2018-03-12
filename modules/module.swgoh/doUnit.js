@@ -2,7 +2,7 @@ async function doUnit( obj ) {
 
     const content = obj.message.content.split(/\s+/g);
     
-    if( content[1] && content[1] === 'help' ) { return obj.help( obj.moduleConfig.help.units ); }
+    if( content[1] && content[1] === 'help' ) { return obj.help( obj.module.help.units ); }
 
     let unit = content[1] || null;
     
@@ -12,7 +12,7 @@ async function doUnit( obj ) {
     try {
         result = await obj.getRegister(id);
     } catch(e) {
-        this.message.react(obj.clientConfig.settings.reaction.ERROR);                    
+        this.message.react(obj.instance.settings.reaction.ERROR);                    
         return obj.reply(e);
     }
                         
@@ -23,7 +23,7 @@ async function doUnit( obj ) {
     try {
     	result = await obj.findUnitDetails( allyCode, unit );
     } catch(e) {
-        obj.message.react(obj.clientConfig.settings.reaction.ERROR);                    
+        obj.message.react(obj.instance.settings.reaction.ERROR);                    
         return obj.message.channel.send("The requested player-unit does not exist.");
     }
     

@@ -4,41 +4,40 @@ async function add( obj, register ) {
 		
 		let discordId, playerId, playerName, allycode, playerGuild, playerPrivate = null;
 
-		discordId = obj.cmdObj.args.discordId;
+		discordId = obj.command.args.discordId;
 		if( !discordId ) { return obj.fail('Sorry, I cannot find a discordId for this user.'); }
 		
-		allycode = obj.cmdObj.args.allycode;
+		allycode = obj.command.args.allycode;
 		playerPrivate = register && register[0] && register[0].private ? register[0].private : 0;
 		
 		const status = '| adding '+allycode+' ';
-		obj.clientConfig.status = obj.clientConfig.status === '' ? status : obj.clientConfig.status+status;
+		obj.instance.status = obj.instance.status === '' ? status : obj.instance.status+status;
 		
 		let result = null;    
 	    try {
 	    	result = await require('./utilities.js').fetchPlayer( allycode, obj );        
 	        if( !result || !result[0] ) { return obj.fail('The requested player cannot be found.'); }
 	    } catch(e) {
-	    	obj.clientConfig.status = obj.clientConfig.status.replace(status,'');
+	    	obj.instance.status = obj.instance.status.replace(status,'');
 		    return obj.error('add.fetchPlayer', e);
 	    }
 	    
-	    await obj.message.react(obj.clientConfig.settings.reaction.WORKING);
+	    await obj.message.react(obj.instance.settings.reaction.WORKING);
 	
 		playerId 	= result[0].playerId;
 		playerName 	= result[0].name;
 		playerGuild = result[0].guildName;
-		playerPrivate = obj.cmdObj.args.text.includes('private') ? 1 : playerPrivate;
-		playerPrivate = obj.cmdObj.args.text.includes('public') && discordId === obj.message.author.id ? 0 : playerPrivate;
+		playerPrivate = obj.command.args.text.includes('private') ? 1 : playerPrivate;
+		playerPrivate = obj.command.args.text.includes('public') && discordId === obj.message.author.id ? 0 : playerPrivate;
 				
 		try {
-			const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-			result = await DatabaseHandler.setRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.SET_REGISTER, [discordId, playerId, playerName, allycode, playerGuild, playerPrivate]);
+			result = await obj.instance.dbHandler.setRows(obj.instance.settings.database, obj.module.queries.SET_REGISTER, [discordId, playerId, playerName, allycode, playerGuild, playerPrivate]);
 	    } catch(e) {
-	    	obj.clientConfig.status = obj.clientConfig.status.replace(status,'');
+	    	obj.instance.status = obj.instance.status.replace(status,'');
 		    return obj.error('add.addPlayer', e);
 	    }
-	    await obj.message.react(obj.clientConfig.settings.reaction.SUCCESS);
-	    obj.clientConfig.status = obj.clientConfig.status.replace(status,'');
+	    await obj.message.react(obj.instance.settings.reaction.SUCCESS);
+	    obj.instance.status = obj.instance.status.replace(status,'');
 	    return obj.success();
 	} catch(e) {
 		obj.error('swgoh.add',e);
@@ -52,18 +51,17 @@ async function remove( obj, register ) {
 	    let discordId, playerId, playerName, allycode, playerGuild = null;
 	    let replyStr = 'Not Found!';
 		
-		playerId  = obj.cmdObj.args.playerId;
-	    allycode  = obj.cmdObj.args.allycode;
+		playerId  = obj.command.args.playerId;
+	    allycode  = obj.command.args.allycode;
 		
 	    let result = null;
 	    try {
-	    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-	    	result = await DatabaseHandler.setRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.DEL_REGISTER, [playerId, allycode]);
+	    	result = await obj.instance.dbHandler.setRows(obj.instance.settings.database, obj.module.queries.DEL_REGISTER, [playerId, allycode]);
 	    } catch(e) {
 	        return obj.error('remove.fetchPlayer', e);
 	    }
 	    
-		await obj.message.react(obj.clientConfig.settings.reaction.SUCCESS);
+		await obj.message.react(obj.instance.settings.reaction.SUCCESS);
 	    return obj.success();
 	} catch(e) {
 		obj.error('swgoh.remove',e);
@@ -75,11 +73,10 @@ async function update( obj, register ) {
 	
 	try {
 		
-		let result, discordId, playerId, playerName, allycode, playerGuild = null;
+		let result, discordId, playerId, playerName, allycode, playerGuild, playerPrivate  = null;
 
 	    try {
-	    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-		    result = register || await DatabaseHandler.getRegister( obj );
+		    result = register || await obj.instance.dbHandler.getRegister( obj );
 		    if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
 	    } catch(e) {
 	        return obj.error('sync.getRegister',e);
@@ -89,35 +86,35 @@ async function update( obj, register ) {
 		playerName = result[0].playerName;
 		allycode = result[0].allyCode.toString();
 	    playerGuild = result[0].playerGuild;
-		playerPrivate = obj.cmdObj.args.text.includes('private') ? 1 : result[0].private;
-		playerPrivate = obj.cmdObj.args.text.includes('public') && discordId === obj.message.author.id ? 0 : playerPrivate;
+
+	    playerPrivate = obj.command.args.text.includes('private') ? 1 : result[0].private;
+		playerPrivate = obj.command.args.text.includes('public') && discordId === obj.message.author.id ? 0 : playerPrivate;
 
 		const status = '| updating '+allycode+' ';
-		obj.clientConfig.status = obj.clientConfig.status === '' ? status : obj.clientConfig.status+status;
+		obj.instance.status = obj.instance.status === '' ? status : obj.instance.status+status;
 		
 	    try {
 	    	result = await require('./utilities.js').fetchPlayer( allycode, obj );        
 	        if( !result || !result[0] ) { return obj.fail('The requested player cannot be found.'); }
 	    } catch(e) {
-		    obj.clientConfig.status = obj.clientConfig.status.replace(status,'');
+		    obj.instance.status = obj.instance.status.replace(status,'');
 	        return obj.error('add.fetchPlayer', e);
 	    }
 	    
-	    await obj.message.react(obj.clientConfig.settings.reaction.WORKING);
+	    await obj.message.react(obj.instance.settings.reaction.WORKING);
 	
 		playerId 	= result[0].playerId;
 		playerName 	= result[0].name;
 		playerGuild = result[0].guildName;
 		
 	    try {
-			const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-			result = await DatabaseHandler.setRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.SET_REGISTER, [discordId, playerId, playerName, allycode, playerGuild, playerPrivate]);
+			result = await obj.instance.dbHandler.setRows(obj.instance.settings.database, obj.module.queries.SET_REGISTER, [discordId, playerId, playerName, allycode, playerGuild, playerPrivate]);
 	    } catch(e) {
-		    obj.clientConfig.status = obj.clientConfig.status.replace(status,'');
+		    obj.instance.status = obj.instance.status.replace(status,'');
 	        return obj.error('add.addPlayer', e);
 	    }
-	    await obj.message.react(obj.clientConfig.settings.reaction.SUCCESS);
-	    obj.clientConfig.status = obj.clientConfig.status.replace(status,'');
+	    await obj.message.react(obj.instance.settings.reaction.SUCCESS);
+	    obj.instance.status = obj.instance.status.replace(status,'');
 	    return obj.success();
 	} catch(e) {
 		obj.error('swgoh.add',e);
@@ -139,7 +136,7 @@ async function find( obj, register ) {
 	    }
 	                      	
 	    let replyObj = {};
-	    replyObj.title = 'Results for \''+obj.cmdObj.args.id+'\'';
+	    replyObj.title = 'Results for \''+obj.command.args.id+'\'';
 	    //replyObj.title += result[0].playerName;
 	    replyObj.description = '';
 	    
