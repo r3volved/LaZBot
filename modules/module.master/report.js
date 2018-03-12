@@ -1,9 +1,9 @@
 async function report( obj ) {
 	try {
-		if( !await obj.auth() ) { return obj.message.react(obj.clientConfig.settings.reaction.DENIED); }
+		if( !await obj.auth() ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }
 			
-		let procedure = obj.cmdObj.args.id;
-		let args = obj.cmdObj.args.text || '';
+		let procedure = obj.command.args.id;
+		let args = obj.command.args.text || '';
 		let result = null;
 		let title = '';
 		switch( procedure ) {
@@ -36,7 +36,11 @@ async function report( obj ) {
             case 'presence':
                 title = 'Active Service Report'
                 result = await getDiscordServers( obj );
-                return replyInline( obj, result, title, args );
+                return replyFields( obj, result, title, args );
+            case 'status':
+                title = 'Current Status';
+                let status = obj.instance.status === '' ? 'idle' : obj.instance.status;
+                return obj.success('Current status: '+status);
 			default:
 		}
 		
@@ -49,7 +53,7 @@ async function report( obj ) {
 async function getDiscordServers( obj ) {
     try {
         let result = [];
-        for( let g of obj.clientConfig.client.guilds ) {
+        for( let g of obj.instance.client.guilds ) {
             result.push({"id":g[1].id, "region":g[1].region, "name":g[1].name});            
         }  
         return result;  
@@ -60,7 +64,7 @@ async function getDiscordServers( obj ) {
 
 async function doProcedure( obj, procedure ) {   
     try {
-        let result = await require(obj.clientConfig.path+'/utilities/db-handler.js').doStoredProcedure( obj.clientConfig.settings.database, procedure );
+        let result = await obj.instance.dbHandler.doStoredProcedure( obj.instance.settings.database, procedure );
         result = result[0];
         return !result || result.length === 0 ? false : result;         
     } catch(e) {
@@ -104,7 +108,6 @@ async function replyAgnostic( obj, result, title ) {
 	}
 }
 
-
 async function replyInline( obj, result, title, args ) {
     try {
         let replyObj = {};
@@ -132,6 +135,49 @@ async function replyInline( obj, result, title, args ) {
         replyObj.description += '```';
         replyObj.title = title || 'Report';
         replyObj.title += ' - '+result.length+' discord servers'; 
+        
+        return obj.success(replyObj);
+    } catch(e) {
+        return obj.error('report.replyAgnostic',e);
+    }
+}
+
+
+async function replyFields( obj, result, title, args ) {
+    try {
+    	
+        let replyObj = {};
+        replyObj.title = title || 'Report';
+        replyObj.title += ' - '+result.length+' discord servers'; 
+        replyObj.description = 'By region:';
+        replyObj.fields = [];
+                
+        let fields = {};
+        
+        for( let r = 0; r < result.length; ++r ) {
+            
+        	let { id, region, name } = result[r];
+            if( !fields[region] ) {
+            	fields[region] = {};
+            	fields[region].title = region;
+            	fields[region].text = '';
+            	fields[region].inline = true;
+            }
+        	
+            fields[region].text += name+'\n'
+                        
+        }
+
+        let regions = Object.keys(fields).sort();
+        for( let f of regions ) {
+        	if( args && ( args === 'd' || args === 'details' ) ) {
+        		fields[f].text += '`'+'-'.repeat(30)+'`';
+        		replyObj.fields.push(fields[f]);
+        	} else {
+        		fields[f].text = fields[f].text.split(/\n/gm).length + ' servers in this region'; 
+        		replyObj.fields.push(fields[f]);
+        	}
+        }
         
         return obj.success(replyObj);
     } catch(e) {

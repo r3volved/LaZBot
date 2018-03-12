@@ -4,8 +4,7 @@ async function doMonitor( obj ) {
 
 		if( !obj.message.guild || !['242184147257393153','333971980497977345', '365502000043130880'].includes(obj.message.guild.id) ) { return; }
 
-        const PermissionHandler = require(obj.clientConfig.path+'/utilities/permission-handler.js');
-        let pHandler = new PermissionHandler(obj.clientConfig, obj.ModuleConfig, obj.message);
+        let pHandler = new obj.instance.permHandler(obj.instance, obj.module, obj.message);
         
         //Check CubsFanHan roles - skip on found roles        
         if( obj.message.guild.id === '333971980497977345' || obj.message.guild.id === '365502000043130880' ) {
@@ -15,9 +14,9 @@ async function doMonitor( obj ) {
         }
         
         //Check mobilegamer roles - skip on found roles        
-        if( obj.message.guild.id === '242184147257393153' || obj.message.guild.id === '365502000043130880' ) {
+        //if( obj.message.guild.id === '242184147257393153' || obj.message.guild.id === '365502000043130880' ) {
             //if( await pHandler.authorHasRole('Patron') ) { console.log('Patron'); return; }
-        }
+        //}
         
         const ids = [ '269167743150981120', '194702668751568896', '173560724969357312', '227912301301202944' ]; 
         
@@ -30,7 +29,7 @@ async function doMonitor( obj ) {
 	        
         	for( let i = 0; i < ids.length; ++i ) {
         	   if( obj.message.content.includes( '<@'+ids[i]+'>' ) || obj.message.content.includes( '<@!'+ids[i]+'>' ) ) {
-        	       obj.cmdObj = { "module":"nomention", "cmd":"nomention", "prefix":"" };
+        	       obj.command = { "module":"nomention", "cmd":"nomention", "prefix":"" };
                 
 	               const Discord = require('discord.js');
 	               const embed = new Discord.RichEmbed();
@@ -45,7 +44,7 @@ async function doMonitor( obj ) {
 	               }
 	               obj.message.author.send({embed});
 
-	               obj.message.react(obj.clientConfig.settings.reaction.DM);
+	               obj.message.react(obj.instance.settings.reaction.DM);
         	       return obj.silentSuccess('no-mention '+(obj.message.author.username || obj.message.author.tag));
         	   }
         	}

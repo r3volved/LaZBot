@@ -2,20 +2,19 @@
 	 
 	 try {
 		 
-		 if( !await obj.auth() ) { return obj.message.react(obj.clientConfig.settings.reaction.DENIED); }
-		 if( obj.cmdObj.subcmd ) {
+		 if( !await obj.auth() ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }
+		 if( obj.command.subcmd ) {
 			 return status(obj);			 
 		 }
-		 if( !obj.cmdObj.args.text || obj.cmdObj.args.text === 'help' ) { return obj.help( obj.moduleConfig.commands.meme.help ); }
+		 if( !obj.command.args.text || obj.command.args.text === 'help' ) { return obj.help( obj.module.commands.meme.help ); }
 		 
-	     let toggle = ["on","true","monitor","activate"].includes(obj.cmdObj.args.text) ? true : false;
+	     let toggle = ["on","true","monitor","activate"].includes(obj.command.args.text) ? true : false;
 	     let serverId = obj.message.guild.id;
 	     let serverName = obj.message.guild.name;
 	     let channelName = obj.message.channel.name;
 		    
-	     const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-	     DatabaseHandler.setRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.SET_SETTINGS, [obj.message.channel.id, channelName, serverId, serverName, toggle]).then((result) => {
-	    	 obj.message.react(obj.clientConfig.settings.reaction.SUCCESS);
+	     obj.instance.dbHandler.setRows(obj.instance.settings.database, obj.module.queries.SET_SETTINGS, [obj.message.channel.id, channelName, serverId, serverName, toggle]).then((result) => {
+	    	 obj.message.react(obj.instance.settings.reaction.SUCCESS);
 	         return obj.success();
 	     }).catch((reason) => {
 	         obj.error('meme.toggle.setRows',reason);
@@ -34,12 +33,11 @@ async function status( obj ) {
 	const Discord = require('discord.js');
     let embed = new Discord.RichEmbed();
     embed.setColor(0x6F9AD3);
-    embed.setTitle(obj.moduleConfig.help.meme.title);
-    embed.setDescription(obj.moduleConfig.help.meme.text);
+    embed.setTitle(obj.module.help.meme.title);
+    embed.setDescription(obj.module.help.meme.text);
     
     try {
-        const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-        DatabaseHandler.getRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_SETTINGS, [obj.message.channel.id]).then((result) => {
+        obj.instance.dbHandler.getRows(obj.instance.settings.database, obj.module.queries.GET_SETTINGS, [obj.message.channel.id]).then((result) => {
             if( result[0].meme ) { embed.addField("Status","Active and monitoring"); }
             else { embed.addField("Status","Inactive"); }
             obj.message.channel.send({embed}); 

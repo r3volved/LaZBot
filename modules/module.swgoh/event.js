@@ -10,7 +10,7 @@ async function event( obj ) {
     }
     
     let replyObj = {};
-    replyObj.title = obj.moduleConfig.help.event.title;
+    replyObj.title = obj.module.help.event.title;
     replyObj.description = 'Note: *Event schedule is subject to change*';
     replyObj.fields = [];
     
@@ -40,7 +40,7 @@ async function event( obj ) {
 	            let procedure = 'CALL getEventText( \''+nameKey+'\', \''+descKey+'\', \''+lang+'\' )'
 	            let keyVals = null;
 	            try {
-	                keyVals = await require(obj.clientConfig.path+'/utilities/db-handler.js').doStoredProcedure( obj.clientConfig.settings.datadb, procedure );
+	                keyVals = await obj.instance.dbHandler.doStoredProcedure( obj.instance.settings.datadb, procedure );
 	                keyVals = keyVals[0];
 
 	                if( !keyVals || keyVals.length === 0 ) { continue; }
@@ -92,7 +92,7 @@ async function fetchEvents( obj ) {
             /** Start the RPC Service - with no logging**/
             await rpc.start(`Fetching events...\n`, false);
             
-        	await obj.message.react(obj.clientConfig.settings.reaction.THINKING);
+        	await obj.message.react(obj.instance.settings.reaction.THINKING);
             let iData = await rpc.Player( 'GetInitialData' );
             
             /** End the RPC Service **/

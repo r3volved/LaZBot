@@ -1,8 +1,7 @@
 async function zeta( obj, register ) {
 
     try {
-    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-	    result = register || await DatabaseHandler.getRegister( obj );
+    	result = register || await obj.instance.dbHandler.getRegister( obj );
         if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
     } catch(e) {
         return obj.error('doZetas.getRegister',e);
@@ -13,7 +12,7 @@ async function zeta( obj, register ) {
     updated     = result[0].updated;
     let ac = result[0].private === 1 ? '---------' : result[0].allyCode;
 
-    let unit = obj.cmdObj.args.text || null;
+    let unit = obj.command.args.text || null;
     
     try {
     	result = await findZetas( obj, allycode, unit );
@@ -76,7 +75,7 @@ async function zeta( obj, register ) {
     if( !unit ) {
     	let extra = {};
     	extra.title = '**Total '+count+'**';
-    	extra.text = 'For unit details, see:\n*'+obj.clientConfig.settings.prefix+obj.cmdObj.cmd+' unit <player> <unit>*';
+    	extra.text = 'For unit details, see:\n*'+obj.instance.settings.prefix+obj.command.cmd+' unit <player> <unit>*';
     	
     	replyObj.fields.push( extra );
     }
@@ -85,18 +84,116 @@ async function zeta( obj, register ) {
 
 }
 
+async function zetaSuggest( obj, register ) {
 
+    try {
+	    result = register || await obj.instance.dbHandler.getRegister( obj );
+        if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
+    } catch(e) {
+        return obj.error('doZetas.getRegister',e);
+    }
+
+    allycode    = result[0].allyCode;
+    playerName  = result[0].playerName;
+    updated     = result[0].updated;
+    let ac = result[0].private === 1 ? '---------' : result[0].allyCode;
+
+    let lim = obj.command.args.num || 10;
+    	lim = lim > 20 ? 20 : lim;
+    
+    try {
+    	result = await findZetaSuggestions( obj, allycode, lim );
+        if( !result || !result[0] ) { return obj.fail('The requested player or player-unit does not have any zetas.'); }
+    } catch(e) {
+        return obj.error('doZetas.findZetaSuggestions', e);
+    }
+
+    result = result[0];
+    
+    let toons = {};
+    let toon  = null;
+
+    for( let row of result ) {
+        
+        let toon   = await JSON.parse(row.unitName);
+        let aName  = await JSON.parse(row.abilityName);
+        
+        if( !toons[toon] ) { toons[toon] = []; }
+        toons[toon].push('`['+row.abilityType+']` '+aName);
+        
+    }
+
+    let order = await Object.keys(toons).sort((a,b) => {
+        return toons[b].length-toons[a].length; 
+    });
+    
+    let replyObj = {};
+    
+    let ud = new Date();
+    ud.setTime(updated);
+    ud = ud.toISOString().replace(/T/g,' ').replace(/\..*/g,'');
+
+    replyObj.title = 'Next '+result.length+' zeta suggestions for '+playerName+' ( '+ac+' )';
+    replyObj.description = 'Level 85, 7-star, ordered by highest gear-tier'
+    replyObj.description += '\nLast updated: '+ud;
+    replyObj.description += '\n`------------------------------`';
+    replyObj.description += '\n`[L]` Leader | `[S]` Special | `[U]` Unique';
+    replyObj.description += '\n`------------------------------`';
+    replyObj.fields = [];
+
+    let count = 0;
+    
+    for( let k of order ) {
+        
+        let field = {};
+        field.title = '`('+toons[k].length+')` '+k;
+        field.text = '';
+        for( let i = 0; i < toons[k].length; ++i ) {
+            field.text += toons[k][i]+'\n';
+        }
+        field.text += '`------------------------------`\n';
+        field.inline = true;
+        replyObj.fields.push( field );
+
+    } 
+     
+    return obj.success( replyObj );
+
+}
+
+
+async function findZetaSuggestions( obj, allyCode, lim, lang ) {
+    
+    return new Promise((resolve,reject) => {
+        
+    	lang  	= lang || 'ENG_US';
+    	lim 	= lim  || 10;
+    	let query = obj.module.queries.GET_ZETA_SUGGEST;
+    	let args  = [allyCode, lim, lang];
+    	
+        obj.instance.dbHandler.getRows(obj.instance.settings.datadb, query, args).then((result) => {
+            if( result.length === 0 ) { 
+                resolve(false);
+            } else {
+                resolve(result);
+            }
+        }).catch((reason) => {
+            reject(reason);
+        });
+        
+    });
+    
+}
 
 async function findZetas( obj, allyCode, unit, lang ) {
     
     return new Promise((resolve,reject) => {
         
     	lang  = lang || 'ENG_US';
-    	let query = !unit ? obj.moduleConfig.queries.GET_ZETAS : obj.moduleConfig.queries.GET_UNIT_ZETAS;
+    	let query = !unit ? obj.module.queries.GET_ZETAS : obj.module.queries.GET_UNIT_ZETAS;
     	let args  = !unit ? [allyCode, lang] : [allyCode,'%'+unit+'%', lang];
     	
-        const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-        DatabaseHandler.getRows(obj.clientConfig.settings.datadb, query, args).then((result) => {
+        obj.instance.dbHandler.getRows(obj.instance.settings.datadb, query, args).then((result) => {
             if( result.length === 0 ) { 
                 resolve(false);
             } else {
@@ -112,7 +209,10 @@ async function findZetas( obj, allyCode, unit, lang ) {
 
 
 /** EXPORTS **/
-module.exports = { 
+module.exports = { 		
+	zetaSuggest: async ( obj, register ) => { 
+    	return await zetaSuggest( obj, register ); 
+    },
 	zeta: async ( obj, register ) => { 
     	return await zeta( obj, register ); 
     }

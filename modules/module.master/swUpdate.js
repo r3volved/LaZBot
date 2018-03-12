@@ -1,11 +1,14 @@
 async function updateGuilds( obj ) {
 	try {
-				
-	    let db = require(process.cwd().replace(/\\/g,'\/')+'/config/'+process.argv[2].replace(/(\.json)/,'')+'.json').database;
+			
+		const status = '| updating guilds ';
+		obj.instance.status = obj.instance.status === '' ? status : obj.instance.status+status;
+		
+	    let db = obj.instance.settings.database;
 	    let result = null;
         try {
 	        let procedure = 'CALL getGuildList()';
-	        result = await require(process.cwd().replace(/\\/g,'\/')+'/utilities/db-handler.js').doStoredProcedure(db, procedure);
+	        result = await obj.instance.dbHandler.doStoredProcedure(db, procedure);
 	        result = result[0];
 	    } catch(e) {
     		obj.error('master.updateGuilds.getSyncList',e);
@@ -25,7 +28,7 @@ async function updateGuilds( obj ) {
 
 	    		let gname = result[i].guildName.replace(/\'/g,"\\\'");
 	    		let procedure = 'CALL updateGuildRoster(\''+gname+'\')';
-	    		let syncResult = await require(process.cwd().replace(/\\/g,'\/')+'/utilities/db-handler.js').doStoredProcedure(db, procedure);
+	    		let syncResult = await obj.instance.dbHandler.doStoredProcedure(db, procedure);
 	    		if( syncResult ) { 
 	    			++success;
 	    		}
@@ -39,6 +42,8 @@ async function updateGuilds( obj ) {
 	    }
 
 	    message.edit(success+' guilds have been updated');
+
+	    obj.instance.status = obj.instance.status.replace(status,'');
 	    return obj.success();
 	    
 	} catch(e) {
@@ -50,15 +55,19 @@ async function updateGuilds( obj ) {
 async function updatePlayers( obj ) {
 	try {
 				
-		let limit = obj.cmdObj.args.num || 10;
-	    let db = require(process.cwd().replace(/\\/g,'\/')+'/config/'+process.argv[2].replace(/(\.json)/,'')+'.json').database;
+		const status = '| updating players ';
+		obj.instance.status = obj.instance.status === '' ? status : obj.instance.status+status;
+
+		let limit = obj.command.args.num || 10;
+	    let db = obj.instance.settings.database;
 	    let result = null;
         try {
 	        let procedure = 'CALL getSyncList('+limit+')';
-	        result = await require(process.cwd().replace(/\\/g,'\/')+'/utilities/db-handler.js').doStoredProcedure(db, procedure);
+	        result = await obj.instance.dbHandler.doStoredProcedure(db, procedure);
 	        result = result[0];
 	        if( result.length === 0 ) { 
-	        	return obj.success('Everyone is up-to-date'); 
+	        	obj.instance.status = obj.instance.status.replace(status,'');
+	    	    return obj.success('Everyone is up-to-date'); 
 	        }	        
 	    } catch(e) {
     		obj.error('master.updatePlayers.getSyncList',e);
@@ -74,7 +83,7 @@ async function updatePlayers( obj ) {
 	    	
 	    	try {
 	    		
-	    		console.log( 'updating: '+result[i].allycode );
+	    		//console.log( 'updating: '+result[i].allycode );
 	    		let syncResult = await require(process.cwd().replace(/\\/g,'\/')+'/modules/module.swgoh/utilities.js').updatePlayer( result[i].allycode );
 	    		if( syncResult ) { 
 	    			++success;
@@ -89,6 +98,8 @@ async function updatePlayers( obj ) {
 	    }
 
 	    message.edit(success+' players have been updated');
+
+	    obj.instance.status = obj.instance.status.replace(status,'');
 	    return obj.success();
 	    
 	} catch(e) {
@@ -99,16 +110,21 @@ async function updatePlayers( obj ) {
 
 async function updateData( obj ) {
 	
+	const status = '| updating client ';
+	obj.instance.status = obj.instance.status === '' ? status : obj.instance.status+status;
+
 	let message = null;
     try {
         message = await obj.message.reply('Updating client - please wait...');
     } catch(e) { obj.error('updateData.message',e); }
      
 	try {
-	    const swgoh = require(obj.clientConfig.path+'/compiled/swgoh.js');
+	    const swgoh = require(obj.instance.path+'/compiled/swgoh.js');
 		let result = await swgoh.updateData();
 		result = !result ? 'Client is already up-to-date' : 'Client has been updated';
 		message.edit(result);
+
+		obj.instance.status = obj.instance.status.replace(status,'');
 	    return obj.success();
 	    
 	} catch(e) {

@@ -1,0 +1,45 @@
+{
+
+    "id":"template",
+
+    "name":"Module Template",
+
+    "version":"1.0",
+    
+    "type":"command",
+    
+    "permission":"anyone",
+    
+    "commands":{
+    
+    	"template":{
+			"aliases":["tmp"],
+			"procedure":"doSomething",
+			"args":["text"],
+			"help":{
+	    		"id":"template",
+	    		"title":"This is your command help title",
+	            "text":"This is your command help description",
+	            "example":"*%PREFIX%%COMMAND%*"
+	    	}
+		}
+		
+    },
+    
+    "help":{
+    
+    	"template":{
+    		"id":"template",
+    		"title":"This is your command help title",
+            "text":"This is your command help description",
+            "example":"*%PREFIX%%COMMAND%*"
+    	}
+    	
+    },
+    
+    "queries":{
+    	
+    	
+    }    
+    
+}

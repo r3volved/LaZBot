@@ -1,8 +1,8 @@
 async function update( obj ) {
-	if( !await obj.auth() ) { return obj.message.react(obj.clientConfig.settings.reaction.DENIED); }
-	if( obj.cmdObj.args.id === 'help' ) { return obj.help(obj.cmdObj.help); }
-	if( obj.cmdObj.subcmd ) {
-		let process = obj.moduleConfig.commands[obj.cmdObj.cmd].subcommands[obj.cmdObj.subcmd].procedure
+	if( !await obj.auth() ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }
+	if( obj.command.args.id === 'help' ) { return obj.help(obj.command.help); }
+	if( obj.command.subcmd ) {
+		let process = obj.module.commands[obj.command.cmd].subcommands[obj.command.subcmd].procedure
 		return require('./swUpdate.js')[process]( obj ); 
 	} else {
 		return require('./swUpdate.js')[process]( obj );
