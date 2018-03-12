@@ -1,16 +1,13 @@
 async function mod( obj, register ) {
 
-    obj.message.react(obj.clientConfig.settings.reaction.THINKING);
+    obj.message.react(obj.instance.settings.reaction.THINKING);
 
     try {
-    	const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-	    result = register || await DatabaseHandler.getRegister( obj );
+	    result = register || await obj.instance.dbHandler.getRegister( obj );
         if( !result || !result[0] || !result[0].allyCode ) { return obj.fail('The requested user is not registered'); }
     } catch(e) {
         return obj.error('doMods.getRegister',e);
     }
-    
-    
                             
     allycode    = result[0].allyCode;
     playerName  = result[0].playerName;
@@ -69,7 +66,7 @@ async function mod( obj, register ) {
     const Discord = require('discord.js');
 
     obj.message.author.send(new Discord.Attachment(modBuffer,'mods-'+playerName+'-'+updated.toString()+'.json'));
-    obj.message.react(obj.clientConfig.settings.reaction.DM);
+    obj.message.react(obj.instance.settings.reaction.DM);
     return obj.success();
             
 }
@@ -79,17 +76,16 @@ async function findMods( obj, allyCode ) {
     return new Promise((resolve,reject) => {
         
         //find discordID in lazbot db
-        const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-        DatabaseHandler.getRows(obj.clientConfig.settings.datadb, obj.moduleConfig.queries.GET_MODS, [allyCode]).then((result) => {
+        obj.instance.dbHandler.getRows(obj.instance.settings.datadb, obj.module.queries.GET_MODS, [allyCode]).then((result) => {
             if( result.length === 0 ) { 
-                obj.message.react(obj.clientConfig.settings.reaction.ERROR);
+                obj.message.react(obj.instance.settings.reaction.ERROR);
                 replyStr = "The requested discord user is not registered with a swgoh account.\nSee help for registration use.";
                 reject(replyStr);
             } else {
                 resolve(result);
             }
         }).catch((reason) => {                  
-            obj.message.react(obj.clientConfig.settings.reaction.ERROR);                    
+            obj.message.react(obj.instance.settings.reaction.ERROR);                    
             reject(reason);
         });
         

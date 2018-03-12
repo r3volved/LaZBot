@@ -8,17 +8,17 @@ class ModuleRegistry {
     }
     
 
-    load( config ) {
+    load( instance ) {
     	
         try {
 
         	//Build commands
-            for( let m in config.settings.modules ) {
+            for( let m in instance.settings.modules ) {
                 
-                if( config.settings.modules[m].active ) {
+                if( instance.settings.modules[m].active ) {
                                    
-                    let tmpModule = config.settings.modules[m];
-                    this.modules[tmpModule.id] = require(config.path+'/modules/module.'+tmpModule.id+'/config.json');
+                    let tmpModule = instance.settings.modules[m];
+                    this.modules[tmpModule.id] = require(instance.path+'/modules/module.'+tmpModule.id+'/config.json');
                     this.commands = Object.assign(this.commands, this.modules[tmpModule.id].commands);
                     
                 }
@@ -33,7 +33,7 @@ class ModuleRegistry {
             	console.info(m+' '.repeat(10 - m.length)+': '+Object.keys(this.modules[m].commands).join(', '));
             }
             console.info('='.repeat(80));
-            console.info('Currently a member of '+config.client.guilds.size+' guilds - for details, see: '+config.settings.prefix+'report presence');
+            console.info('Currently a member of '+instance.client.guilds.size+' guilds - for details, see: '+instance.settings.prefix+'report presence');
             
             return true;
             
@@ -44,7 +44,7 @@ class ModuleRegistry {
     	
     }
 
-    async registerMessage( message, config ) {
+    async registerMessage( message, instance ) {
         
         try {
             
@@ -54,19 +54,18 @@ class ModuleRegistry {
         	for( k in this.modules ) {
         		let tmpModule = this.modules[k];
         		if( tmpModule.type === 'preMonitor' ) {
-        			const Monitor = require(config.path+'/modules/module.js');                 
-        			const thisMonitor   = new Monitor(config, tmpModule, message, {});
+        			const Monitor = require(instance.path+'/modules/module.js');                 
+        			const thisMonitor = new Monitor(instance, tmpModule, message, {});
         			try { await thisMonitor.doMonitor(); } catch(e) { throw e; }
         		}
         	}
-            
+                    	
         	//Process command
-            if( message.content.startsWith(config.settings.prefix) ) {
-	        	let cmdObj = await require(config.path+'/utilities/command-handler').parseMessage( message, this.modules );
-	            //console.log( cmdObj );
-	            if( cmdObj.prefix === config.settings.prefix && cmdObj.module ) {
-	        		const Command = require(config.path+'/modules/module.js');
-	                const thisCommand   = new Command(config, this.modules[cmdObj.module], message, cmdObj);
+            if( message.content.startsWith(instance.settings.prefix) ) {
+	        	let cmdObj = await instance.cmdHandler.parseMessage( message, this.modules );
+	            if( cmdObj.prefix === instance.settings.prefix && cmdObj.module ) {
+	        		const Command = require(instance.path+'/modules/module.js');
+	                const thisCommand = new Command(instance, this.modules[cmdObj.module], message, cmdObj);
 	                try { await thisCommand.doCommand(); } catch(e) { throw e; }
 	        	}
             }
@@ -75,7 +74,7 @@ class ModuleRegistry {
             //for( k in this.modules ) {
             //   let tmpModule = this.modules[k];
             //   if( tmpModule.type === 'postMonitor' ) {
-            //       const Monitor       = require(config.path+'/modules/module.'+tmpModule.id+'/main.js');                    
+            //       const Monitor       = require(instance.path+'/modules/module.'+tmpModule.id+'/main.js');                    
             //       const thisMonitor   = new Monitor(config, tmpModule, null, message);
             //       try { await thisMonitor.analyze(); } catch(e) { throw e; }
             //   }

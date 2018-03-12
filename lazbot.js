@@ -1,7 +1,7 @@
 //Build client
 const Discord 	= require('discord.js');
 const client 	= new Discord.Client();
-let   config    = {};
+let   instance    = {};
 /**
  * MONITOR CHANNEL
  */
@@ -12,7 +12,7 @@ client.on('message', message => {
 	// If author is bot, ignore - otherwise register message
 	if( message.author.bot ) { return; }
 	try {
-		config.registry.registerMessage( message, config );
+		instance.registry.registerMessage( message, instance );
 	} catch(e) {	
 		console.warn("Message listener problem!");
 		console.error(e);		
@@ -26,7 +26,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 	// If author is bot, ignore - otherwise register message
 	if( newMessage.author.bot ) { return; }
 	try {
-		config.registry.registerMessage( newMessage, config );
+		instance.registry.registerMessage( newMessage, instance );
 	} catch(e) {	
 		console.warn("Message listener problem!");
 		console.error(e);		
@@ -39,8 +39,8 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 client.on('guildCreate', guild => {
   
 	try {
-	    const botLog = require(config.path+'/utilities/db-handler.js');
-	    botLog.setRows(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), ` ! ${config.client.usernname} joined ${guild.name}`]);
+	    const botLog = require(instance.path+'/utilities/db-handler.js');
+	    botLog.setRows(instance.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), ` ! ${instance.client.user.username} joined ${guild.name}`]);
 	} catch(e) {	
 		console.warn("Message listener problem!");
 		console.error(e);		
@@ -57,21 +57,20 @@ client.on('guildCreate', guild => {
 //ON READY
 client.on('ready', async () => {
     
-    config.client = client;
-	config.status = '';
+	instance.client = client;
+	instance.status = '';
     
     try {
-	    const botLog = require(config.path+'/utilities/db-handler.js');
-	    botLog.setRows(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), `Connected as: ${config.client.user.username}`]);
+	    instance.dbHandler.setRows(instance.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), `Connected as: ${instance.client.user.username}`]);
     } catch(e) {
     	console.error(e);
     	process.exit(-1);
     }
     
     let len = 28;
-    let version = ' '.repeat(len - config.settings.version.length)+config.settings.version;
-    let name 	= ' '.repeat(len - config.client.user.username.length)+config.client.user.username;
-    let prefix  = ' '.repeat(len - 9)+'Prefix: '+config.settings.prefix;
+    let version = ' '.repeat(len - instance.settings.version.length)+instance.settings.version;
+    let name 	= ' '.repeat(len - instance.client.user.username.length)+instance.client.user.username;
+    let prefix  = ' '.repeat(len - 9)+'Prefix: '+instance.settings.prefix;
     
     console.info('='.repeat(80));
     console.info('='.repeat(80));
@@ -85,10 +84,10 @@ client.on('ready', async () => {
      */
     try {
     
-	    const ModuleRegistry   = require(config.path+'/modules/modules.registry.js');
-	    config.registry        = new ModuleRegistry();
-	    await config.registry.load( config );
-	    await client.user.setPresence({game:{ name:config.settings.prefix+"help", type:"LISTENING" }});
+	    const ModuleRegistry   	= require(instance.path+'/modules/modules.registry.js');
+	    instance.registry		= new ModuleRegistry();
+	    await instance.registry.load( instance );
+	    await instance.client.user.setPresence({game:{ name:instance.settings.prefix+"help", type:"LISTENING" }});
 	    
 	} catch(e) { console.error(e); }
 
@@ -99,11 +98,8 @@ client.on('ready', async () => {
 client.on('disconnect', async (event) => {
     console.error(`\n ! Client disconnected: [${event.code}] ${event.reason}`);
     try{
-	    const botLog = require(config.path+'/utilities/db-handler.js');
-	    botLog.setRows(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), ` ! Client disconnected: [${event.code}] ${event.reason}`]);
-    } catch(e) {
-    	console.error(e);
-    }
+	    instance.dbHandler.setRows(instance.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), ` ! Client disconnected: [${event.code}] ${event.reason}`]);
+    } catch(e) { console.error(e); }
 
 	//Try login again
 	if( event.code !== 4004 ) {
@@ -121,11 +117,8 @@ client.on('reconnecting', async (e) => {
     console.warn('\n ! Client reconnecting -'+new Date());	
 	if(e) console.error(e);
 	try {
-	    const botLog = require(config.path+'/utilities/db-handler.js');
-	    botLog.setRows(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), 'Client reconnecting']);
-	} catch(e) {
-		console.error(e);
-	}
+		instance.dbHandler.setRows(instance.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), 'Client reconnecting']);
+	} catch(e) { console.error(e); }
 });
 
 //ON RESUME
@@ -133,11 +126,8 @@ client.on('resumed', async (replayed) => {
     console.info('\n ! Client resumed -'+new Date());
     if(replayed) console.log(replayed);
 	try {
-	    const botLog = require(config.path+'/utilities/db-handler.js');
-	    botLog.setRows(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), 'Client resumed']);
-	} catch(e) {
-		console.error(e);
-	}
+		instance.dbHandler.setRows(instance.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), 'Client resumed']);
+	} catch(e) { console.error(e); }
 });
 
 //ON ERROR
@@ -145,11 +135,8 @@ client.on('error', async (error) => {
     console.error('\n ! Client connection error -'+new Date());
     if(error) console.error(error);
 	try {
-	    const botLog = require(config.path+'/utilities/db-handler.js');
-	    botLog.setRows(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), 'Client connection error']);
-	} catch(e) {
-		console.error(e);
-	}
+		instance.dbHandler.setRows(instance.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), 'Client connection error']);
+	} catch(e) { console.error(e); }
 });
 
 //ON WARNING
@@ -157,11 +144,8 @@ client.on('warn', async (info) => {
 	console.warn('\n ! Client warning -'+new Date());
 	if(info) console.warn(info);
     try{
-	    const botLog = require(config.path+'/utilities/db-handler.js');
-	    botLog.setRows(config.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), 'Client warning']);
-    } catch(e) {
-    	console.error(e);
-    }
+    	instance.dbHandler.setRows(instance.settings.database,"INSERT INTO `botlog` VALUES (?, ?)",[new Date(), 'Client warning']);
+    } catch(e) { console.error(e); }
 });
 
 
@@ -172,9 +156,16 @@ client.on('warn', async (info) => {
 async function doLogin() {
     try {
         
-        config.path     = process.cwd().toString().replace(/\\/g,'\/');
-        config.settings = require(config.path+'/config/'+process.argv[2].replace(/(\.json)/,'')+'.json');
-        await client.login(config.settings.token);
+        instance.path     = process.cwd().toString().replace(/\\/g,'\/');
+        instance.settings = require(instance.path+'/config/'+process.argv[2].replace(/(\.json)/,'')+'.json');
+        
+        let utilities = instance.path+'/utilities/';
+    	instance.cmdHandler = require(utilities+'command-handler.js');
+    	instance.dbHandler  = require(utilities+'db-handler.js');
+    	instance.rssHandler = require(utilities+'rss-handler.js');
+    	instance.permHandler = require(utilities+'permission-handler.js');
+    	
+    	await client.login(instance.settings.token);
     
     } catch(err) {
         console.error('\n ! '+err);

@@ -98,7 +98,7 @@ async function fetchPlayer( allycode, obj ) {
 	        /** Start the RPC Service - with no logging**/
 	        await rpc.start(`Fetching ${allycode}...\n`, false);
 	        
-	    	if( !!obj ) { await obj.message.react(obj.clientConfig.settings.reaction.THINKING); }
+	    	if( !!obj ) { await obj.message.react(obj.instance.settings.reaction.THINKING); }
 	        profile = await rpc.Player( 'GetPlayerProfile', { "identifier":parseInt(allycode) } );
 	        
 	        /** End the RPC Service **/
@@ -116,7 +116,7 @@ async function fetchPlayer( allycode, obj ) {
 	        /** Start the SQL Service - with no logging**/
 	        await sql.start(`Saving ${allycode}...\n`, false);
 	        
-	        if( obj ) { await obj.message.react(obj.clientConfig.settings.reaction.WORK); }
+	        if( obj ) { await obj.message.react(obj.instance.settings.reaction.WORK); }
 	        await sql.query( 'SET FOREIGN_KEY_CHECKS = 0;' );
 	        let sqlresult = await sql.query( 'insert', 'PlayerProfile', [profile] );
 	        await sql.query( 'SET FOREIGN_KEY_CHECKS = 1;' );

@@ -2,20 +2,19 @@
 	 
 	 try {
 		 
-		if( !obj.cmdObj.args.text || obj.cmdObj.args.text === 'help' ) { return obj.help( obj.cmdObj.help ); }
-		if( obj.cmdObj.args.text.startsWith('report') || obj.cmdObj.args.text.startsWith('list') ) { return report(obj); }
-		if( obj.cmdObj.args.text.startsWith('reset') ) { return reset(obj); }
+		if( !obj.command.args.text || obj.command.args.text === 'help' ) { return obj.help( obj.command.help ); }
+		if( obj.command.args.text.startsWith('report') || obj.command.args.text.startsWith('list') ) { return report(obj); }
+		if( obj.command.args.text.startsWith('reset') ) { return reset(obj); }
 		let serverId = obj.message.guild.id;
 		let message = obj.message.content.split(/\s+/);
 		
-		const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
 		if( isNaN(message[1]) ) {
 			let carrier = message[1];
 			carrier = carrier.match(/\d{17,18}/) ? carrier.replace(/(\d{17,18})/, '$1') : carrier;
 			
 			let result = null;
 			try {
-				result = await DatabaseHandler.getRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_KARMA, [serverId, carrier]);
+				result = await obj.instance.dbHandler.getRows(obj.instance.settings.database, obj.module.queries.GET_KARMA, [serverId, carrier]);
 			} catch(e) {
 				obj.error('karma.getRows',e);
 			    return obj.fail(carrier+' has 0 karma');
@@ -34,7 +33,7 @@
 			return obj.success(reply,'');
 			    		
 		} else {
-			if( !await obj.auth() ) { return obj.message.react(obj.clientConfig.settings.reaction.DENIED); }
+			if( !await obj.auth() ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }
 			
 			let karma = message[1];
 			let carrier = message[2];
@@ -43,14 +42,14 @@
 			
 			let result = null;
 			try {
-				result = await DatabaseHandler.setRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.SET_KARMA, [serverId, carrier, karma, reason]);
+				result = await obj.instance.dbHandler.setRows(obj.instance.settings.database, obj.module.queries.SET_KARMA, [serverId, carrier, karma, reason]);
 			} catch(e) {
 				obj.error('karma.doToggle.setRows',e);
 			    return obj.fail('I could not karma');
 			}
 			
 			try {
-				result = await DatabaseHandler.getRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.GET_KARMA, [serverId, carrier]);
+				result = await obj.instance.dbHandler.getRows(obj.instance.settings.database, obj.module.queries.GET_KARMA, [serverId, carrier]);
 			} catch(e) {
 				obj.error('karma.getRows',e);
 			    return obj.fail(carrier+' has 0 karma');
@@ -84,7 +83,7 @@ async function report( obj ) {
 	
 	try {
 
-		let num = parseInt(obj.cmdObj.args.text.split(/\s/)[1]);
+		let num = parseInt(obj.command.args.text.split(/\s/)[1]) || 10;
 		let sql = 'SELECT * FROM `karma` WHERE `karma`.`serverId` = ? ORDER BY `karma`.`karma` ';
 		sql += num > 0 ? 'DESC ' : 'ASC ';
 		sql += 'LIMIT '+Math.abs(num);
@@ -92,8 +91,7 @@ async function report( obj ) {
 		let serverId = obj.message.guild.id;
 		let result = null;
 		try {
-			const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-			result = await DatabaseHandler.getRows(obj.clientConfig.settings.database, sql, serverId);
+			result = await obj.instance.dbHandler.getRows(obj.instance.settings.database, sql, serverId);
 		} catch(e) {
 			obj.error('karma.getRows',e);
 		}
@@ -122,16 +120,15 @@ async function report( obj ) {
 async function reset( obj ) {
 	
 	try {
-		if( !await obj.auth() ) { return obj.message.react(obj.clientConfig.settings.reaction.DENIED); }
+		if( !await obj.auth() ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }
 
-		let num = parseInt(obj.cmdObj.args.text.split(/\s/)[1]);
+		let num = parseInt(obj.command.args.text.split(/\s/)[1]) || 10;
 		let sql = 'DELETE FROM `karma` WHERE `karma`.`serverId` = ?';
 		
 		let serverId = obj.message.guild.id;
 		let result = null;
 		try {
-			const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
-			result = await DatabaseHandler.setRows(obj.clientConfig.settings.database, sql, serverId);
+			result = await obj.instance.dbHandler.setRows(obj.instance.settings.database, sql, serverId);
 		} catch(e) {
 			obj.error('karma.getRows',e);
 		}

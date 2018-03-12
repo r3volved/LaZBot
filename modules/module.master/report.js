@@ -1,9 +1,9 @@
 async function report( obj ) {
 	try {
-		if( !await obj.auth() ) { return obj.message.react(obj.clientConfig.settings.reaction.DENIED); }
+		if( !await obj.auth() ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }
 			
-		let procedure = obj.cmdObj.args.id;
-		let args = obj.cmdObj.args.text || '';
+		let procedure = obj.command.args.id;
+		let args = obj.command.args.text || '';
 		let result = null;
 		let title = '';
 		switch( procedure ) {
@@ -39,7 +39,7 @@ async function report( obj ) {
                 return replyFields( obj, result, title, args );
             case 'status':
                 title = 'Current Status';
-                let status = obj.clientConfig.status === '' ? 'idle' : obj.clientConfig.status;
+                let status = obj.instance.status === '' ? 'idle' : obj.instance.status;
                 return obj.success('Current status: '+status);
 			default:
 		}
@@ -53,7 +53,7 @@ async function report( obj ) {
 async function getDiscordServers( obj ) {
     try {
         let result = [];
-        for( let g of obj.clientConfig.client.guilds ) {
+        for( let g of obj.instance.client.guilds ) {
             result.push({"id":g[1].id, "region":g[1].region, "name":g[1].name});            
         }  
         return result;  
@@ -64,7 +64,7 @@ async function getDiscordServers( obj ) {
 
 async function doProcedure( obj, procedure ) {   
     try {
-        let result = await require(obj.clientConfig.path+'/utilities/db-handler.js').doStoredProcedure( obj.clientConfig.settings.database, procedure );
+        let result = await obj.instance.dbHandler.doStoredProcedure( obj.instance.settings.database, procedure );
         result = result[0];
         return !result || result.length === 0 ? false : result;         
     } catch(e) {
