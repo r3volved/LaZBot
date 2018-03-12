@@ -26,16 +26,16 @@ async function getRegister( obj ) {
 	
 	try {
 		let query, args = null;
-	    if( obj.cmdObj.args.discordId ) {
+	    if( obj.command.args.discordId ) {
 	    	query = obj.moduleConfig.queries.GET_REGISTER_BY_DID;
-	    	args  = [obj.cmdObj.args.discordId];
+	    	args  = [obj.command.args.discordId];
 	    } else {
-	    	if( obj.cmdObj.args.allycode ) { 
+	    	if( obj.command.args.allycode ) { 
 	        	query = obj.moduleConfig.queries.GET_REGISTER_BY_ALLYCODE;
-	        	args  = [obj.cmdObj.args.allycode];
+	        	args  = [obj.command.args.allycode];
 	        } else {
 	        	query = obj.moduleConfig.queries.GET_REGISTER_BY_PLAYER;
-	        	args  = ['%'+obj.cmdObj.args.id+'%'];
+	        	args  = ['%'+obj.command.args.id+'%'];
 	        }
 	    }
 	    
