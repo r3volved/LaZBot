@@ -1,0 +1,44 @@
+{
+
+    "id":"poll",
+
+    "name":"Google",
+
+    "version":"2.0",
+    
+    "type":"command",
+    
+    "permission":"anyone",
+    
+    "commands":{
+    
+    	"poll":{
+			"aliases":[],
+			"procedure":"doPoll",
+			"args":["text"],
+			"help":{
+	    		"id":"poll",
+	    		"title":"Google quick-search",
+	            "text":"Perform a quick google search without ever leaving the comfort of your discord",
+	            "example":"*%PREFIX%%COMMAND% <stuff to google>*"
+	    	}
+		}
+    },
+    
+    "help":{
+    
+    	"poll":{
+    		"id":"",
+    		"title":"",
+            "text":"",
+            "example":""
+    	}
+    	
+    },
+    
+    "queries":{
+    	
+    	
+    }    
+    
+}

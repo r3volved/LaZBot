@@ -19,7 +19,7 @@ async function getRegister( cmdArgs ) {
 	    try {
 	        let result = null;
 	        result = await require(process.cwd().replace(/\\/g,'\/')+'/utilities/db-handler.js').getRows(db, query, args);
-	        console.log( result );
+	        //console.log( result );
 	        
 	        if( result.length === 0 ) { return false; }
 	        return result;

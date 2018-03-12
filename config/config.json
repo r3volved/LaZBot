@@ -11,19 +11,14 @@
     "adminRole":"botadmins",
     "modRole":"botmods",
         
-    "database":{ "host":"host", "user":"lazbot", "password":"lazbot314", "database":"lazbot" },
-    "datadb":{ "host":"host", "user":"datastore", "password":"storedata", "database":"datastore" },
+    "database":{ "host":"localhost", "user":"lazbot", "password":"YOUR_PASSWORD", "database":"lazbot" },
+    "datadb":{ "host":"localhost", "user":"lazbot", "password":"YOUR_PASSWORD", "database":"lazbot" },
     
     "modules":{
 
         "help":{ "id":"help", "active":true, "permission":"anyone" },         
-        "setup":{  "id":"setup", "active":false, "permission":"admin" },        
-        "google":{  "id":"google",  "active":true, "permission":"anyone" },         
-        "meme":{ "id":"meme", "active":true, "permission":"admin" },        
-        "qmonitor":{ "id":"qmonitor", "active":true, "permission":"admin" },        
-        "master":{ "id":"master", "active":true, "permission":"master" },        
-        "swgoh":{ "id":"swgoh", "active":true, "permission":"anyone" }
-    
+        "google":{  "id":"google",  "active":true, "permission":"anyone" }         
+        
     },
     
     "reaction":{

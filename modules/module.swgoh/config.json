@@ -228,7 +228,7 @@
 	            "id":"zeta",
 	            "title":"SWGOH Player Zetas",
 	            "text":"Show a player's zeta'd characters",
-	            "example":"*%PREFIX%%COMMAND% <player>*\n*%PREFIX%%COMMAND% details <player> <unit>*"
+	            "example":"*%PREFIX%%COMMAND% <player>*\n*%PREFIX%%COMMAND% details <player> <unit>*\n*%PREFIX%%COMMAND% suggest <player>*"
 	    	},
 			"subcommands":{ 
 				"details":{
@@ -241,7 +241,18 @@
 			            "text":"Show the specific zeta'd abilities for a players character",
 			            "example":"*%PREFIX%%COMMAND% <player> <unit>*"
 			    	}
-				}
+				},
+				"suggest":{
+					"aliases":["s","r"],
+					"procedure":"zetaSuggest",
+					"args":["id","num"],
+					"help":{
+			            "id":"zeta suggest",
+			            "title":"SWGOH Player-Unit Zeta Suggestions",
+			            "text":"Show a players next available zeta abilities\nResults limited to 7-star, level-85\nOrdered by gear-tier",
+			            "example":"*%PREFIX%%COMMAND% <player> [num]*"
+			    	}
+				}				
 			}
 		}		
 		
@@ -272,7 +283,7 @@
             "id":"zetas",
             "title":"SWGOH Zetas Breakdown",
             "text":"Show a player's zeta'd characters and abilities",
-            "example":"*%PREFIX%%COMMAND% [me]*\n*%PREFIX%%COMMAND% <mention|discordId|allyCode|IGN>*\n*%PREFIX%%COMMAND% <me|mention|discordId|allyCode|IGN> <unit>*"
+            "example":"*%PREFIX%%COMMAND% [me]*\n*%PREFIX%%COMMAND% <mention|discordId|allyCode|IGN>*\n*%PREFIX%%COMMAND% unit <me|mention|discordId|allyCode|IGN> <unit>*\n*%PREFIX%%COMMAND% suggest <me|mention|discordId|allyCode|IGN> [num]*"
         },
         
         "heist":{
@@ -331,6 +342,7 @@
     	"GET_MODS":"CALL spGetPlayerMods( ? )",
     	
     	"GET_ZETAS":"CALL spGetPlayerZetas( ?, ? )",
+    	"GET_ZETA_SUGGEST":"CALL spGetPlayerZetaSuggest( ?, ?, ? )",
     	"GET_UNIT_ZETAS":"CALL spGetPlayerUnitZetas( ?, ?, ? )",
     	
     	"GET_PLAYER_UNIT":"SELECT PlayerProfile.name, udn.text as 'unitName', udd.text as 'unitDesc', CASE WHEN Unit.currentRarity LIKE '%SEVEN%' THEN 7 WHEN Unit.currentRarity LIKE '%SIX%' THEN 6 WHEN Unit.currentRarity LIKE '%FIVE%' THEN 5 WHEN Unit.currentRarity LIKE '%FOUR%' THEN 4 WHEN Unit.currentRarity LIKE '%THREE%' THEN 3 WHEN Unit.currentRarity LIKE '%TWO%' THEN 2 WHEN Unit.currentRarity LIKE '%ONE%' THEN 1 END as 'currentRarity', Unit.currentLevel, Unit.currentXp, REPLACE(Unit.currentTier,'TIER_','') as currentTier, UnitDef.forceAlignment, UnitDef.combatType, UnitDef.threatLevel, UnitDef.categoryId, UnitDef.skillReference, UnitDef.primaryUnitStat, UnitTierDef.tier as 'gearTier', UnitTierDef.equipmentSet as 'gearRequired', UnitTierDef.baseStat as 'gearStats' FROM Unit JOIN PlayerProfile ON PlayerProfile.playerId = Unit.playerProfilePlayerId JOIN UnitDef ON UnitDef.id = Unit.definitionId JOIN UnitTierDef ON UnitTierDef.unitDefId = UnitDef.id AND UnitTierDef.tier = Unit.currentTier JOIN Localization udn ON udn.id = UnitDef.nameKey AND udn.language = 'ENG_US' JOIN Localization udd ON udd.id = UnitDef.descKey AND udd.language = 'ENG_US' WHERE PlayerProfile.allyCode = ? AND LOWER(udn.text) LIKE ?",

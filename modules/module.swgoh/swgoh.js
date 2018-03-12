@@ -8,15 +8,18 @@ async function add( obj, register ) {
 		if( !discordId ) { return obj.fail('Sorry, I cannot find a discordId for this user.'); }
 		
 		allycode = obj.cmdObj.args.allycode;
-		
 		playerPrivate = register && register[0] && register[0].private ? register[0].private : 0;
+		
+		const status = '| adding '+allycode+' ';
+		obj.clientConfig.status = obj.clientConfig.status === '' ? status : obj.clientConfig.status+status;
 		
 		let result = null;    
 	    try {
 	    	result = await require('./utilities.js').fetchPlayer( allycode, obj );        
 	        if( !result || !result[0] ) { return obj.fail('The requested player cannot be found.'); }
 	    } catch(e) {
-	        return obj.error('add.fetchPlayer', e);
+	    	obj.clientConfig.status = obj.clientConfig.status.replace(status,'');
+		    return obj.error('add.fetchPlayer', e);
 	    }
 	    
 	    await obj.message.react(obj.clientConfig.settings.reaction.WORKING);
@@ -31,9 +34,11 @@ async function add( obj, register ) {
 			const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
 			result = await DatabaseHandler.setRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.SET_REGISTER, [discordId, playerId, playerName, allycode, playerGuild, playerPrivate]);
 	    } catch(e) {
-	        return obj.error('add.addPlayer', e);
+	    	obj.clientConfig.status = obj.clientConfig.status.replace(status,'');
+		    return obj.error('add.addPlayer', e);
 	    }
 	    await obj.message.react(obj.clientConfig.settings.reaction.SUCCESS);
+	    obj.clientConfig.status = obj.clientConfig.status.replace(status,'');
 	    return obj.success();
 	} catch(e) {
 		obj.error('swgoh.add',e);
@@ -86,11 +91,15 @@ async function update( obj, register ) {
 	    playerGuild = result[0].playerGuild;
 		playerPrivate = obj.cmdObj.args.text.includes('private') ? 1 : result[0].private;
 		playerPrivate = obj.cmdObj.args.text.includes('public') && discordId === obj.message.author.id ? 0 : playerPrivate;
+
+		const status = '| updating '+allycode+' ';
+		obj.clientConfig.status = obj.clientConfig.status === '' ? status : obj.clientConfig.status+status;
 		
 	    try {
 	    	result = await require('./utilities.js').fetchPlayer( allycode, obj );        
 	        if( !result || !result[0] ) { return obj.fail('The requested player cannot be found.'); }
 	    } catch(e) {
+		    obj.clientConfig.status = obj.clientConfig.status.replace(status,'');
 	        return obj.error('add.fetchPlayer', e);
 	    }
 	    
@@ -104,9 +113,11 @@ async function update( obj, register ) {
 			const DatabaseHandler = require(obj.clientConfig.path+'/utilities/db-handler.js');
 			result = await DatabaseHandler.setRows(obj.clientConfig.settings.database, obj.moduleConfig.queries.SET_REGISTER, [discordId, playerId, playerName, allycode, playerGuild, playerPrivate]);
 	    } catch(e) {
+		    obj.clientConfig.status = obj.clientConfig.status.replace(status,'');
 	        return obj.error('add.addPlayer', e);
 	    }
 	    await obj.message.react(obj.clientConfig.settings.reaction.SUCCESS);
+	    obj.clientConfig.status = obj.clientConfig.status.replace(status,'');
 	    return obj.success();
 	} catch(e) {
 		obj.error('swgoh.add',e);

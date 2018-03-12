@@ -36,7 +36,11 @@ async function report( obj ) {
             case 'presence':
                 title = 'Active Service Report'
                 result = await getDiscordServers( obj );
-                return replyInline( obj, result, title, args );
+                return replyFields( obj, result, title, args );
+            case 'status':
+                title = 'Current Status';
+                let status = obj.clientConfig.status === '' ? 'idle' : obj.clientConfig.status;
+                return obj.success('Current status: '+status);
 			default:
 		}
 		
@@ -104,7 +108,6 @@ async function replyAgnostic( obj, result, title ) {
 	}
 }
 
-
 async function replyInline( obj, result, title, args ) {
     try {
         let replyObj = {};
@@ -132,6 +135,49 @@ async function replyInline( obj, result, title, args ) {
         replyObj.description += '```';
         replyObj.title = title || 'Report';
         replyObj.title += ' - '+result.length+' discord servers'; 
+        
+        return obj.success(replyObj);
+    } catch(e) {
+        return obj.error('report.replyAgnostic',e);
+    }
+}
+
+
+async function replyFields( obj, result, title, args ) {
+    try {
+    	
+        let replyObj = {};
+        replyObj.title = title || 'Report';
+        replyObj.title += ' - '+result.length+' discord servers'; 
+        replyObj.description = 'By region:';
+        replyObj.fields = [];
+                
+        let fields = {};
+        
+        for( let r = 0; r < result.length; ++r ) {
+            
+        	let { id, region, name } = result[r];
+            if( !fields[region] ) {
+            	fields[region] = {};
+            	fields[region].title = region;
+            	fields[region].text = '';
+            	fields[region].inline = true;
+            }
+        	
+            fields[region].text += name+'\n'
+                        
+        }
+
+        let regions = Object.keys(fields).sort();
+        for( let f of regions ) {
+        	if( args && ( args === 'd' || args === 'details' ) ) {
+        		fields[f].text += '`'+'-'.repeat(30)+'`';
+        		replyObj.fields.push(fields[f]);
+        	} else {
+        		fields[f].text = fields[f].text.split(/\n/gm).length + ' servers in this region'; 
+        		replyObj.fields.push(fields[f]);
+        	}
+        }
         
         return obj.success(replyObj);
     } catch(e) {

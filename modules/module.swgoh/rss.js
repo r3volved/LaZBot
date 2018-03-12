@@ -16,7 +16,19 @@ async function rssAdd( obj ) {
         return obj.error('doEvents.fetchEvents',e);           
     }
     
-    return obj.success( 'RSS has been set up for your webhook' );
+    const rssHandler = require(obj.clientConfig.path+'/utilities/rss-handler.js');
+    let entry = {};
+    entry.title  	= "Your EA-Forum monitor has been set up";
+    entry.link		= "";
+    entry.pubDate	= new Date().toString();
+    entry.content 	= "Hey Holotable Heroes!\n\nFuture dev-posts from the Dev-Announcements and Game Updates forums will be auto-posted here.\nStay tuned for more...";
+    entry.creator	= "SWGOH News and Announcements";
+    entry.categories = ["EA-Forum Monitor"];
+    
+    let channels = [webhook];
+
+    rssHandler.embedRSS( channels, entry, null );
+    return obj.success( 'RSS has been set up for your webhook\nAn initial announcement has been sent to your webhook...' );
 
 }
 

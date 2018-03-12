@@ -58,6 +58,7 @@ client.on('guildCreate', guild => {
 client.on('ready', async () => {
     
     config.client = client;
+	config.status = '';
     
     try {
 	    const botLog = require(config.path+'/utilities/db-handler.js');
