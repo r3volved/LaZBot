@@ -8,7 +8,7 @@ async function heist( obj ) {
     }
     
     let replyObj = {};
-    replyObj.title = obj.module.help.heist.title;
+    replyObj.title = obj.command.help.title;
     replyObj.description = '';
     
     let droid = '`Not scheduled`';

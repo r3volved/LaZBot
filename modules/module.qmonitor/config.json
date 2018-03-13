@@ -20,7 +20,7 @@
 	    		"id":"qmonitor",
 		        "title":"Question monitor help",
 		        "text":"This module monitors a channel for comments in the form of a question. Non-questions will be removed on channels where this module is actively monitoring. In the case of a removal, the user will be notified over PM that their comment had ben removed.",
-		        "example":"*%PREFIX%%COMMAND% on|off*\n*%PREFIX%%COMMAND% status*"
+		        "example":"%PREFIX%%COMMAND% on|off"
 	    	},
 			"subcommands":{ 
 				"status":{
@@ -28,25 +28,15 @@
 					"procedure":"status",
 					"args":[],
 					"help":{
-			    		"id":"qmonitor",
-				        "title":"Question monitor help",
-				        "text":"This module monitors a channel for comments in the form of a question. Non-questions will be removed on channels where this module is actively monitoring. In the case of a removal, the user will be notified over PM that their comment had ben removed.",
-				        "example":"*%PREFIX%%COMMAND% on*\n*%PREFIX%%COMMAND% off*"
+			    		"id":"status",
+				        "title":"Question monitor status",
+				        "text":"Check monitoring status for this channel.",
+				        "example":"%PREFIX%%SUBCMD%"
 			    	}
 				}
 			}
 		}
     
-    },
-    "help":{
-    	
-    	"qmonitor":{
-    		"id":"",
-	        "title":"",
-	        "text":"",
-	        "example":""
-    	}
-
     },
     
     "queries":{

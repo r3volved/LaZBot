@@ -18,8 +18,11 @@ class Module {
     
     async doCommand() {  
     	try {
-        	let process = this.module.commands[this.command.cmd].procedure;
-        	return await require(__dirname+'/module.'+this.command.module+'/commands.js')[process]( this ); 
+    		let doProcess = this.module.commands[this.command.cmd].procedure;
+    		if( this.command.subcmd ) {    			
+    			doProcess = this.module.commands[this.command.cmd].subcommands[this.command.subcmd].procedure
+    		}
+        	return await require(__dirname+'/module.'+this.command.module+'/commands.js')[doProcess]( this ); 
     	} catch(e) { this.error('doCommand',e); }    	
     }
     
@@ -82,18 +85,50 @@ class Module {
     }
     
     
-    help( helpJson, extra ) {
+    help( command, extra ) {
     
     	try {
 	        let replyObj = {};
+	        let helpJson = command.help;
 	        
-	        replyObj.title  = helpJson.title;
+	        if( !command.subcmd ) {
+		        replyObj.title  = helpJson.title;
+		        replyObj.description = helpJson.text+'\n';
+		        
+		        if( this.module.commands[helpJson.id].aliases && this.module.commands[helpJson.id].aliases.length > 0 ) {
+		        	replyObj.description += 'Aliases: `'+this.module.commands[helpJson.id].aliases.join(', ')+'`\n'
+		        } else {
+		        	replyObj.description += '\n';
+		        }
+		        
+		        if( helpJson.example ) {
+		        	replyObj.description += "```"+helpJson.example+"```\n"
+		        }
+		        
+		        if( this.module.commands[helpJson.id].subcommands ) {
+		        	for( let sc in this.module.commands[helpJson.id].subcommands ) {
+		        		let { id, title, text, example } = this.module.commands[helpJson.id].subcommands[sc].help;
+		        		replyObj.description += '**'+title+'**\n';
+		        		replyObj.description += text+'\n';
+		        		if( this.module.commands[helpJson.id].subcommands[sc].aliases.length > 0 ) {
+		        	        replyObj.description += 'Aliases: `'+this.module.commands[helpJson.id].subcommands[sc].aliases.join(', ')+'`\n'
+		        		}
+		        		replyObj.description += '```'+example+'```\n'
+		        		replyObj.description = replyObj.description.replace(/%SUBCMD%/g, command.cmd+' '+id);
+		        	}	        	
+		        }
+	        } else {
+	        	replyObj.title  = helpJson.title;
+		        replyObj.description = helpJson.text+'\n';
+		        if( helpJson.example ) {
+		        	replyObj.description += "```"+helpJson.example+"```\n"
+		        }
+		        replyObj.description = replyObj.description.replace(/%SUBCMD%/g, command.cmd+' '+command.subcmd);		        
+	        }
 	        
-	        replyObj.description = helpJson.text;
-	        //replyObj.description += '\n\nFor further assistance, bug reports or suggestions - come visit my master at https://discord.gg/XB4DKCt';
 	        replyObj.description = replyObj.description.replace(/%PREFIX%/g, this.instance.settings.prefix);
 	        replyObj.description = replyObj.description.replace(/%COMMAND%/g, helpJson.id);
-	        
+
 	        replyObj.fields = replyObj.fields || [];
 	        if( extra ) { 
 	        	if( Array.isArray(extra) ) {
@@ -102,16 +137,7 @@ class Module {
 	            	replyObj.fields.push(extra); 
 	        	}
 	        }
-	        
-	        if( helpJson.example ) {
-		        let exampleField = {};
-		        exampleField.title = 'Example';
-		        exampleField.text  = helpJson.example;
-		        exampleField.text  = exampleField.text.replace(/%PREFIX%/g, this.instance.settings.prefix);
-		        exampleField.text  = exampleField.text.replace(/%COMMAND%/g, helpJson.id);
-		        replyObj.fields.push(exampleField);
-	        }
-        
+	
 	        return this.success( replyObj, this.instance.settings.reaction.INFO );
 	        
     	} catch(e) {

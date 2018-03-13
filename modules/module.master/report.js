@@ -1,7 +1,8 @@
 async function report( obj ) {
 	try {
 		if( !await obj.auth() ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }
-			
+		if( obj.command.args.id === 'help' ) { return obj.help( obj.command ); }	
+		
 		let procedure = obj.command.args.id;
 		let args = obj.command.args.text || '';
 		let result = null;
@@ -174,7 +175,7 @@ async function replyFields( obj, result, title, args ) {
         		fields[f].text += '`'+'-'.repeat(30)+'`';
         		replyObj.fields.push(fields[f]);
         	} else {
-        		fields[f].text = fields[f].text.split(/\n/gm).length + ' servers in this region'; 
+        		fields[f].text = (fields[f].text.split(/\n/gm).length - 1) + ' servers in this region'; 
         		replyObj.fields.push(fields[f]);
         	}
         }

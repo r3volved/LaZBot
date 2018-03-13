@@ -4,7 +4,7 @@
 
     "name":"Help",
 
-    "version":"2.8",
+    "version":"3.2",
     
     "type":"command",
     
@@ -17,21 +17,12 @@
 			"procedure":"doHelp",
 			"args":["text"],
 			"help":{
-	    	    "title":"Help",
-		        "text":"*--------help text---------*"
+	    		"id":"help",
+		        "title":"You look like you might be having problems",
+		        "text":"I am currently listening for the following commands with the prefix: **%PREFIX%**\n*Get command-specific help by running each command followed by 'help'*\n\nFor further assistance, bug reports or suggestions - come visit my master at https://discord.gg/XB4DKCt"        		 
 	    	}
 		}
     
-    },
-    
-    "help":{
-    
-    	"help":{
-    		"id":"help",
-	        "title":"You look like you might be having problems",
-	        "text":"I am currently listening for the following commands with the prefix: **%PREFIX%**\n*Get command-specific help by running each command followed by 'help'*\n\nFor further assistance, bug reports or suggestions - come visit my master at https://discord.gg/XB4DKCt"        		 
-    	}
-
     }
-    
+        
 }

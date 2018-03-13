@@ -120,7 +120,7 @@ async function doSomething( obj ) {
     		//Example failure response
     		await obj.fail('This is a template failure response');
     		//Example help response
-    		await obj.help( obj.command.help );
+    		await obj.help( obj.command );
     		//Example error handle
     		throw new Error('This is a template error being handled');
     	} catch(e) {
