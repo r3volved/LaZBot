@@ -125,6 +125,19 @@
 	    	},
 	    	"subcommands":{}
 		},
+		"random":{
+			"aliases":["r","rand"],
+			"procedure":"doRandom",
+			"args":["id","num","text"],
+			"color":"0x8e8e8e",
+			"help":{
+	    	    "id":"random",
+	            "title":"Random squad",
+	            "text":"Random squad based on star and gear",
+	            "example":"*%PREFIX%%COMMAND% <player> [rarity] [tag]*"
+	    	},
+	    	"subcommands":{}
+		},
 		"rss":{
 			"aliases":[],
 			"procedure":"doRSS",
@@ -300,6 +313,13 @@
             "example":"*%PREFIX%%COMMAND%*"
     	},
     	
+		"random":{
+    	    "id":"random",
+            "title":"Random squad",
+            "text":"Random squad based on star and gear",
+            "example":"*%PREFIX%%COMMAND% <player> <tag> <rarity>*"
+    	},
+
         "unit":{
             "id":"unit",
             "title":"SWGOH Unit Details",

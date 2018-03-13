@@ -154,8 +154,9 @@ async function parseMessage( message, modules ) {
 							content = content.slice(1);
 	    					break;
         				case "num":
-        					mObj.args.num = content[0] || null;
-    						content = content.slice(1);
+	    					mObj.args.num = content[0] || null;
+    						mObj.args.num = !isNaN(mObj.args.num) ? mObj.args.num : null; 
+    						content = !mObj.args.num ? content : content.slice(1);
         					break;
         				case "string":
 	    				case "text":
@@ -224,7 +225,8 @@ async function parseMessage( message, modules ) {
 	    					break;
 	    				case "num":
 	    					mObj.args.num = content[0] || null;
-							content = content.slice(1);
+    						mObj.args.num = !isNaN(mObj.args.num) ? mObj.args.num : null; 
+    						content = !mObj.args.num ? content : content.slice(1);
 	    					break;
 	    				case "string":
 	    				case "text":

@@ -27,21 +27,21 @@ async function getRegister( obj ) {
 	try {
 		let query, args = null;
 	    if( obj.command.args.discordId ) {
-	    	query = obj.moduleConfig.queries.GET_REGISTER_BY_DID;
+	    	query = obj.module.queries.GET_REGISTER_BY_DID;
 	    	args  = [obj.command.args.discordId];
 	    } else {
 	    	if( obj.command.args.allycode ) { 
-	        	query = obj.moduleConfig.queries.GET_REGISTER_BY_ALLYCODE;
+	        	query = obj.module.queries.GET_REGISTER_BY_ALLYCODE;
 	        	args  = [obj.command.args.allycode];
 	        } else {
-	        	query = obj.moduleConfig.queries.GET_REGISTER_BY_PLAYER;
+	        	query = obj.module.queries.GET_REGISTER_BY_PLAYER;
 	        	args  = ['%'+obj.command.args.id+'%'];
 	        }
 	    }
 	    
 	    try {
 	        let result = null;
-	        result = await doSQL(obj.clientConfig.settings.database, query, args);
+	        result = await doSQL(obj.instance.settings.database, query, args);
 	        if( result.length === 0 ) { return false; }
 	        return result;
 	    } catch(e) {
