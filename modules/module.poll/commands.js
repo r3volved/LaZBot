@@ -1,4 +1,4 @@
-async function doPoll( obj ) {
+async function doWarning( obj ) {
     try {
         
         let pollReaction = [ "0⃣","1⃣","2⃣","3⃣","4⃣","5⃣","6⃣","7⃣","8⃣","9⃣" ];
@@ -6,10 +6,15 @@ async function doPoll( obj ) {
         let pollQuestion = pollPcs[0];
         let pollOptions  = pollPcs.slice(1);
         let options = 1;
- 
+        let limit = pollReaction.length;
+        
         const Discord = require('discord.js');
         let reply = new Discord.RichEmbed();
         reply.setTitle( pollQuestion );
+        
+        if( pollOptions.length >= limit ) { 
+            return obj.fail('Sorry, I can only do a maximum of '+(limit - 1)+' options'); 
+          }
         
         let description = '';
         for( let o = 0; o < pollOptions.length; ++o ) {
@@ -36,6 +41,6 @@ async function doPoll( obj ) {
 /** EXPORTS **/
 module.exports = { 
 	doPoll: async ( obj ) => { 
-    	return await doPoll( obj ); 
+    	return await doWarning( obj ); 
     }
 };
