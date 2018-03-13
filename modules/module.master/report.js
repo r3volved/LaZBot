@@ -175,7 +175,7 @@ async function replyFields( obj, result, title, args ) {
         		fields[f].text += '`'+'-'.repeat(30)+'`';
         		replyObj.fields.push(fields[f]);
         	} else {
-        		fields[f].text = fields[f].text.split(/\n/gm).length + ' servers in this region'; 
+        		fields[f].text = (fields[f].text.split(/\n/gm).length - 1) + ' servers in this region'; 
         		replyObj.fields.push(fields[f]);
         	}
         }
