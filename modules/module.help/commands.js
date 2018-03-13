@@ -33,7 +33,7 @@ async function doHelp( obj ) {
             
         }
         
-        return obj.help( obj.module.help.help, extras );
+        return obj.help( obj.command, extras );
     
     } catch(e) {
         

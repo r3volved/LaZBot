@@ -19,7 +19,7 @@ async function random( obj, register ) {
     
     if( rarity < 1 || rarity > 7 ) {
     	await obj.fail('If you\'re going to supply a rarity, it needs to be between 1 and 7');
-    	return obj.help( obj.command.help );
+    	return obj.help( obj.command );
     }
     
     let procedure = 'CALL spRandomUnits( ?, ?, ?, ?, ?)';
@@ -39,7 +39,7 @@ async function random( obj, register ) {
     	} else {
     		await obj.fail('I could not find any results');
     	}
-    	return obj.help( obj.command.help );
+    	return obj.help( obj.command );
     }
     	
     let replyObj = {};

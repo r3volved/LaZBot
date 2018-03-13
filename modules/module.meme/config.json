@@ -20,7 +20,7 @@
 	    		"id":"meme",
 	        	"title":"Barriss is a bitch monitor",
 		        "text":"Slap a fool who mentions the skank",
-		        "example":"*%PREFIX%%COMMAND% on|off*\n*%PREFIX%%COMMAND% status*"
+		        "example":"%PREFIX%%COMMAND% on|off"
 	    	},
 			"subcommands":{ 
 				"status":{
@@ -28,26 +28,15 @@
 					"procedure":"status",
 					"args":[],
 					"help":{
-			    		"id":"memeStatus",
-			        	"title":"Show status of monitor",
-				        "text":"Slap a fool who mentions the skank",
-				        "example":"*%PREFIX%%COMMAND% status*"
+			    		"id":"status",
+				        "title":"Meme monitor status",
+				        "text":"Check monitoring status for this channel.",
+				        "example":"%PREFIX%%SUBCMD%"
 			    	}
 				}
 			}
 		}
     
-    },
-    
-    "help":{
-    
-        "meme":{
-    		"id":"",
-        	"title":"",
-	        "text":"",
-	        "example":""
-        }
-
     },
     
     "queries":{

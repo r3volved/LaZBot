@@ -10,7 +10,7 @@ async function event( obj ) {
     }
     
     let replyObj = {};
-    replyObj.title = obj.module.help.event.title;
+    replyObj.title = obj.command.help.title;
     replyObj.description = 'Note: *Event schedule is subject to change*';
     replyObj.fields = [];
     

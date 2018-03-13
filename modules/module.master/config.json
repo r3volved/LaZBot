@@ -13,41 +13,47 @@
     "commands":{
     
     	"eval":{
-			"aliases":[],
+			"aliases":["evil"],
 			"procedure":"eval",
 			"args":["text"],
 			"help":{
-	    	    "title":"*--------HELP TITLE--------*",
-				"text":"*---------help text----------*"
+				"id":"eval",
+	    	    "title":"Evaluate",
+				"text":"Evaluate expressions",
+				"example":"%PREFIX%%COMMAND% <stuff to eval>"
 	    	}
 		},
 		"report":{
-			"aliases":[],
+			"aliases":["rep"],
 			"procedure":"report",
 			"args":["id","text"],
 			"help":{
-	    	    "title":"*--------HELP TITLE--------*",
-				"text":"*---------help text----------*"
+				"id":"report",
+	    	    "title":"Client Reporting",
+				"text":"Various reporting routines",
+				"example":"%PREFIX%%COMMAND% cfh\n%PREFIX%%COMMAND% reg\n%PREFIX%%COMMAND% setup\n%PREFIX%%COMMAND% status\n%PREFIX%%COMMAND% presence\n%PREFIX%%COMMAND% command <command>"
 	    	}
 		},
 		"update":{
-			"aliases":[],
+			"aliases":["up"],
 			"procedure":"update",
-			"args":["id","text"],
+			"args":[],
 			"help":{
-	    	    "title":"*--------HELP TITLE--------*",
-				"text":"*---------help text----------*"
+				"id":"update",
+	    	    "title":"Client Updating",
+				"text":"Various update routines",
+				"example":""
 	    	},
 	    	"subcommands":{ 
-				"guilds":{
-					"aliases":[],
-					"procedure":"updateGuilds",
+				"client":{
+					"aliases":["game","data"],
+					"procedure":"updateData",
 					"args":[],
 					"help":{
-						"id":"Update swgoh player guilds",
-			    	    "title":"SWGOH Players update",
-				        "text":"",
-						"example":"%PREFIX%%COMMAND% <num>"
+						"id":"client",
+			    	    "title":"SWGOH Game update",
+				        "text":"Update swgoh client and database",
+						"example":"%PREFIX%%SUBCMD%"
 			    	}
 				},
 				"players":{
@@ -55,40 +61,26 @@
 					"procedure":"updatePlayers",
 					"args":["num"],
 					"help":{
-						"id":"Update swgoh player database",
+						"id":"players",
 			    	    "title":"SWGOH Players update",
-				        "text":"",
-						"example":"%PREFIX%%COMMAND% <num>"
+				        "text":"Update swgoh player database",
+						"example":"%PREFIX%%SUBCMD% <num>"
 			    	}
 				},
-				"client":{
-					"aliases":["game","data"],
-					"procedure":"updateData",
+				"guilds":{
+					"aliases":[],
+					"procedure":"updateGuilds",
 					"args":[],
 					"help":{
-						"id":"Update swgoh game database",
-			    	    "title":"SWGOH Game update",
-				        "text":"",
-						"example":"%PREFIX%%COMMAND%"
+						"id":"guilds",
+			    	    "title":"SWGOH Guilds update",
+				        "text":"Update swgoh player guilds",
+						"example":"%PREFIX%%SUBCMD%"
 			    	}
 				}
 	    	}
 		}
 		
-		
-		
-		
-	},
+	}
 	
-	"help":{
-    
-        "eval":{
-        	"id":"eval",
-        	"title":"Evaluation help",
-	        "text":"Evaluate and view results of an expresssion.\n%PREFIX%%COMMAND% <thingToEval>\n\n**Note:** *This command is restricted to bot master*",
-	        "example":"*%PREFIX%%COMMAND% this.message.id*"
-        }
-
-    }
-    
 }

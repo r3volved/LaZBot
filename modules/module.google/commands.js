@@ -1,6 +1,6 @@
 async function doSearch( obj ) {
 
-    if( !obj.command.args.text || obj.command.args.text === 'help' ) { return obj.help( obj.module.commands.search.help ); }
+    if( !obj.command.args.text || obj.command.args.text === 'help' ) { return obj.help( obj.command ); }
     
     let result, message = null;
     try {
@@ -20,7 +20,7 @@ async function doSearch( obj ) {
 
 async function doTranslate( obj ) {
 
-	if( !obj.command.args.lang || obj.command.args.lang === 'help' ) { return obj.help( obj.module.commands.translate.help ); }
+	if( !obj.command.args.lang || obj.command.args.lang === 'help' ) { return obj.help( obj.command ); }
 	if( !obj.command.args.discordId ) { return obj.fail("Please specify a user by mention or discord Id, then a language"); }
 	if( !obj.command.args.num || isNaN(obj.command.args.num) ) { 
 		obj.command.args.num = 1;

@@ -20,21 +20,10 @@
 	    		"id":"template",
 	    		"title":"This is your command help title",
 	            "text":"This is your command help description",
-	            "example":"*%PREFIX%%COMMAND%*"
+	            "example":"%PREFIX%%COMMAND%"
 	    	}
 		}
 		
-    },
-    
-    "help":{
-    
-    	"template":{
-    		"id":"template",
-    		"title":"This is your command help title",
-            "text":"This is your command help description",
-            "example":"*%PREFIX%%COMMAND%*"
-    	}
-    	
     },
     
     "queries":{

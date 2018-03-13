@@ -1,6 +1,8 @@
 async function updateGuilds( obj ) {
 	try {
 			
+		if( !await obj.auth() ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }
+
 		const status = '| updating guilds ';
 		obj.instance.status = obj.instance.status === '' ? status : obj.instance.status+status;
 		
@@ -55,6 +57,8 @@ async function updateGuilds( obj ) {
 async function updatePlayers( obj ) {
 	try {
 				
+		if( !await obj.auth() ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }
+
 		const status = '| updating players ';
 		obj.instance.status = obj.instance.status === '' ? status : obj.instance.status+status;
 
@@ -110,6 +114,8 @@ async function updatePlayers( obj ) {
 
 async function updateData( obj ) {
 	
+	if( !await obj.auth() ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }
+
 	const status = '| updating client ';
 	obj.instance.status = obj.instance.status === '' ? status : obj.instance.status+status;
 

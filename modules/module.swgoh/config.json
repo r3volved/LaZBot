@@ -14,14 +14,14 @@
 	
 		"arena":{
 			"aliases":["a","rank"],
-			"procedure":"doArena",
+			"procedure":"arena",
 			"args":["id"],
 			"color":"0xf9e66b",
 			"help":{
 	    		"id":"arena",
 	            "title":"SWGOH Arena",
 	            "text":"Check a player's live arena rank",
-	            "example":"*%PREFIX%%COMMAND% <player>*\n*%PREFIX%%COMMAND% details <player>*"
+	            "example":"%PREFIX%%COMMAND% <player>"
 	    	},
 			"subcommands":{ 
 				"details":{
@@ -29,50 +29,50 @@
 					"procedure":"arenaUnits",
 					"args":["id"],
 					"help":{
-			    		"id":"arena details",
-			            "title":"SWGOH Arena Details",
+			    		"id":"details",
+			            "title":"Arena Details",
 			            "text":"See a player's live arena-squad(s) breakdown",
-			            "example":"*%PREFIX%%COMMAND% <player>*"
+			            "example":"%PREFIX%%SUBCMD% <player>"
 			    	}
 				}
 			}
 		},
 		"daily":{
 			"aliases":["d","ga"],
-			"procedure":"doDaily",
+			"procedure":"daily",
 			"args":["id"],
 			"color":"0xFF8C00",
 			"help":{
 	            "id":"daily",
 	            "title":"SWGOH Guild Activities",
 	            "text":"Check today's current guild activity",
-	            "example":"*%PREFIX%%COMMAND%*"
+	            "example":"%PREFIX%%COMMAND% [day]"
 	    	},
 	    	"subcommands":{}
 		},
 		"event":{
 			"aliases":["e","events"],
-			"procedure":"doEvent",
+			"procedure":"event",
 			"args":["id"],
 			"color":"0x587f42",
 			"help":{
 	            "id":"event",
 	            "title":"SWGOH Event Schedule",
 	            "text":"Peek the currect event schedule\nNote: *subject to change*",
-	            "example":"*%PREFIX%%COMMAND%*"
+	            "example":"%PREFIX%%COMMAND%"
 	    	},
 	    	"subcommands":{}
 		},
 		"guild":{
 			"aliases":["g","guilds"],
-			"procedure":"doGuild",
+			"procedure":"guild",
 			"args":["text"],
 			"color":"0x#9e8769",
 			"help":{
 				"id":"guild",
 	    	    "title":"SWGOH Guild Lookup",
 		        "text":"Find guilds by name or see guild member breakdown by guild name or member allycode",
-		        "example":"*%PREFIX%%COMMAND% <guild>*\n*%PREFIX%%COMMAND% details <allycode|guild>*\n*%PREFIX%%COMMAND% stats <allycode|guild>*"
+		        "example":"%PREFIX%%COMMAND% [guild]"
 	    	},
 			"subcommands":{ 
 				"details":{
@@ -80,10 +80,10 @@
 					"procedure":"guildDetails",
 					"args":["text"],
 					"help":{
-						"id":"guild details",
-			    	    "title":"SWGOH Guild Lookup Details",
+						"id":"details",
+			    	    "title":"Lookup Details",
 				        "text":"List all registered players in a guild ordered by GP\nGuild can be searched by name, or by any allycode of a guild member",
-				        "example":"*%PREFIX%%COMMAND% <allycode|guild>*"
+				        "example":"%PREFIX%%SUBCMD% <guild|allycode>"
 			    	}
 				},
 				"stats":{
@@ -91,63 +91,63 @@
 					"procedure":"guildStats",
 					"args":["text"],
 					"help":{
-						"id":"guild stats",
-			    	    "title":"SWGOH Guild Lookup Stats",
+						"id":"stats",
+			    	    "title":"Lookup Stats",
 				        "text":"Show round-up stats for a specified guild\nGuild can be searched by name, or by any allycode of a guild member",
-				        "example":"*%PREFIX%%COMMAND% <allycode|guild>*"
+				        "example":"%PREFIX%%SUBCMD% <guild|allycode>"
 			    	}
 				}
 			}
 		},
 		"heist":{
 			"aliases":["$","heists"],
-			"procedure":"doHeist",
+			"procedure":"heist",
 			"args":["id"],
 			"color":"0x587f42",
 			"help":{
 	            "id":"heist",
 	            "title":"SWGOH Heist Schedule",
 	            "text":"Peek the next credit and droid heists",
-	            "example":"*%PREFIX%%COMMAND%*"
+	            "example":"%PREFIX%%COMMAND%"
 	    	},
 	    	"subcommands":{}
 		},
 		"mod":{
 			"aliases":["m","mods"],
-			"procedure":"doMod",
+			"procedure":"mod",
 			"args":["id"],
 			"color":"0x8e8e8e",
 			"help":{
 	    	    "id":"mod",
 	            "title":"SWGOH Mod Management",
 	            "text":"Receive a formatted player-mods file for use with the Crouching Rancor Mod Management tool at:\nhttp://apps.crouchingrancor.com/",
-	            "example":"*%PREFIX%%COMMAND% <player>*"
+	            "example":"%PREFIX%%COMMAND% <player>"
 	    	},
 	    	"subcommands":{}
 		},
 		"random":{
 			"aliases":["r","rand"],
-			"procedure":"doRandom",
+			"procedure":"random",
 			"args":["id","num","text"],
 			"color":"0x8e8e8e",
 			"help":{
 	    	    "id":"random",
 	            "title":"Random squad",
-	            "text":"Random squad based on star and gear",
-	            "example":"*%PREFIX%%COMMAND% <player> [rarity] [tag]*"
+	            "text":"Random squad based on rarity and/or tag",
+	            "example":"%PREFIX%%COMMAND% <player> [rarity] [tag]"
 	    	},
 	    	"subcommands":{}
 		},
 		"rss":{
 			"aliases":[],
-			"procedure":"doRSS",
+			"procedure":"rssAdd",
 			"args":["text"],
 			"color":"0xFF8C00",
 			"help":{
 	            "id":"rss",
 	            "title":"SWGOH-EA Forums Watch",
 	            "text":"Set up a channel for auto-posting new dev announcements from the SWGOH-EA forums\nhttps://forums.galaxy-of-heroes.starwars.ea.com/",
-	            "example":"*%PREFIX%%COMMAND% add <webhook> [<@mentions> ...]*\n*%PREFIX%%COMMAND% remove <webhook>*"
+	            "example":""
 	    	},
 	    	"subcommands":{
 	    		"add":{
@@ -155,10 +155,10 @@
 					"procedure":"rssAdd",
 					"args":["id","text"],
 					"help":{
-			            "id":"rss",
-			            "title":"SWGOH-EA Forums Watch",
-			            "text":"Set up a channel for auto-posting new dev announcements from the SWGOH-EA forums\nhttps://forums.galaxy-of-heroes.starwars.ea.com/",
-			            "example":"*%PREFIX%%COMMAND% add <webhook> [<@mentions> ...]*"
+			            "id":"add",
+			            "title":"Add a webhook to send",
+			            "text":"Add a webhook and any wanted mentions",
+			            "example":"%PREFIX%%SUBCMD% <webhook> [<@mentions> ... ]"
 			    	}
 				},
 	    		"remove":{
@@ -166,82 +166,82 @@
 					"procedure":"rssRemove",
 					"args":["id","text"],
 					"help":{
-			            "id":"rss",
-			            "title":"SWGOH-EA Forums Watch",
-			            "text":"Stop posting automatic updates to your webhook",
-			            "example":"*%PREFIX%%COMMAND% remove <webhook>*"
+			            "id":"remove",
+			            "title":"Remove your webhook",
+			            "text":"Remove and stop posting automatic updates to your webhook",
+			            "example":"%PREFIX%%SUBCMD%"
 			    	}
 				}
 	    	}
 		},
 		"swgoh":{
 			"aliases":["sw","goh"],
-			"procedure":"doSwgoh",
+			"procedure":"swFind",
 			"args":["id"],
 			"color":"0x6F9AD3",
 			"help":{
 				"id":"swgoh",
 	    	    "title":"SWGOH-Discord Registration",
-		        "text":"Register your Discord profile agaist your SWGOH profile for access to game-related commands\n\n**Add users to registration**\n*%PREFIX%%COMMAND% add help*\n\n**Sync your live data**\n*%PREFIX%%COMMAND% update help*\n\n**Registration details**\n*%PREFIX%%COMMAND% find help*\n\n**In the case that someone else registers on your allycode, the real account owner can remove the existing registration with their playerId**\n*%PREFIX%%COMMAND% remove help*\n",
+		        "text":"Register your Discord profile agaist your SWGOH profile for access to game-related commands. Commands requiring a player parameter can use an allycode, @mention, discordId or plaintext",
 				"example":""
 	    	},
 			"subcommands":{ 
 				"add":{
 					"aliases":["a","create"],
-					"procedure":"add",
+					"procedure":"swAdd",
 					"args":["id","allycode","text"],
 					"help":{
-						"id":"swgoh add",
+						"id":"add",
 			    	    "title":"SWGOH-Discord Registration",
-				        "text":"Connect a discord user to in-game profile\n`------------------------------`\n:thinking: indicates the bot is looking for info\n:hourglass_flowing_sand: indicates the bot is fetching profile information\n:hourglass: indicates the bot is saving your profile details\n:white_check_mark: or :x: indicates success or failure of routine",
-						"example":"%PREFIX%%COMMAND% <discordId> <allycode>"
+				        "text":"Connect a discord user to in-game profile\n`------------------------------`\n:thinking: indicates the bot is looking for info\n:hourglass_flowing_sand: indicates the bot is fetching profile information\n:hourglass: indicates the bot is saving your profile details\n:white_check_mark: or :x: indicates success or failure of routine\n`------------------------------`",
+						"example":"%PREFIX%%SUBCMD% me <allycode> [private]\n%PREFIX%%SUBCMD% <@mention> <allycode> [private]\n%PREFIX%%SUBCMD% <discordId> <allycode> [private]"
 			    	}
 				},
 				"update":{
 					"aliases":["u","sync"],
-					"procedure":"update",
+					"procedure":"swUpdate",
 					"args":["id","text"],
 					"help":{
-						"id":"swgoh update",
-			    	    "title":"SWGOH-Discord Update",
-				        "text":"Force a player profile update to live-data\n`------------------------------`\n:thinking: indicates the bot is looking for info\n:hourglass_flowing_sand: indicates the bot is fetching profile information\n:hourglass: indicates the bot is saving your profile details\n:white_check_mark: or :x: indicates success or failure of routine",
-						"example":"%PREFIX%%COMMAND% <player>"
+						"id":"update",
+			    	    "title":"Profile Update",
+				        "text":"Force a player profile update to live-data\n`------------------------------`\n:thinking: indicates the bot is looking for info\n:hourglass_flowing_sand: indicates the bot is fetching profile information\n:hourglass: indicates the bot is saving your profile details\n:white_check_mark: or :x: indicates success or failure of routine\n`------------------------------`",
+						"example":"%PREFIX%%SUBCMD% <player> [private]"
 			    	}
 				},
 				"remove":{
 					"aliases":["r","drop","delete"],
-					"procedure":"remove",
+					"procedure":"swRemove",
 					"args":["id","allycode","playerId"],
 					"help":{
-						"id":"swgoh remove",
-			    	    "title":"SWGOH-Discord Removal",
-				        "text":"Remove a user registration\n**DM this command to the bot to keep your playerId private**",
-						"example":"%PREFIX%%COMMAND% <allycode> <playerId>"
+						"id":"remove",
+			    	    "title":"Registration Removal",
+				        "text":"Remove a user registration\nNote: *DM this command to the bot to keep your playerId private*",
+						"example":"%PREFIX%%SUBCMD% <allycode> <playerId>"
 			    	}
 				},
 				"find":{
 					"aliases":["f","whois","lookup"],
-					"procedure":"find",
+					"procedure":"swFind",
 					"args":["id"],
 					"help":{
-						"id":"swgoh find",
+						"id":"find",
 			    	    "title":"SWGOH-Discord Lookup",
 				        "text":"Find player details to help connect",
-						"example":"%PREFIX%%COMMAND% <player>"
+						"example":"%PREFIX%%SUBCMD% <player>\n%PREFIX%%SUBCMD% <allycode>\n%PREFIX%%SUBCMD% <@mention>\n%PREFIX%%SUBCMD% <discordId>"
 			    	}
 				}
 			}
 		},
 		"zeta":{
 			"aliases":["z","zetas"],
-			"procedure":"doZeta",
+			"procedure":"zeta",
 			"args":["id"],
 			"color":"0x7f77a3",
 			"help":{
 	            "id":"zeta",
 	            "title":"SWGOH Player Zetas",
 	            "text":"Show a player's zeta'd characters",
-	            "example":"*%PREFIX%%COMMAND% <player>*\n*%PREFIX%%COMMAND% details <player> <unit>*\n*%PREFIX%%COMMAND% suggest <player>*"
+	            "example":"%PREFIX%%COMMAND% <player>"
 	    	},
 			"subcommands":{ 
 				"details":{
@@ -249,10 +249,10 @@
 					"procedure":"zeta",
 					"args":["id","text"],
 					"help":{
-			            "id":"zeta details",
+			            "id":"details",
 			            "title":"SWGOH Player-Unit Zetas",
 			            "text":"Show the specific zeta'd abilities for a players character",
-			            "example":"*%PREFIX%%COMMAND% <player> <unit>*"
+			            "example":"%PREFIX%%SUBCMD% <player> <unit>"
 			    	}
 				},
 				"suggest":{
@@ -260,93 +260,16 @@
 					"procedure":"zetaSuggest",
 					"args":["id","num"],
 					"help":{
-			            "id":"zeta suggest",
+			            "id":"suggest",
 			            "title":"SWGOH Player-Unit Zeta Suggestions",
 			            "text":"Show a players next available zeta abilities\nResults limited to 7-star, level-85\nOrdered by gear-tier",
-			            "example":"*%PREFIX%%COMMAND% <player> [num]*"
+			            "example":"%PREFIX%%SUBCMD% <player> [num]"
 			    	}
 				}				
 			}
 		}		
 		
 	},
-	
-	"help":{
-    
-    	"swgoh":{
-    	    "title":"SWGOH-Discord Registration",
-	        "text":"Register your Discord profile agaist your SWGOH profile for access to game-related commands\n\n:thinking: indicates the bot is looking for info\n:hourglass_flowing_sand: indicates the bot is fetching profile information\n:hourglass: indicates the bot is saving your profile details\n:white_check_mark: or :x: indicates success or failure of routine\n\n**Add user to registration**\n*%PREFIX%%COMMAND% add me <allyCode>\n%PREFIX%%COMMAND% add <mention|discordId> <allyCode>*\n\n**Sync your live data**\n*%PREFIX%%COMMAND% sync [me]\n%PREFIX%%COMMAND% sync <mention|discordId|allyCode|IGN>*\n\n**Registration details**\n*%PREFIX%%COMMAND% <me|mention|discordId|allyCode|IGN>*\n\n**In the case that someone else registers on your allycode, the real account owner can remove the existing registration with their playerId**\n*%PREFIX%%COMMAND% remove <allyCode> <playerId>*\n\n*Note: To keep your playerId private, DM the remove command to the bot - do not post your playerId in the public server*"
-    	},
-    	
-    	"arena":{
-    		"id":"arena",
-            "title":"SWGOH Arena Details",
-            "text":"Check a player's current arena rank and squads",
-            "example":"*%PREFIX%%COMMAND% [me]*\n*%PREFIX%%COMMAND% <mention|discordId|allyCode|IGN>*"
-    	},
-    	
-    	"mods":{
-    	    "id":"mods",
-            "title":"SWGOH Mod Management",
-            "text":"Receive a formatted player-mods file for use with the Crouching Rancor Mod Management tool\nhttp://apps.crouchingrancor.com/",
-            "example":"*%PREFIX%%COMMAND% [me]*\n*%PREFIX%%COMMAND% <mention|discordId|allyCode|IGN>*"
-        },
-        
-        "zetas":{
-            "id":"zetas",
-            "title":"SWGOH Zetas Breakdown",
-            "text":"Show a player's zeta'd characters and abilities",
-            "example":"*%PREFIX%%COMMAND% [me]*\n*%PREFIX%%COMMAND% <mention|discordId|allyCode|IGN>*\n*%PREFIX%%COMMAND% unit <me|mention|discordId|allyCode|IGN> <unit>*\n*%PREFIX%%COMMAND% suggest <me|mention|discordId|allyCode|IGN> [num]*"
-        },
-        
-        "heist":{
-            "id":"heist",
-            "title":"SWGOH Heist Schedule",
-            "text":"Check when the next credit and droid heists are scheduled",
-            "example":"*%PREFIX%%COMMAND%*"
-        },
-        
-		"event":{
-            "id":"event",
-            "title":"SWGOH Event Schedule",
-            "text":"Peek the currect event schedule\nNote: *subject to change*",
-            "example":"*%PREFIX%%COMMAND%*"
-    	},
-    	
-		"random":{
-    	    "id":"random",
-            "title":"Random squad",
-            "text":"Random squad based on star and gear",
-            "example":"*%PREFIX%%COMMAND% <player> <tag> <rarity>*"
-    	},
-
-        "unit":{
-            "id":"unit",
-            "title":"SWGOH Unit Details",
-            "text":"Show base-unit specifications or player-unit details",
-            "example":"*%PREFIX%%COMMAND% <unitName>*\n*%PREFIX%%COMMAND% <unitName> [me|mention|discordId|allyCode|IGN]*"
-        },
-        
-        "guild":{
-        	"id":"guild",
-        	"title":"SWGOH Guild Lookup",
-        	"text":"Lookup details around a specified guild.\n\nGuild identifier can be the guild name, or an allycode or of a guild member",
-        	"example":"*%PREFIX%%COMMAND% <identifier>*\n*%PREFIX%%COMMAND% <identifier>*\n"
-        },
-		"rss":{
-            "id":"rss",
-            "title":"SWGOH-EA Forums Watch",
-            "text":"Set up a channel for auto-posting new dev announcements from the SWGOH-EA forums\nhttps://forums.galaxy-of-heroes.starwars.ea.com/",
-            "example":"*%PREFIX%%COMMAND% add <webhook> [<@mentions> ...]*\n*%PREFIX%%COMMAND% remove <webhook>*"
-    	},
-		"daily":{
-            "id":"daily",
-            "title":"SWGOH Guild Activities",
-            "text":"Check today's current guild activity",
-            "example":"*%PREFIX%%COMMAND%*"
-    	}
-
-    },
     
     "queries":{
     	
