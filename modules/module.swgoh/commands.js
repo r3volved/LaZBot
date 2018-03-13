@@ -110,6 +110,23 @@ async function doGuild( obj ) {
 	return false;
 }
 
+async function doRandom( obj ) {
+	if( obj.command.args.id === 'help' ) { return obj.help(obj.command.help); }
+	let register = null;
+	try {
+		register = await getRegister( obj );
+		if( obj.command.subcmd ) {
+			let process = obj.module.commands[obj.command.cmd].subcommands[obj.command.subcmd].procedure
+			return require('./random.js')[process]( obj, register ); 
+		} else {
+			return require('./random.js')["random"]( obj, register );
+		}
+		return false;
+	} catch(e) {
+		obj.error('doRandom',e);
+	}
+}
+
 async function doRSS( obj ) {
     let pHandler = new obj.instance.permHandler(obj.instance, obj.ModuleConfig, obj.message);
     if( await pHandler.authorIs('admin') ) { 
@@ -176,6 +193,9 @@ module.exports = {
     },
     doZeta: async ( obj ) => { 
     	return await doZeta( obj ); 
+    },
+    doRandom: async ( obj ) => { 
+    	return await doRandom( obj ); 
     },
     doGuild: async ( obj ) => { 
     	return await doGuild( obj ); 

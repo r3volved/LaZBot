@@ -27,7 +27,7 @@ async function doPoll( obj ) {
         } catch(e) {
             return obj.fail('Could not create a poll');
         }
-        
+
     } catch(e) {
         obj.error('doPoll',e);
     }

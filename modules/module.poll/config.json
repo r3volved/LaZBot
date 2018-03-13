@@ -2,9 +2,9 @@
 
     "id":"poll",
 
-    "name":"Google",
+    "name":"Poll",
 
-    "version":"2.0",
+    "version":"1.0",
     
     "type":"command",
     
@@ -13,27 +13,27 @@
     "commands":{
     
     	"poll":{
-			"aliases":[],
+			"aliases":["pl"],
 			"procedure":"doPoll",
 			"args":["text"],
 			"help":{
 	    		"id":"poll",
-	    		"title":"Google quick-search",
-	            "text":"Perform a quick google search without ever leaving the comfort of your discord",
-	            "example":"*%PREFIX%%COMMAND% <stuff to google>*"
-	    	}
+	    		"title":"Quick Poll",
+          "text":"One Poll to rule them all, one Poll to find them, one Poll to bring them all and in the darkness bind them.",
+          "example":"*%PREFIX%%COMMAND% <question to poll> | <answer> [ | <answer> ... ] *"
+      }
 		}
     },
     
     "help":{
     
     	"poll":{
-    		"id":"",
-    		"title":"",
-            "text":"",
-            "example":""
-    	}
-    	
+    		"id":"poll",
+    		"title":"Poll",
+        "text":"Add a simple straw poll",
+        "example":"*%PREFIX%%COMMAND% <question> | <answer 1> [ | <answer 2> ... ]"
+      }
+
     },
     
     "queries":{
