@@ -18,6 +18,15 @@ async function doMonitor( obj ) {
                 	});
                 	obj.silentSuccess('barriss slap '+(obj.message.author.username || obj.message.author.tag));
                 }
+				
+				//Slap mace
+                if(obj.message.content.replace(/\*/g,'').match(/(mace|mac|windu|windex)/gmi)) {
+                	obj.command = { "module":"meme", "cmd":"mace", "prefix":"" };
+                	obj.message.channel.send("Mace?! That guy's crazy!", {
+                	    file: "https://cdn.discordapp.com/attachments/177880282559414272/422262802351259668/200w.gif"
+                	});
+                	obj.silentSuccess('mace slap '+(obj.message.author.username || obj.message.author.tag));
+                }
             
             	//Slap revan
                 if(obj.message.content.replace(/\*/g,'').match(/(revan)/gmi)) {
@@ -27,10 +36,15 @@ async function doMonitor( obj ) {
                 	});
                 	obj.silentSuccess('revan slap '+(obj.message.author.username || obj.message.author.tag));
                 }
-            
+				
                 //Poop jar jar
-                if(obj.message.content.match(/(jar|gungan)/gmi)) {
+                if(obj.message.content.replace(/\*/g,'').match(/(jar|gungan)/gmi)) {
                 	obj.react('💩');
+                	obj.command = { "module":"meme", "cmd":"jarjar", "prefix":"" };
+                	obj.message.channel.send("Yousa should be ashamed of yourself", {
+                	    file: "https://cdn.discordapp.com/attachments/177880861558046720/342788123358396416/image.jpg"
+                	});
+                	obj.silentSuccess('jarjar slap '+(obj.message.author.username || obj.message.author.tag));
                 }
                 
             } catch(e) {
