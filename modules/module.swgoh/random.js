@@ -15,7 +15,7 @@ async function random( obj, register ) {
     
     rarity = obj.command.args.num || 1;
     tag = obj.command.args.text || '';
-    gear = gear || 5;
+    gear = gear || 1;
     
     if( rarity < 1 || rarity > 7 ) {
     	await obj.fail('If you\'re going to supply a rarity, it needs to be between 1 and 7');
