@@ -3,7 +3,7 @@ async function eval( obj ) {
     try {
         
         if( !await obj.auth() ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }
-    	if( obj.command.subcmd === "help" ) { return obj.help( obj.module.help.eval ); }
+    	if( obj.command.args.text === "help" ) { return obj.help( obj.command ); }
 
 	    let prevaled = obj.command.args.text;
     	let evaled = "undefined";    	

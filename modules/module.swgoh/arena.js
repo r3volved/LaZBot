@@ -31,7 +31,6 @@ async function arena( obj, register ) {
 	    squads.ships.rank = result[1].rank;
     
     }
-	
         
     let replyObj = {};
     replyObj.title = playerName+'\'s arena ( '+ac+' )';

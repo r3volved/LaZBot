@@ -1,16 +1,12 @@
  async function karma( obj ) {
-	 
 	 try {
-		 
-		if( !obj.command.args.text || obj.command.args.text === 'help' ) { return obj.help( obj.command.help ); }
-		if( obj.command.args.text.startsWith('report') || obj.command.args.text.startsWith('list') ) { return report(obj); }
-		if( obj.command.args.text.startsWith('reset') ) { return reset(obj); }
 		let serverId = obj.message.guild.id;
 		let message = obj.message.content.split(/\s+/);
 		
 		if( isNaN(message[1]) ) {
 			let carrier = message[1];
 			carrier = carrier.match(/\d{17,18}/) ? carrier.replace(/(\d{17,18})/, '$1') : carrier;
+			if( !carrier ) { return obj.fail('You didn\'t specify anyone for points'); }
 			
 			let result = null;
 			try {
@@ -20,9 +16,7 @@
 			    return obj.fail(carrier+' has 0 karma');
 			}
 			
-			if( !result[0] ) {
-			    return obj.fail(carrier+' has never been karma\'d');
-			}
+			if( !result[0] ) { return obj.fail(carrier+' has never been karma\'d'); }
 				
 			let reply = {};
 			reply.title = 'CubsFanHan Points';
@@ -39,6 +33,7 @@
 			let carrier = message[2];
 			let reason = '['+karma.toString()+'] ';
 			reason += message.length > 3 ? message.slice(3).join(' ')+'\n' : '\n';
+			if( !carrier ) { return obj.fail('You didn\'t specify anyone for points'); }
 			
 			let result = null;
 			try {
@@ -70,7 +65,6 @@
 			reply.color = parseInt(karma) > 0 ? "0x1166AA" : "0xAA3311";
 			
 			return obj.success(reply,'');
-					
 		}		
 	 } catch(e) {
 		 obj.error('karma',e);
@@ -80,10 +74,8 @@
 }
  
 async function report( obj ) {
-	
 	try {
-
-		let num = parseInt(obj.command.args.text.split(/\s/)[1]) || 10;
+		let num = parseInt(obj.command.args.num) || 10;
 		let sql = 'SELECT * FROM `karma` WHERE `karma`.`serverId` = ? ORDER BY `karma`.`karma` ';
 		sql += num > 0 ? 'DESC ' : 'ASC ';
 		sql += 'LIMIT '+Math.abs(num);
@@ -98,19 +90,15 @@ async function report( obj ) {
 		
 		let reply = {};
 		reply.title = 'CubsFanHan Points';
-		reply.description = '';
-		
+		reply.description = '';		
 		for( let i of result ) {
 			reply.description += i.carrier+' [`'+i.karma+'`]\n';
 		}
-		reply.color = num > 0 ? "0x1166AA" : "0xAA3311";
-			
+		reply.color = num > 0 ? "0x1166AA" : "0xAA3311";			
 		reply.footer = num > 0 ? 'Top ' : 'Bottom ';
 		reply.footer += Math.abs(num)+' points';
 		
-		return obj.success(reply,'');
-		
-		
+		return obj.success(reply,'');		
 	} catch(e) {
 		 obj.error('karma.report',e);
 	}
@@ -118,35 +106,35 @@ async function report( obj ) {
 } 
  
 async function reset( obj ) {
-	
 	try {
-		if( !await obj.auth() ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }
-
-		let num = parseInt(obj.command.args.text.split(/\s/)[1]) || 10;
 		let sql = 'DELETE FROM `karma` WHERE `karma`.`serverId` = ?';
-		
 		let serverId = obj.message.guild.id;
-		let result = null;
 		try {
-			result = await obj.instance.dbHandler.setRows(obj.instance.settings.database, sql, serverId);
+			let result = await obj.instance.dbHandler.setRows(obj.instance.settings.database, sql, serverId);
 		} catch(e) {
 			obj.error('karma.getRows',e);
 		}
-		
 		return obj.success('CubsFanHan Points have been reset');
-		
 	} catch(e) {
 		 obj.error('karma.report',e);
-	}
-	
+	}	
 } 
 
 /** EXPORTS **/
 module.exports = { 
 	karma: async ( obj ) => { 
+		if( ( !obj.command.args.text && !obj.command.args.num ) || obj.command.args.text === 'help' ) { return obj.help( obj.command ); }
 		return await karma( obj ); 
 	},
 	report: async ( obj ) => { 
+		if( !obj.command.args.num ) { return obj.help( obj.command ); }
 		return await report( obj ); 
+	},
+	reset: async ( obj ) => { 
+		try {
+			if( !await obj.auth() ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }
+			if( obj.command.args.text && obj.command.args.text === 'help' ) { return obj.help( obj.command ); }
+			return await reset( obj ); 
+		} catch(e) { obj.error('karma.report',e); }
 	}
 };

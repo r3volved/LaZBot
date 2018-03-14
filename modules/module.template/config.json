@@ -14,27 +14,29 @@
     
     	"template":{
 			"aliases":["tmp"],
-			"procedure":"doSomething",
+			"procedure":"myCommand",
 			"args":["text"],
 			"help":{
 	    		"id":"template",
 	    		"title":"This is your command help title",
 	            "text":"This is your command help description",
-	            "example":"*%PREFIX%%COMMAND%*"
+	            "example":"%PREFIX%%COMMAND%"
+	    	},
+	    	"subcommands":{
+			    "test":{
+					"aliases":["tmp"],
+					"procedure":"mySubCommand",
+					"args":["text"],
+					"help":{
+			    		"id":"test",
+			    		"title":"This is your sub command help title",
+			            "text":"This is your sub command help description",
+			            "example":"%PREFIX%%SUBCMD%"
+			    	}
+			    }	
 	    	}
 		}
 		
-    },
-    
-    "help":{
-    
-    	"template":{
-    		"id":"template",
-    		"title":"This is your command help title",
-            "text":"This is your command help description",
-            "example":"*%PREFIX%%COMMAND%*"
-    	}
-    	
     },
     
     "queries":{

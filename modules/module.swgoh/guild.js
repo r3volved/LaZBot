@@ -50,7 +50,7 @@ async function guild( obj ) {
 async function guildDetails( obj ) {
 
     let procedure, args = null;
-    if( !obj.command.args.text || obj.command.args.text === 'help' ) { return obj.help(obj.command.help); }
+    if( !obj.command.args.text || obj.command.args.text === 'help' ) { return obj.help(obj.command); }
     
     if( obj.command.args.text.match(/\d{9}/) ) { obj.command.args.allycode = obj.command.args.text; }
     if( obj.command.args.allycode ) {
@@ -102,7 +102,7 @@ async function guildDetails( obj ) {
 async function guildStats( obj ) {
 
     let procedure, args = null;
-    if( !obj.command.args.text || obj.command.args.text === 'help' ) { return obj.help(obj.command.help); }
+    if( !obj.command.args.text || obj.command.args.text === 'help' ) { return obj.help(obj.command); }
     
     if( obj.command.args.text.match(/\d{9}/) ) { obj.command.args.allycode = obj.command.args.text; }
     if( obj.command.args.allycode ) {

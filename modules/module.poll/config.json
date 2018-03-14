@@ -19,26 +19,10 @@
 			"help":{
 	    		"id":"poll",
 	    		"title":"Quick Poll",
-          "text":"One Poll to rule them all, one Poll to find them, one Poll to bring them all and in the darkness bind them.",
-          "example":"*%PREFIX%%COMMAND% <question to poll> | <answer> [ | <answer> ... ] *"
-      }
+                "text":"One Poll to rule them all, one Poll to find them, one Poll to bring them all and in the darkness bind them.",
+                "example":"%PREFIX%%COMMAND% <question> | <answer> [ | <answer> ... ]"
+            }
 		}
-    },
-    
-    "help":{
-    
-    	"poll":{
-    		"id":"poll",
-    		"title":"Poll",
-        "text":"Add a simple straw poll",
-        "example":"*%PREFIX%%COMMAND% <question> | <answer 1> [ | <answer 2> ... ]"
-      }
-
-    },
-    
-    "queries":{
-    	
-    	
-    }    
+    }  
     
 }
