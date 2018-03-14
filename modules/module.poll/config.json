@@ -4,7 +4,7 @@
 
     "name":"Poll",
 
-    "version":"1.0",
+    "version":"1.1",
     
     "type":"command",
     
@@ -31,14 +31,9 @@
     		"id":"poll",
     		"title":"Poll",
         "text":"Add a simple straw poll",
-        "example":"*%PREFIX%%COMMAND% <question> | <answer 1> [ | <answer 2> ... ]"
+        "example":"*%PREFIX%%COMMAND% <question> | <answer 1> [ | <answer 2> ... ]*"
       }
 
-    },
-    
-    "queries":{
-    	
-    	
-    }    
+    }   
     
 }
