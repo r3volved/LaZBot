@@ -1,0 +1,84 @@
+{
+
+    "id":"warnings",
+
+    "name":"Warnings",
+
+    "version":"1.0",
+    
+    "type":"command",
+    
+    "permission":"botmods",
+    
+    "commands":{
+    
+    	"warning":{
+			"aliases":["w", "wr", "warn"],
+			"procedure":"",
+			"args":["addWarning"],
+			"help":{
+	    		"id":"warning",
+	    		"title":"Warning",
+          "text":"Issue a warning to a specified user.",
+          "example":"*%PREFIX%%COMMAND% <discordId> <reason>*"
+      	},
+			"subcommands":{ 
+				"add":{
+					"aliases":"a",
+					"procedure":"addWarning",
+					"args":["id", "text"],
+					"help":{
+			    		"id":"addWarning",
+			        	"title":"Issue a warning to a specified user",
+				        "text":"Show warnings for a specified user over a period of days before today's date (default of 30).",
+				        "example":"*%PREFIX%%COMMAND%  <discordId> <reason>*"
+			    	}
+				},
+				"remove":{
+					"aliases":"rm",
+					"procedure":"removeWarning",
+					"args":["id", "text"],
+					"help":{
+			    		"id":"removeWarning",
+			        	"title":"Remove a warning from a specified user",
+				        "text":"Remove a warning for a specified user.",
+				        "example":"*%PREFIX%%COMMAND% <discordId>*"
+			    	}
+				},
+				"report":{
+					"aliases":"rp",
+					"procedure":"warningReport",
+					"args":["id", "text"],
+					"help":{
+			    		"id":"warningReport",
+			        	"title":"Show status of users warnings",
+				        "text":"Show warnings for a specified user over a period of days before today's date (default of 30).",
+				        "example":"*%PREFIX%%COMMAND% <discordId> [ <days> ]*"
+			    	}
+				}
+			}
+		}
+    },
+    
+    "help":{
+    
+    	"warning":{
+    		"id":"warning",
+    		"title":"Warning",
+        "text":"Ability to warn a user.",
+        "example":"*%PREFIX%%COMMAND% <discordId> <reason>*"
+      }
+
+    },
+    
+    "queries":{
+    	
+    	"GET_WARNINGS_DAYS":"SELECT * FROM `warnings` WHERE `discordId` = ? AND DATEDIFF(NOW(),`issued`) <= ?",
+    	"GET_ALL_WARNINGS":"SELECT * FROM `warnings` WHERE `discordId` = ?",
+    	"GET_WARNINGS_BY_REASON":"SELECT * FROM `warnings` WHERE `discordId` = ? AND `guild` = ?",
+    	"GET_WARNINGS_BY_REASON_DAYS":"SELECT * FROM `warnings` WHERE `discordId` = ? AND `guild` = ? AND DATEDIFF(NOW(),`issued`) <= ?",
+    	"SET_WARNING":"INSERT INTO `warnings` (`discordId`, `reason`, `issuedBy`, `channel`, `guild`) VALUES (?, ?, ?, ?, ?)",
+    	"DEL_WARNING_BY_ID":"DELETE TOP 1 FROM `warnings` WHERE `discordId` = ? AND `channel` = ? ORDER BY `issued`"
+    }
+    
+}
