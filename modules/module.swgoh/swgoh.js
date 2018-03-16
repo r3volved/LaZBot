@@ -10,15 +10,11 @@ async function add( obj, register ) {
 		allycode = obj.command.args.allycode;
 		playerPrivate = register && register[0] && register[0].private ? register[0].private : 0;
 		
-		const status = '| adding '+allycode+' ';
-		obj.instance.status = obj.instance.status === '' ? status : obj.instance.status+status;
-		
 		let result = null;    
 	    try {
 	    	result = await require('./utilities.js').fetchPlayer( allycode, obj );        
 	        if( !result || !result[0] ) { return obj.fail('The requested player cannot be found.'); }
 	    } catch(e) {
-	    	obj.instance.status = obj.instance.status.replace(status,'');
 		    return obj.error('add.fetchPlayer', e);
 	    }
 	    
@@ -33,11 +29,9 @@ async function add( obj, register ) {
 		try {
 			result = await obj.instance.dbHandler.setRows(obj.instance.settings.database, obj.module.queries.SET_REGISTER, [discordId, playerId, playerName, allycode, playerGuild, playerPrivate]);
 	    } catch(e) {
-	    	obj.instance.status = obj.instance.status.replace(status,'');
 		    return obj.error('add.addPlayer', e);
 	    }
 	    await obj.message.react(obj.instance.settings.reaction.SUCCESS);
-	    obj.instance.status = obj.instance.status.replace(status,'');
 	    return obj.success();
 	} catch(e) {
 		obj.error('swgoh.add',e);
@@ -90,14 +84,10 @@ async function update( obj, register ) {
 	    playerPrivate = obj.command.args.text.includes('private') ? 1 : result[0].private;
 		playerPrivate = obj.command.args.text.includes('public') && discordId === obj.message.author.id ? 0 : playerPrivate;
 
-		const status = '| updating '+allycode+' ';
-		obj.instance.status = obj.instance.status === '' ? status : obj.instance.status+status;
-		
 	    try {
 	    	result = await require('./utilities.js').fetchPlayer( allycode, obj );        
 	        if( !result || !result[0] ) { return obj.fail('The requested player cannot be found.'); }
 	    } catch(e) {
-		    obj.instance.status = obj.instance.status.replace(status,'');
 	        return obj.error('add.fetchPlayer', e);
 	    }
 	    
@@ -110,11 +100,9 @@ async function update( obj, register ) {
 	    try {
 			result = await obj.instance.dbHandler.setRows(obj.instance.settings.database, obj.module.queries.SET_REGISTER, [discordId, playerId, playerName, allycode, playerGuild, playerPrivate]);
 	    } catch(e) {
-		    obj.instance.status = obj.instance.status.replace(status,'');
 	        return obj.error('add.addPlayer', e);
 	    }
 	    await obj.message.react(obj.instance.settings.reaction.SUCCESS);
-	    obj.instance.status = obj.instance.status.replace(status,'');
 	    return obj.success();
 	} catch(e) {
 		obj.error('swgoh.add',e);
