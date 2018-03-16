@@ -49,6 +49,7 @@ async function doSetup( obj ) {
 /** EXPORTS **/
 module.exports = { 
 	doSetup: async ( obj ) => { 
+		if( obj.command.args.help ) { return obj.help( obj.command ); }
     	return await doSetup( obj ); 
     }
 }

@@ -55,9 +55,11 @@ async function status( obj ) {
 /** EXPORTS **/
 module.exports = { 
 	toggle: async ( obj ) => { 
+		if( obj.command.args.help ) { return obj.help( obj.command ); }
 		return await toggle( obj ); 
 	},
 	status: async ( obj ) => { 
+		if( obj.command.args.help ) { return obj.help( obj.command ); }
 		return await status( obj ); 
 	}
 };

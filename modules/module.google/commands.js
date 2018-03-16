@@ -135,9 +135,11 @@ async function fetchMessages( obj, discordId, numMsgs ) {
 /** EXPORTS **/
 module.exports = { 
 	doTranslate: async ( obj ) => { 
+		if( obj.command.args.help ) { return obj.help( obj.command ); }
     	return await doTranslate( obj ); 
     },
 	doSearch: async ( obj ) => { 
+		if( obj.command.args.help ) { return obj.help( obj.command ); }
     	return await doSearch( obj ); 
     }
 };

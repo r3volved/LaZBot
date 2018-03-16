@@ -38,6 +38,7 @@ async function doPoll( obj ) {
 /** EXPORTS **/
 module.exports = { 
 	doPoll: async ( obj ) => { 
+		if( obj.command.args.help ) { return obj.help( obj.command ); }
     	return await doPoll( obj ); 
     }
 };

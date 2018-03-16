@@ -123,17 +123,17 @@ async function reset( obj ) {
 /** EXPORTS **/
 module.exports = { 
 	karma: async ( obj ) => { 
-		if( ( !obj.command.args.text && !obj.command.args.num ) || obj.command.args.text === 'help' ) { return obj.help( obj.command ); }
+		if( obj.command.args.help ) { return obj.help( obj.command ); }
 		return await karma( obj ); 
 	},
 	report: async ( obj ) => { 
-		if( !obj.command.args.num ) { return obj.help( obj.command ); }
+		if( obj.command.args.help ) { return obj.help( obj.command ); }
 		return await report( obj ); 
 	},
 	reset: async ( obj ) => { 
 		try {
 			if( !await obj.auth() ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }
-			if( obj.command.args.text && obj.command.args.text === 'help' ) { return obj.help( obj.command ); }
+			if( obj.command.args.help ) { return obj.help( obj.command ); }
 			return await reset( obj ); 
 		} catch(e) { obj.error('karma.report',e); }
 	}

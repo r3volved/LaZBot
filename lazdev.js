@@ -262,6 +262,7 @@ async function buildModule( config ) {
 		console.log(" + Created module config");
 		
 		//create commands.js in mem
+		let first = true;
 		let commandsjs = "module.exports = { ";		
 		for( let myCommand in config.commands ) {
 			
@@ -294,9 +295,11 @@ async function buildModule( config ) {
 			fileexportsjs += "\n  }";
 			
 			//add export to commands.js
+			commandsjs += !first ? "," : "";
 			commandsjs += "\n  "+func+": async ( obj ) => {";
 			commandsjs += "\n    return obj.command.args.help ? obj.help( obj.command ) : await require('./"+myCommand+".js')."+func+"( obj );"; 
 			commandsjs += "\n  }";
+			first = false;
 			
 			for( let sc in cmd.subcommands ) {
 				
