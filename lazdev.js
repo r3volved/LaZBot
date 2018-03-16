@@ -70,6 +70,7 @@ async function getConfig() {
 		[ "aliases", "What are your command aliases?", "" ],
 		[ "procedure", "What is this name of the js function?", "" ],
 		[ "args", "What are the args for this command [ id, num, text ]?", "" ],
+	    [ "permission", "Command permission [ master, admin, mod, anyone ]?","anyone" ],
 		[ "subcommands", "How many subcommands for this command?","0" ]
 	];
 	
@@ -77,7 +78,8 @@ async function getConfig() {
 		[ "id", "What is your subcommand id? (limit 10 characters)","" ],
 		[ "aliases", "What are your subcommand aliases?","" ],
 		[ "procedure", "What is the name of the js function?","" ],
-		[ "args", "What are the args for this subcommand [ id, num, text ]?","" ]		
+		[ "args", "What are the args for this subcommand [ id, num, text ]?","" ],
+	    [ "permission", "Subcommand permission [ master, admin, mod, anyone ]?","anyone" ],
 	];
 
 	const hq = [
@@ -123,6 +125,8 @@ async function getConfig() {
 				config.commands[cmdName].args 		= await doQuestion(cq[3],colors.FgCyan) || "";
 				config.commands[cmdName].args 		= config.commands[cmdName].args.length > 0 ? config.commands[cmdName].args.split(/[,|\s]/g) : []; 
 					
+				config.commands[cmdName].permission 	= await doQuestion(cq[4],colors.FgCyan) || cq[4][2];
+
 				config.commands[cmdName].help 			= {}
 				config.commands[cmdName].help.id	 	= cmdName;
 				config.commands[cmdName].help.title 	= await doQuestion(hq[0],colors.FgCyan) || hq[0][2];
@@ -131,8 +135,8 @@ async function getConfig() {
 				hq[2][2] = config.commands[cmdName].args.length > 0 ? "<"+config.commands[cmdName].args.join("> <")+">" : "";
 				config.commands[cmdName].help.example 	= await doQuestion(hq[2],colors.FgCyan) || hq[2][2];
 				config.commands[cmdName].help.example   = "%PREFIX%%COMMAND% "+config.commands[cmdName].help.example;
-				
-				let subNum = await doQuestion(cq[4],colors.FgCyan) || cq[4][2];
+								
+				let subNum = await doQuestion(cq[5],colors.FgCyan) || cq[5][2];
 				if( subNum && !isNaN(subNum) ) { 
 					
 					config.commands[cmdName].subcommands = {};
@@ -152,9 +156,11 @@ async function getConfig() {
 
 						scq[2][2] = "do"+cmdName[0].toUpperCase()+cmdName.slice(1)+(subName[0].toUpperCase())+subName.slice(1);
 						config.commands[cmdName].subcommands[subName].procedure 	= await doQuestion(scq[2],colors.FgBlue) || scq[2][2];
-						config.commands[cmdName].subcommands[subName].args 			= await doQuestion(scq[3],colors.FgBlue) || scq[3][2];
+						config.commands[cmdName].subcommands[subName].args 			= await doQuestion(scq[3],colors.FgBlue) || "";
 						config.commands[cmdName].subcommands[subName].args			= config.commands[cmdName].subcommands[subName].args.length > 0 ? config.commands[cmdName].subcommands[subName].args.split(/[,|\s]/g) : [];
 						
+						config.commands[cmdName].subcommands[subName].permission 	= await doQuestion(scq[4],colors.FgCyan) || scq[4][2];
+
 						config.commands[cmdName].subcommands[subName].help 			= {}
 						config.commands[cmdName].subcommands[subName].help.id	 	= subName;
 						config.commands[cmdName].subcommands[subName].help.title 	= await doQuestion(hq[0],colors.FgBlue) || hq[0][2];

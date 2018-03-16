@@ -72,9 +72,14 @@ class ModuleRegistry {
 
 	                instance.status += status;
 	                try {
-	                	//TODO: AUTH CHECK AGAINST COMMAND
-	                	if( cmdObj.args.help ) { await thisCommand.help( cmdObj ); }
-	                	else { await thisCommand.doCommand(); } 
+	                	if( await thisCommand.auth() ) { 
+	                		console.log( cmdObj );
+	                		if( cmdObj.args.help ) { thisCommand.help( cmdObj ); }
+		                	else { await thisCommand.doCommand(); } 
+	                	} else {
+	                		message.react(instance.settings.reaction.DENIED); 
+	                	}
+
 	                } catch(e) { 
 	                	instance.status = instance.status.replace(status,'');
 	                	throw e; 

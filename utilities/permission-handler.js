@@ -17,16 +17,20 @@ class PermissionHandler {
 
 	    	if( configPermission === "admin" ) {
 	    		if( this.message.channel.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.adminRole) == null) { 
-	    			return false; 
+	    			return false;
 	    		}
 	    		return true;
 	        }
 	        
-	        if( configPermission === "moderator" ) {
-	    		if( this.message.channel.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.modRole) == null) { 
-	    			return false; 
+	        if( configPermission === "mod" ) {
+		    	let admin = false;
+	        	if( this.message.channel.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.adminRole) !== null) {
+	    	    	admin = true;	        		
+	        	}
+	        	if( admin || this.message.channel.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.modRole) !== null) { 
+		    		return true;
 	    		}
-	    		return true;
+	        	return false
 	        }
 
 	        if( configPermission === "anyone" ) { 

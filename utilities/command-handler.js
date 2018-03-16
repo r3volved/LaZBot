@@ -65,7 +65,8 @@ async function parseMessage( message, modules ) {
     	content = content.slice(1).split(/\s+/);
     	
     	mObj.module = null;
-    	mObj.cmd = null;    	
+    	mObj.cmd = null;
+    	mObj.permission = "anyone";
     	
     	for( let m in modules ) {
 	    	for( let c in modules[m].commands ) {
@@ -82,6 +83,7 @@ async function parseMessage( message, modules ) {
     	if( mObj.module ) { 
 	    
     		mObj.help = modules[mObj.module].commands[mObj.cmd].help;
+        	mObj.permission = modules[mObj.module].commands[mObj.cmd].permission || "anyone";
     		
         	mObj.subcmd = null;
     		for( let sc in modules[mObj.module].commands[mObj.cmd].subcommands ) {
@@ -97,6 +99,7 @@ async function parseMessage( message, modules ) {
     		if( mObj.subcmd ) {
         		
         		mObj.help = modules[mObj.module].commands[mObj.cmd].subcommands[mObj.subcmd].help;
+            	mObj.permission = modules[mObj.module].commands[mObj.cmd].subcommands[mObj.subcmd].permission || "anyone";
         		
         		for( let a of modules[mObj.module].commands[mObj.cmd].subcommands[mObj.subcmd].args ) {
 
@@ -255,6 +258,7 @@ async function parseMessage( message, modules ) {
         	}
     		
     	}
+    	if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
     	
 		return mObj;
     
