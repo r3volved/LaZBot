@@ -6,9 +6,8 @@
 		 if( obj.command.subcmd ) {
 			 return status(obj);			 
 		 }
-		 if( !obj.command.args.text || obj.command.args.text === 'help' ) { return obj.help( obj.command ); }
-		 
-	     let toggle = ["on","true","monitor","activate"].includes(obj.command.args.text) ? true : false;
+
+		 let toggle = ["on","true","monitor","activate"].includes(obj.command.args.text) ? true : false;
 	     let serverId = obj.message.guild.id;
 	     let serverName = obj.message.guild.name;
 	     let channelName = obj.message.channel.name;

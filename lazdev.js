@@ -297,7 +297,7 @@ async function buildModule( config ) {
 			//add export to commands.js
 			commandsjs += !first ? "," : "";
 			commandsjs += "\n  "+func+": async ( obj ) => {";
-			commandsjs += "\n    return obj.command.args.help ? obj.help( obj.command ) : await require('./"+myCommand+".js')."+func+"( obj );"; 
+			commandsjs += "\n    return await require('./"+myCommand+".js')."+func+"( obj );"; 
 			commandsjs += "\n  }";
 			first = false;
 			
@@ -330,7 +330,7 @@ async function buildModule( config ) {
 				//add export to commands.js
 				commandsjs += ",";
 				commandsjs += "\n  "+func+": async ( obj ) => {";
-				commandsjs += "\n    return obj.command.args.help ? obj.help( obj.command ) : await require('./"+myCommand+".js')."+func+"( obj );"; 
+				commandsjs += "\n    return await require('./"+myCommand+".js')."+func+"( obj );"; 
 				commandsjs += "\n  }";
 				
 			}

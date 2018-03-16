@@ -66,7 +66,21 @@ class ModuleRegistry {
 	            if( cmdObj.prefix === instance.settings.prefix && cmdObj.module ) {
 	        		const Command = require(instance.path+'/modules/module.js');
 	                const thisCommand = new Command(instance, this.modules[cmdObj.module], message, cmdObj);
-	                try { await thisCommand.doCommand(); } catch(e) { throw e; }
+	                
+	                let status = "\n ~ "+message.author.tag+" - *"+cmdObj.module+"."+cmdObj.cmd;
+	                	status += cmdObj.subcmd ? "."+cmdObj.subcmd+"*" : "*";
+
+	                instance.status += status;
+	                try {
+	                	//TODO: AUTH CHECK AGAINST COMMAND
+	                	if( cmdObj.args.help ) { await thisCommand.help( cmdObj ); }
+	                	else { await thisCommand.doCommand(); } 
+	                } catch(e) { 
+	                	instance.status = instance.status.replace(status,'');
+	                	throw e; 
+	                }
+	                instance.status = instance.status.replace(status,'');
+	                
 	        	}
             }
             
