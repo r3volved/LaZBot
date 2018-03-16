@@ -118,7 +118,7 @@ async function getConfig() {
 				config.commands[cmdName].aliases 	= await doQuestion(cq[1],colors.FgCyan) || cq[1][2];
 				config.commands[cmdName].aliases	= config.commands[cmdName].aliases.split(/[,|\s]/g);
 				
-				cq[2][2] = cmdName;
+				cq[2][2] = "do"+cmdName[0].toUpperCase()+cmdName.slice(1);
 				config.commands[cmdName].procedure 	= await doQuestion(cq[2],colors.FgCyan) || cq[2][2];
 				config.commands[cmdName].args 		= await doQuestion(cq[3],colors.FgCyan) || "";
 				config.commands[cmdName].args 		= config.commands[cmdName].args.length > 0 ? config.commands[cmdName].args.split(/[,|\s]/g) : []; 
@@ -150,7 +150,7 @@ async function getConfig() {
 						config.commands[cmdName].subcommands[subName].aliases 		= await doQuestion(scq[1],colors.FgBlue) || scq[1][2];
 						config.commands[cmdName].subcommands[subName].aliases 		= config.commands[cmdName].subcommands[subName].aliases.split(/[,|\s]/g);
 
-						scq[2][2] = cmdName+(subName[0].toUpperCase())+subName.slice(1);
+						scq[2][2] = "do"+cmdName[0].toUpperCase()+cmdName.slice(1)+(subName[0].toUpperCase())+subName.slice(1);
 						config.commands[cmdName].subcommands[subName].procedure 	= await doQuestion(scq[2],colors.FgBlue) || scq[2][2];
 						config.commands[cmdName].subcommands[subName].args 			= await doQuestion(scq[3],colors.FgBlue) || scq[3][2];
 						config.commands[cmdName].subcommands[subName].args			= config.commands[cmdName].subcommands[subName].args.length > 0 ? config.commands[cmdName].subcommands[subName].args.split(/[,|\s]/g) : [];
