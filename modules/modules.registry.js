@@ -70,13 +70,16 @@ class ModuleRegistry {
 	                let status = "\n ~ "+message.author.tag+" - *"+cmdObj.module+"."+cmdObj.cmd;
 	                	status += cmdObj.subcmd ? "."+cmdObj.subcmd+"*" : "*";
 
+	                //Update client status to show this activity
 	                instance.status += status;
 	                try {
+	                	//Check auth against module and command
 	                	if( await thisCommand.auth() ) { 
-	                		console.log( cmdObj );
+	                		//Check help flag or do command
 	                		if( cmdObj.args.help ) { thisCommand.help( cmdObj ); }
 		                	else { await thisCommand.doCommand(); } 
 	                	} else {
+	                		//When auth fails
 	                		message.react(instance.settings.reaction.DENIED); 
 	                	}
 
@@ -84,6 +87,7 @@ class ModuleRegistry {
 	                	instance.status = instance.status.replace(status,'');
 	                	throw e; 
 	                }
+	                //Update client status to remove this activity
 	                instance.status = instance.status.replace(status,'');
 	                
 	        	}
