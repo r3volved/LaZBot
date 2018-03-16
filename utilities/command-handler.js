@@ -103,6 +103,7 @@ async function parseMessage( message, modules ) {
         			switch( a ) {
         				case "id":
         					mObj.args.id = mObj.args.id || null;
+        					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
         					if( !content || content.length === 0 || content[0].length === 0 || content[0] === 'me' ) { 
     	    					mObj.args.discordId = message.author.id;
         						mObj.args.id = mObj.args.discordId;
@@ -126,6 +127,7 @@ async function parseMessage( message, modules ) {
     						break;
         				case "discordId":
         					mObj.args.discordId = mObj.args.discordId || null;
+        					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
         					if( !content || content.length === 0 || content[0].length === 0 || content[0] === 'me' ) { 
         						mObj.args.discordId = message.author.id;
         						content = content.slice(1);
@@ -139,6 +141,7 @@ async function parseMessage( message, modules ) {
         					break;
         				case "allycode":        					
         					mObj.args.allycode = mObj.args.allycode || null;
+        					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
         					if( content[0] && content[0].replace(/-/g,'').match(/\d{9}/) ) { 
         						mObj.args.allycode = content[0].replace(/-/g,'');
         						content = content.slice(1);
@@ -146,22 +149,27 @@ async function parseMessage( message, modules ) {
         					}
         					break;        					
         				case "name":
+        					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
         					mObj.args.name = content[0] || null;
     						content = content.slice(1);
         					break;
 	    				case "lang":
+	    					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
 	    					mObj.args.lang = content[0] || null;
 							content = content.slice(1);
 	    					break;
         				case "num":
-	    					mObj.args.num = content[0] || null;
+        					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+        					mObj.args.num = content[0] || null;
     						mObj.args.num = !isNaN(mObj.args.num) ? mObj.args.num : null; 
     						content = !mObj.args.num ? content : content.slice(1);
         					break;
         				case "string":
 	    				case "text":
         				default:
-	    					mObj.args.text = content ? content.join(' ') : null;
+        					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+        					mObj.args.text = content ? content.join(' ') : null;
+	    					
         			}
         			
         		}
@@ -173,7 +181,8 @@ async function parseMessage( message, modules ) {
         			switch( a ) {
 	    				case "id":
 	    					mObj.args.id = mObj.args.id || null;
-        					if( !content || content.length === 0 || content[0].length === 0 || content[0] === 'me' ) { 
+	    					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+	    					if( !content || content.length === 0 || content[0].length === 0 || content[0] === 'me' ) { 
 	    						mObj.args.discordId = message.author.id;
 	    						mObj.args.id = mObj.args.discordId;
 	    						content = content.slice(1);
@@ -196,7 +205,8 @@ async function parseMessage( message, modules ) {
 							break;
 	    				case "discordId":
 	    					mObj.args.discordId = mObj.args.discordId || null;
-        					if( !content || content.length === 0 || content[0].length === 0 || content[0] === 'me' ) { 
+	    					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+	    					if( !content || content.length === 0 || content[0].length === 0 || content[0] === 'me' ) { 
         						mObj.args.discordId = message.author.id;
 	    						content = content.slice(1);
 	    						break;
@@ -209,6 +219,7 @@ async function parseMessage( message, modules ) {
 	    					break;
 	    				case "allycode":        					
 	    					mObj.args.allycode = mObj.args.allycode || null;
+	    					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
 	    					if( content[0] && content[0].replace(/-/g,'').match(/\d{9}/) ) { 
 	    						mObj.args.allycode = content[0].replace(/-/g,'');
 	    						content = content.slice(1);
@@ -216,14 +227,17 @@ async function parseMessage( message, modules ) {
 	    					}
 	    					break;        					
 	    				case "name":
+	    					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
 	    					mObj.args.name = content[0] || null;
 							content = content.slice(1);
 	    					break;
 	    				case "lang":
+	    					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
 	    					mObj.args.lang = content[0] || null;
 							content = content.slice(1);
 	    					break;
 	    				case "num":
+	    					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
 	    					mObj.args.num = content[0] || null;
     						mObj.args.num = !isNaN(mObj.args.num) ? mObj.args.num : null; 
     						content = !mObj.args.num ? content : content.slice(1);
@@ -231,7 +245,8 @@ async function parseMessage( message, modules ) {
 	    				case "string":
 	    				case "text":
 		    			default:
-	    					mObj.args.text = content ? content.join(' ') : null;
+		    				if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+		    				mObj.args.text = content ? content.join(' ') : null;
 	
 	    			}
         			
