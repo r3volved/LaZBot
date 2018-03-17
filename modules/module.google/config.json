@@ -1,7 +1,7 @@
 {
   "id": "google",
   "name": "Google Tools",
-  "version": "0.1",
+  "version": "2.5",
   "type": "command",
   "permission": "anyone",
   "commands": {
