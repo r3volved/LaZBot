@@ -54,7 +54,7 @@ class ModuleRegistry {
         	for( k in this.modules ) {
         		let tmpModule = this.modules[k];
         		if( tmpModule.type === 'preMonitor' ) {
-        			const Monitor = require(instance.path+'/modules/module.js');                 
+        			const Monitor = require(instance.path+'/modules/module.js');
         			const thisMonitor = new Monitor(instance, tmpModule, message, {});
         			try { await thisMonitor.doMonitor(); } catch(e) { throw e; }
         		}
@@ -66,7 +66,30 @@ class ModuleRegistry {
 	            if( cmdObj.prefix === instance.settings.prefix && cmdObj.module ) {
 	        		const Command = require(instance.path+'/modules/module.js');
 	                const thisCommand = new Command(instance, this.modules[cmdObj.module], message, cmdObj);
-	                try { await thisCommand.doCommand(); } catch(e) { throw e; }
+	                
+	                let status = "\n ~ "+message.author.tag+" - *"+cmdObj.module+"."+cmdObj.cmd;
+	                	status += cmdObj.subcmd ? "."+cmdObj.subcmd+"*" : "*";
+
+	                //Update client status to show this activity
+	                instance.status += status;
+	                try {
+	                	//Check auth against module and command
+	                	if( await thisCommand.auth() ) { 
+	                		//Check help flag or do command
+	                		if( cmdObj.args.help ) { thisCommand.help( cmdObj ); }
+		                	else { await thisCommand.doCommand(); } 
+	                	} else {
+	                		//When auth fails
+	                		message.react(instance.settings.reaction.DENIED); 
+	                	}
+
+	                } catch(e) { 
+	                	instance.status = instance.status.replace(status,'');
+	                	throw e; 
+	                }
+	                //Update client status to remove this activity
+	                instance.status = instance.status.replace(status,'');
+	                
 	        	}
             }
             

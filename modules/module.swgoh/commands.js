@@ -32,52 +32,42 @@ async function getRegister( obj ) {
 module.exports = { 		
 	arena: async ( obj ) => { 
 		try {
-	    	if( obj.command.args.id === 'help' ) { return obj.help(obj.command); }
 			let register = await getRegister( obj );
 	    	return await require('./arena.js')["arena"]( obj, register );
 		} catch(e) { obj.error('arena.getRegister',e); }
     },
 	arenaUnits: async ( obj ) => { 
 		try {
-	    	if( obj.command.args.id === 'help' ) { return obj.help(obj.command); }
 			let register = await getRegister( obj );
 	    	return await require('./arena.js')["arenaUnits"]( obj, register );
 		} catch(e) { obj.error('arenaUnits.getRegister',e); }
     },
     daily: async ( obj ) => {
-        if( obj.command.args.id === 'help' ) { return obj.help(obj.command); }
         return require('./daily.js')["daily"]( obj );
     },
     event: async ( obj ) => { 
-        if( obj.command.args.id === 'help' ) { return obj.help(obj.command); }
         return require('./event.js')["event"]( obj );
     },
     guild: async ( obj ) => { 
-		if( obj.command.args.text === 'help' ) { return obj.help(obj.command); }
 		return require('./guild.js')["guild"]( obj );
     },
     guildDetails: async ( obj ) => { 
-		if( obj.command.args.text === 'help' ) { return obj.help(obj.command); }
 		return require('./guild.js')["guildDetails"]( obj );
     },
     guildStats: async ( obj ) => { 
-		if( obj.command.args.text === 'help' ) { return obj.help(obj.command); }
 		return require('./guild.js')["guildStats"]( obj );
     },
     heist: async ( obj ) => { 
-		if( obj.command.args.id === 'help' ) { return obj.help(obj.command); }
 		return require('./heist.js')["heist"]( obj );
     },
     mod: async ( obj ) => { 
 		try {
-			if( obj.command.args.id === 'help' ) { return obj.help(obj.command); }
 			let register = await getRegister( obj );
 			return require('./mod.js')["mod"]( obj, register );
 		} catch(e) { obj.error('mod.getRegister',e); }
     },
     random: async ( obj ) => { 
     	try {
-			if( obj.command.args.id === 'help' ) { return obj.help(obj.command); }
 			let register = await getRegister( obj );
 			return require('./random.js')["random"]( obj, register );
 		} catch(e) { obj.error('random.getRegister',e); }
@@ -86,7 +76,6 @@ module.exports = {
     	try {
     		let pHandler = new obj.instance.permHandler(obj.instance, obj.ModuleConfig, obj.message);
 	        if( await !pHandler.authorIs('admin') ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }  
-	        if( obj.command.args.id === 'help' || obj.command.args.text === 'help' ) { return obj.help(obj.command); }
 	        return require('./rss.js')["rssAdd"]( obj );	    	
 		} catch(e) { obj.error('rssAdd.Permissions',e); }
     },
@@ -94,48 +83,41 @@ module.exports = {
     	try {
     		let pHandler = new obj.instance.permHandler(obj.instance, obj.ModuleConfig, obj.message);
 	        if( await !pHandler.authorIs('admin') ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }  
-	        if( obj.command.args.id === 'help' || obj.command.args.text === 'help' ) { return obj.help(obj.command); }
 	        return require('./rss.js')["rssRemove"]( obj );	    	
 		} catch(e) { obj.error('rssRemove.Permissions',e); }
     },
     swAdd: async ( obj ) => { 
     	try {
-			if( obj.command.args.id === 'help' ) { return obj.help(obj.command); }
 			let register = await getRegister( obj );
 			return require('./swgoh.js')["add"]( obj, register );
 		} catch(e) { obj.error('swAdd.getRegister',e); }
     },
     swUpdate: async ( obj ) => { 
     	try {
-			if( obj.command.args.id === 'help' ) { return obj.help(obj.command); }
 			let register = await getRegister( obj );
 			return require('./swgoh.js')["update"]( obj, register );
 		} catch(e) { obj.error('swUpdate.getRegister',e); }
     },
     swRemove: async ( obj ) => { 
     	try {
-			if( obj.command.args.id === 'help' ) { return obj.help(obj.command); }
 			let register = await getRegister( obj );
 			return require('./swgoh.js')["remove"]( obj, register );
 		} catch(e) { obj.error('swRemove.getRegister',e); }
     },
     swFind: async ( obj ) => { 
     	try {
-			if( obj.command.args.id === 'help' ) { return obj.help(obj.command); }
 			let register = await getRegister( obj );
 			return require('./swgoh.js')["find"]( obj, register );
 		} catch(e) { obj.error('swFind.getRegister',e); }
     },
     zeta: async ( obj ) => { 
     	try {
-			if( obj.command.args.id === 'help' ) { return obj.help(obj.command); }
 			let register = await getRegister( obj );
 			return require('./zeta.js')["zeta"]( obj, register );
 		} catch(e) { obj.error('zeta.getRegister',e); }
     },
     zetaSuggest: async ( obj ) => { 
     	try {
-			if( obj.command.args.id === 'help' ) { return obj.help(obj.command); }
 			let register = await getRegister( obj );
 			return require('./zeta.js')["zetaSuggest"]( obj, register );
 		} catch(e) { obj.error('zeta.getRegister',e); }

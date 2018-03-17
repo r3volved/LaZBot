@@ -1,8 +1,6 @@
 async function doPoll( obj ) {
     try {
         
-    	if( !obj.command.args.text || obj.command.args.text === 'help' ) { return obj.help( obj.command ); }
-    	
         let pollReaction = [ "0⃣","1⃣","2⃣","3⃣","4⃣","5⃣","6⃣","7⃣","8⃣","9⃣" ];
         let pollPcs = obj.command.args.text.split(/\|/g);
         let pollQuestion = pollPcs[0];
