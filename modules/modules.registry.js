@@ -33,7 +33,7 @@ class ModuleRegistry {
             	console.info(m+' '.repeat(10 - m.length)+': '+Object.keys(this.modules[m].commands).join(', '));
             }
             console.info('='.repeat(80));
-            console.info('Currently a member of '+instance.client.guilds.size+' guilds - for details, see: '+instance.settings.prefix+'report presence');
+            console.info('Currently a member of '+instance.client.guilds.size+' guilds - for details, see: '+instance.settings.prefix+'presence');
             
             return true;
             
