@@ -19,7 +19,7 @@ async function guild( obj ) {
     else if( !result ) { return obj.fail('No guilds found with this name'); }
     result = result[0];
     
-    let threshold = args && args.length > 1 ? 1 : 4;
+    let threshold = args && args.length > 1 ? 1 : 10;
     
     let reply = {};
     reply.title = "I found "+result.length+" guilds";

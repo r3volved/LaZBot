@@ -4,10 +4,10 @@ class Module {
         
         try {
                         
-            this.instance = instance || null;
-            this.module = inModule || null;
-            this.message = message || null;
-            this.command = command || null;
+            this.instance 	= instance || null;
+            this.module 	= inModule || null;
+            this.message 	= message || null;
+            this.command 	= command || null;
 
             this.pHandler = new this.instance.permHandler(this.instance, this.module, this.message);
                         
@@ -167,6 +167,7 @@ class Module {
     }
         
     cmdlog( result, notes ) {
+	    if( !this.instance.logging ) { return; }
     	notes = notes || 'none';
     	try {
     	    let cmd = this.command.prefix+this.command.cmd;
