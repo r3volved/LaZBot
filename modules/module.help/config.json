@@ -1,28 +1,26 @@
 {
-
-    "id":"help",
-
-    "name":"Help",
-
-    "version":"3.2",
-    
-    "type":"command",
-    
-    "permission":"anyone",
-    
-    "commands":{
-    
-    	"help":{
-			"aliases":["?"],
-			"procedure":"doHelp",
-			"args":["text"],
-			"help":{
-	    		"id":"help",
-		        "title":"You look like you might be having problems",
-		        "text":"I am currently listening for the following commands with the prefix: **%PREFIX%**\n*Get command-specific help by running each command followed by 'help'*\n\nFor further assistance, bug reports or suggestions - come visit my master at https://discord.gg/XB4DKCt"        		 
-	    	}
-		}
-    
+  "id": "help",
+  "name": "Help Module",
+  "version": "3.5",
+  "type": "command",
+  "permission": "anyone",
+  "commands": {
+    "help": {
+      "aliases": [
+        "?"
+      ],
+      "procedure": "doHelp",
+      "args": [
+        "text"
+      ],
+      "permission": "anyone",
+      "help": {
+        "id": "help",
+        "title": "You look like you might be having problems",
+        "text": "I am currently listening for the following commands with the prefix: **%PREFIX%**\n*Get command-specific help by running each command followed by 'help'*\n\nFor further assistance, bug reports or suggestions - come visit my master at https://discord.gg/XB4DKCt",
+        "example": "%PREFIX%%COMMAND%"
+      },
+      "subcommands": {}
     }
-        
+  }
 }

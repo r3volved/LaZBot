@@ -54,7 +54,7 @@ class ModuleRegistry {
         	for( k in this.modules ) {
         		let tmpModule = this.modules[k];
         		if( tmpModule.type === 'preMonitor' ) {
-        			const Monitor = require(instance.path+'/modules/module.js');                 
+        			const Monitor = require(instance.path+'/modules/module.js');
         			const thisMonitor = new Monitor(instance, tmpModule, message, {});
         			try { await thisMonitor.doMonitor(); } catch(e) { throw e; }
         		}

@@ -1,86 +1,155 @@
 {
-
-    "id":"master",
-
-    "name":"Master Tools",
-
-    "version":"2.2",
-    
-    "type":"command",
-    
-    "permission":"master",
-    
-    "commands":{
-    
-    	"eval":{
-			"aliases":["evil"],
-			"procedure":"eval",
-			"args":["text"],
-			"help":{
-				"id":"eval",
-	    	    "title":"Evaluate",
-				"text":"Evaluate expressions",
-				"example":"%PREFIX%%COMMAND% <stuff to eval>"
-	    	}
-		},
-		"report":{
-			"aliases":["rep"],
-			"procedure":"report",
-			"args":["id","text"],
-			"help":{
-				"id":"report",
-	    	    "title":"Client Reporting",
-				"text":"Various reporting routines",
-				"example":"%PREFIX%%COMMAND% cfh\n%PREFIX%%COMMAND% reg\n%PREFIX%%COMMAND% setup\n%PREFIX%%COMMAND% status\n%PREFIX%%COMMAND% presence\n%PREFIX%%COMMAND% command <command>"
-	    	}
-		},
-		"update":{
-			"aliases":["up"],
-			"procedure":"update",
-			"args":[],
-			"help":{
-				"id":"update",
-	    	    "title":"Client Updating",
-				"text":"Various update routines",
-				"example":""
-	    	},
-	    	"subcommands":{ 
-				"client":{
-					"aliases":["game","data"],
-					"procedure":"updateData",
-					"args":[],
-					"help":{
-						"id":"client",
-			    	    "title":"SWGOH Game update",
-				        "text":"Update swgoh client and database",
-						"example":"%PREFIX%%SUBCMD%"
-			    	}
-				},
-				"players":{
-					"aliases":[],
-					"procedure":"updatePlayers",
-					"args":["num"],
-					"help":{
-						"id":"players",
-			    	    "title":"SWGOH Players update",
-				        "text":"Update swgoh player database",
-						"example":"%PREFIX%%SUBCMD% <num>"
-			    	}
-				},
-				"guilds":{
-					"aliases":[],
-					"procedure":"updateGuilds",
-					"args":[],
-					"help":{
-						"id":"guilds",
-			    	    "title":"SWGOH Guilds update",
-				        "text":"Update swgoh player guilds",
-						"example":"%PREFIX%%SUBCMD%"
-			    	}
-				}
-	    	}
-		}
-		
-	}
-	
+  "id": "master",
+  "name": "Master Tools",
+  "version": "2.7",
+  "type": "command",
+  "permission": "master",
+  "commands": {
+    "status": {
+      "aliases": [
+        "state"
+      ],
+      "procedure": "doStatus",
+      "args": [],
+      "permission": "master",
+      "help": {
+        "id": "status",
+        "title": "Bot Status",
+        "text": "Report current client status",
+        "example": "%PREFIX%%COMMAND% "
+      },
+      "subcommands": {}
+    },
+    "presence": {
+      "aliases": [
+        "pres"
+      ],
+      "procedure": "doPresence",
+      "args": [
+        "text"
+      ],
+      "permission": "master",
+      "help": {
+        "id": "presence",
+        "title": "Bot Presence",
+        "text": "Report current discord presence for this client",
+        "example": "%PREFIX%%COMMAND% [details]"
+      },
+      "subcommands": {}
+    },
+    "report": {
+      "aliases": [
+        "rep"
+      ],
+      "procedure": "doReport",
+      "args": [
+        "id",
+        "text"
+      ],
+      "permission": "master",
+      "help": {
+        "id": "report",
+        "title": "SWGOH Client Reporting",
+        "text": "Various data reporting",
+        "example": "%PREFIX%%COMMAND% <id> <text>"
+      },
+      "subcommands": {}
+    },
+    "command": {
+      "aliases": [
+        "cmd"
+      ],
+      "procedure": "doCommand",
+      "args": [
+        "text"
+      ],
+      "permission": "master",
+      "help": {
+        "id": "command",
+        "title": "Command Reporting",
+        "text": "Report command usage",
+        "example": "%PREFIX%%COMMAND% <command>"
+      },
+      "subcommands": {}
+    },
+    "update": {
+      "aliases": [
+        "up"
+      ],
+      "procedure": "doUpdate",
+      "args": [],
+      "permission": "master",
+      "help": {
+        "id": "update",
+        "title": "SWGOH Client Updates",
+        "text": "Client and data update routines for SWGOH",
+        "example": "%PREFIX%%COMMAND% "
+      },
+      "subcommands": {
+        "client": {
+          "aliases": [
+            "c"
+          ],
+          "procedure": "doUpdateClient",
+          "args": [
+            "text"
+          ],
+          "permission": "master",
+          "help": {
+            "id": "client",
+            "title": "Client Update",
+            "text": "Update the SWGOH client",
+            "example": "%PREFIX%%SUBCMD% [force]"
+          }
+        },
+        "players": {
+          "aliases": [
+            "p"
+          ],
+          "procedure": "doUpdatePlayers",
+          "args": [
+            "num"
+          ],
+          "permission": "master",
+          "help": {
+            "id": "players",
+            "title": "Player Update",
+            "text": "Update specified number of SWGOH players",
+            "example": "%PREFIX%%SUBCMD% <num>"
+          }
+        },
+        "guilds": {
+          "aliases": [
+            "g"
+          ],
+          "procedure": "doUpdateGuilds",
+          "args": [],
+          "permission": "master",
+          "help": {
+            "id": "guilds",
+            "title": "Guild Update",
+            "text": "Update SWGOH guilds",
+            "example": "%PREFIX%%SUBCMD% "
+          }
+        }
+      }
+    },
+    "eval": {
+      "aliases": [
+        "evil"
+      ],
+      "procedure": "doEval",
+      "args": [
+        "text"
+      ],
+      "permission": "master",
+      "help": {
+        "id": "eval",
+        "title": "Evil Eval",
+        "text": "This command can be dangerous - **caution**",
+        "example": "%PREFIX%%COMMAND% <stuff to eval>"
+      },
+      "subcommands": {}
+    }
+  }
 }
