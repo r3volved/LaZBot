@@ -15,13 +15,10 @@
 module.exports = { 
 	//This is your procedure name as defined in config
 	myCommand: async ( obj ) => { 
-		//Check for the keyword help in your first specified arg
-		if( obj.command.args.text === 'help' ) { return obj.help( obj.command ); }
 		//Map to a function, passing obj 
 		return await require('./myCommand.js').doSomething( obj ); 
     },
     mySubCommand: async ( obj ) => { 
-		if( obj.command.args.text === 'help' ) { return obj.help( obj.command ); }
 		return await require('./myCommand.js').doSomethingElse( obj ); 
     }
 };

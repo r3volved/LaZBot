@@ -1,0 +1,32 @@
+{
+
+    "id":"setup",
+
+    "name":"Bot settings",
+
+    "version":"1.0",
+    
+    "type":"command",
+    
+    "permission":"admin",
+    
+    "help":{
+    
+    	"setup":{
+    		"id":"setup",
+	        "title":"You look like you might be having problems",
+	        "text":"Set up some bot-channel settings.",
+    		"example":"%PREFIX%%COMMAND%"
+    	}
+
+    },
+    
+    "queries":{
+    	
+    	"GET_CHANNEL_SETTINGS":"SELECT * FROM `channel` WHERE `channelID` = ?",
+    	"GET_SERVER_SETTINGS":"SELECT * FROM `channel` WHERE `serverID` = ?",
+    	"SET_SETTINGS":"INSERT INTO `channel` (`channelID`, `channelName`, `serverID`, `serverName`, `region`, `memberCount`, `spreadsheet`, `webhook`, `modrole`, `language`) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ) ON DUPLICATE KEY UPDATE `channelName`=IF(VALUES(`channelName`) IS NOT NULL, VALUES(`channelName`), `channelName`), `serverID`=IF(VALUES(`serverID`) IS NOT NULL, VALUES(`serverID`), `serverID`), `serverName`=IF(VALUES(`serverName`) IS NOT NULL, VALUES(`serverName`), `serverName`), `region`=IF(VALUES(`region`) IS NOT NULL, VALUES(`region`), `region`), `memberCount`=IF(VALUES(`memberCount`) IS NOT NULL, VALUES(`memberCount`), `memberCount`), `spreadsheet`=IF(VALUES(`spreadsheet`) IS NOT NULL, VALUES(`spreadsheet`), `spreadsheet`), `webhook`=IF(VALUES(`webhook`) IS NOT NULL, VALUES(`webhook`), `webhook`), `modrole`=IF(VALUES(`modrole`) IS NOT NULL, VALUES(`modrole`), IF(`modrole` IS NOT NULL, `modrole`, 'botmods')), `language`=IF(VALUES(`language`) IS NOT NULL, VALUES(`language`), IF(`language` IS NULL, 'ENG_US', `language`));"
+    	
+    }    
+    
+}

@@ -67,7 +67,7 @@ async function doSQL( database, sql, args ) {
             	if( err ) {
     	    		if( err.code === 'ENOTFOUND' ) { err = ' ! ERROR : CONFIG\n : Could not connect to the defined database at "'+err.host+'"'; }
     	    		else { err = ' ! ERROR : CONFIG\n : '+err.sqlMessage; }
-            		reject(err);
+            		resolve(false);
 	    	    }
 				resolve(result);
 			});

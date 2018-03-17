@@ -4,10 +4,12 @@ class Module {
         
         try {
                         
-            this.instance = instance || null;
-            this.module = inModule || null;
-            this.message = message || null;
-            this.command = command || null;
+            this.instance 	= instance || null;
+            this.module 	= inModule || null;
+            this.message 	= message || null;
+            this.command 	= command || null;
+
+            this.pHandler = new this.instance.permHandler(this.instance, this.module, this.message);
                         
         } catch(e) {
         	this.error("module.init",e);
@@ -34,15 +36,33 @@ class Module {
     }
     
     async auth() {
-        let pHandler = new this.instance.permHandler(this.instance, this.module, this.message);
         try {
-        	return await pHandler.authorIs( this.module.permission ); 
+        	let modauth = await this.authModule();
+        	return modauth ? await this.authCommand() : false;
         } catch(e) {
         	this.error("module.auth",e);
         	return false;
         }
     }
     
+    async authModule() {
+        try {
+        	return !this.module.permission ? true : await this.pHandler.authorIs( this.module.permission ); 
+        } catch(e) {
+        	this.error("module.authModule",e);
+        	return false;
+        }
+    }
+    
+    async authCommand() {
+        try {
+        	return !this.command.permission ? true : await this.pHandler.authorIs( this.command.permission ); 
+        } catch(e) {
+        	this.error("module.authCommand",e);
+        	return false;
+        }
+    }
+
     reply( replyObj ) {
     	
     	//If reply is a string, pipe through and skip the embed
@@ -147,6 +167,7 @@ class Module {
     }
         
     cmdlog( result, notes ) {
+	    if( !this.instance.logging ) { return; }
     	notes = notes || 'none';
     	try {
     	    let cmd = this.command.prefix+this.command.cmd;
@@ -189,11 +210,17 @@ class Module {
 		return true;
     }
     
-    fail(reason) {
+    fail(replyObj, reason) {
+    	
+    	if( !reason && typeof replyObj === 'string' ) {
+    		reason = replyObj;
+    	} else if( !reason && typeof replyObj === 'object' ) {
+    		reason = replyObj.description;
+    	}
     	
     	this.cmdlog(2,reason);
         this.message.react(this.instance.settings.reaction.WARNING);
-    	this.reply( reason );
+    	this.reply(replyObj);
     	return false;
 
     }
