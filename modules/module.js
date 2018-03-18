@@ -82,6 +82,14 @@ class Module {
         replyObj.title = replyObj.title || this.module.name;
         embed.setTitle(replyObj.title);         
         
+        if(replyObj.thumbnail) {
+            embed.setThumbnail(replyObj.thumbnail);
+        }
+        
+        if(replyObj.image) {
+            embed.setImage(replyObj.image);
+        }
+        
         replyObj.footer = replyObj.footer || this.instance.client.user.username+'  ['+this.instance.settings.version+']';
         embed.setFooter(replyObj.footer);           
         //embed.setURL('https://discord.gg/XB4DKCt');

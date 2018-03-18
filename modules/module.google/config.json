@@ -35,8 +35,23 @@
             "text": "...Do you feel lucky?",
             "example": "%PREFIX%%SUBCMD% <site.com> <stuff to search>"
           }
+        },
+      	"meme": {
+          "aliases": [
+            "m"
+          ],
+          "procedure": "doSearchMeme",
+          "args": [
+            "text"
+          ],
+          "help": {
+            "id": "meme",
+            "title": "Quick-meme from Google ",
+            "text": "...Do you feel lucky?",
+            "example": "%PREFIX%%SUBCMD% <meme>"
+          }
         }
-      }
+      }      
     },
     "translate": {
       "aliases": [

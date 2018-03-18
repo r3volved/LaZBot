@@ -1,0 +1,26 @@
+{
+  "id": "games",
+  "name": "Discord Games",
+  "version": "0.1",
+  "type": "command",
+  "permission": "anyone",
+  "commands": {
+    "yoda": {
+      "aliases": [
+        "yo"
+      ],
+      "procedure": "doYoda",
+      "args": [
+        "text"
+      ],
+      "permission": "anyone",
+      "help": {
+        "id": "yoda",
+        "title": "Ask Yoda",
+        "text": "Grand Master Yoda can answer any of your questions",
+        "example": "%PREFIX%%COMMAND% <question>"
+      },
+      "subcommands": {}
+    }
+  }
+}
