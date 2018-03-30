@@ -68,7 +68,8 @@ async function getConfig() {
 	
 	//aa = await doQuestion(conq[0],colors.FgGreen);
 	config.id 			= await doQuestion(conq[0],colors.FgGreen)|| conq[0][2];
-	config.id.toLowerCase();
+	config.id 			= config.id.toLowerCase();
+
 	config.name 		= await doQuestion(conq[1],colors.FgGreen) || conq[1][2];
 	config.version 		= await doQuestion(conq[2],colors.FgGreen) || conq[2][2];
 	config.type 		= await doQuestion(conq[3],colors.FgGreen) || conq[3][2];
@@ -87,7 +88,7 @@ async function getConfig() {
 			try {
 				
 				let cmdName = await doQuestion(cq[0],colors.FgCyan)
-				cmdName.toLowerCase();
+				cmdName = cmdName.toLowerCase();
 				cmdName = cmdName.length > 10 ? cmdName.slice(0,10) : cmdName;
 				config.commands[cmdName] 			= {};
 				
@@ -122,7 +123,7 @@ async function getConfig() {
 						console.log(colors.Reset+'\n### Command \''+cmdName+'\' - Sub Command '+(sc+1)+' ###\n');
 	
 						let subName = await doQuestion(scq[0],colors.FgRed);
-						subName.toLowerCase();
+						subName = subName.toLowerCase();
 						subName = subName.length > 10 ? subName.slice(0,10) : subName;
 						config.commands[cmdName].subcommands[subName] 				= {};
 						
