@@ -67,7 +67,8 @@ async function getConfig() {
 	let config = {};
 	
 	//aa = await doQuestion(conq[0],colors.FgGreen);
-	config.id 			= await doQuestion(conq[0],colors.FgGreen) || conq[0][2];
+	config.id 			= await doQuestion(conq[0],colors.FgGreen)|| conq[0][2];
+	config.id.toLowerCase();
 	config.name 		= await doQuestion(conq[1],colors.FgGreen) || conq[1][2];
 	config.version 		= await doQuestion(conq[2],colors.FgGreen) || conq[2][2];
 	config.type 		= await doQuestion(conq[3],colors.FgGreen) || conq[3][2];
@@ -85,13 +86,14 @@ async function getConfig() {
 			
 			try {
 				
-				let cmdName = await doQuestion(cq[0],colors.FgCyan);
+				let cmdName = await doQuestion(cq[0],colors.FgCyan)
+				cmdName.toLowerCase();
 				cmdName = cmdName.length > 10 ? cmdName.slice(0,10) : cmdName;
 				config.commands[cmdName] 			= {};
 				
 				cq[1][2] = cmdName[0];
 				config.commands[cmdName].aliases 	= await doQuestion(cq[1],colors.FgCyan) || cq[1][2];
-				config.commands[cmdName].aliases	= config.commands[cmdName].aliases.split(/[,|\s]/g);
+				config.commands[cmdName].aliases	= config.commands[cmdName].aliases.toLowerCase().split(/[,|\s]/g);
 				
 				cq[2][2] = "do"+cmdName[0].toUpperCase()+cmdName.slice(1);
 				config.commands[cmdName].procedure 	= await doQuestion(cq[2],colors.FgCyan) || cq[2][2];
@@ -120,12 +122,13 @@ async function getConfig() {
 						console.log(colors.Reset+'\n### Command \''+cmdName+'\' - Sub Command '+(sc+1)+' ###\n');
 	
 						let subName = await doQuestion(scq[0],colors.FgRed);
+						subName.toLowerCase();
 						subName = subName.length > 10 ? subName.slice(0,10) : subName;
 						config.commands[cmdName].subcommands[subName] 				= {};
 						
 						scq[1][2] = subName[0];
 						config.commands[cmdName].subcommands[subName].aliases 		= await doQuestion(scq[1],colors.FgRed) || scq[1][2];
-						config.commands[cmdName].subcommands[subName].aliases 		= config.commands[cmdName].subcommands[subName].aliases.split(/[,|\s]/g);
+						config.commands[cmdName].subcommands[subName].aliases 		= config.commands[cmdName].subcommands[subName].aliases.toLowerCase().split(/[,|\s]/g);
 
 						scq[2][2] = "do"+cmdName[0].toUpperCase()+cmdName.slice(1)+(subName[0].toUpperCase())+subName.slice(1);
 						config.commands[cmdName].subcommands[subName].procedure 	= await doQuestion(scq[2],colors.FgRed) || scq[2][2];
