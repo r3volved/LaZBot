@@ -4,7 +4,7 @@ class ModuleRegistry {
         
         this.modules = {};
         this.commands = {};
-        
+			        
     }
     
 
@@ -49,14 +49,15 @@ class ModuleRegistry {
         try {
             
             let k = null;
+            const Module = require(instance.path+'/modules/module.js');
         	
             //Monitor pre command 
         	for( k in this.modules ) {
         		let tmpModule = this.modules[k];
         		if( tmpModule.type === 'preMonitor' ) {
-        			const Monitor = require(instance.path+'/modules/module.js');
-        			const thisMonitor = new Monitor(instance, tmpModule, message, {});
+        			let thisMonitor = new Module(instance, tmpModule, message, {});
         			try { await thisMonitor.doMonitor(); } catch(e) { throw e; }
+        			thisMonitor = null;
         		}
         	}
                     	
@@ -64,8 +65,7 @@ class ModuleRegistry {
             if( message.content.startsWith(instance.settings.prefix) ) {
 	        	let cmdObj = await instance.cmdHandler.parseMessage( message, this.modules );
 	            if( cmdObj.prefix === instance.settings.prefix && cmdObj.module ) {
-	        		const Command = require(instance.path+'/modules/module.js');
-	                const thisCommand = new Command(instance, this.modules[cmdObj.module], message, cmdObj);
+	            	let thisCommand = new Module(instance, this.modules[cmdObj.module], message, cmdObj);
 	                
 	                let status = "\n ~ "+message.author.tag+" - *"+cmdObj.module+"."+cmdObj.cmd;
 	                	status += cmdObj.subcmd ? "."+cmdObj.subcmd+"*" : "*";
@@ -87,22 +87,14 @@ class ModuleRegistry {
 	                	instance.status = instance.status.replace(status,'');
 	                	throw e; 
 	                }
+	                
 	                //Update client status to remove this activity
 	                instance.status = instance.status.replace(status,'');
+	                thisCommand = null;
 	                
 	        	}
             }
             
-            //Monitor pre command 
-            //for( k in this.modules ) {
-            //   let tmpModule = this.modules[k];
-            //   if( tmpModule.type === 'postMonitor' ) {
-            //       const Monitor       = require(instance.path+'/modules/module.'+tmpModule.id+'/main.js');                    
-            //       const thisMonitor   = new Monitor(config, tmpModule, null, message);
-            //       try { await thisMonitor.analyze(); } catch(e) { throw e; }
-            //   }
-            //}
-
         } catch(e) {
             console.error(e);
         }

@@ -2,6 +2,9 @@
 const Discord 	= require('discord.js');
 const client 	= new Discord.Client();
 let   instance    = {};
+
+client.banlist = [];
+
 /**
  * MONITOR CHANNEL
  */
@@ -11,6 +14,7 @@ client.on('message', message => {
   
 	// If author is bot, ignore - otherwise register message
 	if( message.author.bot ) { return; }
+	if( client.banlist && client.banlist.includes( message.author.id ) ) { return; }
 	try {
 		instance.registry.registerMessage( message, instance );
 	} catch(e) {	
@@ -25,6 +29,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
   
 	// If author is bot, ignore - otherwise register message
 	if( newMessage.author.bot ) { return; }
+	if( client.banlist && client.banlist.includes( newMessage.author.id ) ) { return; }
 	try {
 		instance.registry.registerMessage( newMessage, instance );
 	} catch(e) {	

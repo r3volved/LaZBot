@@ -259,7 +259,7 @@ async function parseMessage( message, modules ) {
     		
     	}
     	if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
-    	
+
 		return mObj;
     
     } catch(e) {

@@ -14,9 +14,14 @@ async function doMonitor( obj ) {
         }
         
         //Check mobilegamer roles - skip on found roles        
-        //if( obj.message.guild.id === '242184147257393153' || obj.message.guild.id === '365502000043130880' ) {
-            //if( await pHandler.authorHasRole('Patron') ) { console.log('Patron'); return; }
-        //}
+        if( obj.message.guild.id === '242184147257393153' || obj.message.guild.id === '365502000043130880' ) {
+            if( await pHandler.authorHasRole('Admin') ) { return; }
+            if( await pHandler.authorHasRole('Director') ) { return; }
+            if( await pHandler.authorHasRole('Moderator') ) { return; }
+            if( await pHandler.authorHasRole('Patron') ) { return; }
+            if( await pHandler.authorHasRole('Special Guest') ) { return; }
+            if( await pHandler.authorHasRole('Content Creator') ) { return; }
+        }
         
         const ids = [ '269167743150981120', '194702668751568896', '173560724969357312', '227912301301202944' ]; 
         

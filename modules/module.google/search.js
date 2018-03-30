@@ -38,7 +38,7 @@ async function doSearchSite( obj ) {
         message = await obj.message.reply('Searching for \''+text+'\' in \''+id+'\'... ');
     } catch(e) { obj.error('doSearch.searching',e); }
     
-    let searchUrl = `https://www.google.com/search?q=site:${id}+${encodeURIComponent(text)}`;
+    let searchUrl = `https://www.google.com/search?q=site:${encodeURIComponent(id)}+${encodeURIComponent(text)}`;
     try {
         result = await fetchGoogle(searchUrl);
         if( !result ) { return obj.fail('Sorry, I could not find any adequate results'); }
