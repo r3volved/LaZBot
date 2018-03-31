@@ -117,6 +117,7 @@ class Module {
     
     	try {
 	        let replyObj = {};
+	        command = command || this.command;
 	        let helpJson = command.help;
 	        
 	        if( !command.subcmd ) {

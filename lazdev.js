@@ -67,7 +67,9 @@ async function getConfig() {
 	let config = {};
 	
 	//aa = await doQuestion(conq[0],colors.FgGreen);
-	config.id 			= await doQuestion(conq[0],colors.FgGreen) || conq[0][2];
+	config.id 			= await doQuestion(conq[0],colors.FgGreen)|| conq[0][2];
+	config.id 			= config.id.toLowerCase();
+
 	config.name 		= await doQuestion(conq[1],colors.FgGreen) || conq[1][2];
 	config.version 		= await doQuestion(conq[2],colors.FgGreen) || conq[2][2];
 	config.type 		= await doQuestion(conq[3],colors.FgGreen) || conq[3][2];
@@ -85,13 +87,14 @@ async function getConfig() {
 			
 			try {
 				
-				let cmdName = await doQuestion(cq[0],colors.FgCyan);
+				let cmdName = await doQuestion(cq[0],colors.FgCyan)
+				cmdName = cmdName.toLowerCase();
 				cmdName = cmdName.length > 10 ? cmdName.slice(0,10) : cmdName;
 				config.commands[cmdName] 			= {};
 				
 				cq[1][2] = cmdName[0];
 				config.commands[cmdName].aliases 	= await doQuestion(cq[1],colors.FgCyan) || cq[1][2];
-				config.commands[cmdName].aliases	= config.commands[cmdName].aliases.split(/[,|\s]/g);
+				config.commands[cmdName].aliases	= config.commands[cmdName].aliases.toLowerCase().split(/[,|\s]/g);
 				
 				cq[2][2] = "do"+cmdName[0].toUpperCase()+cmdName.slice(1);
 				config.commands[cmdName].procedure 	= await doQuestion(cq[2],colors.FgCyan) || cq[2][2];
@@ -119,28 +122,29 @@ async function getConfig() {
 						console.log(colors.FgRed+'-'.repeat(80));
 						console.log(colors.Reset+'\n### Command \''+cmdName+'\' - Sub Command '+(sc+1)+' ###\n');
 	
-						let subName = await doQuestion(scq[0],colors.FgBlue);
+						let subName = await doQuestion(scq[0],colors.FgRed);
+						subName = subName.toLowerCase();
 						subName = subName.length > 10 ? subName.slice(0,10) : subName;
 						config.commands[cmdName].subcommands[subName] 				= {};
 						
 						scq[1][2] = subName[0];
-						config.commands[cmdName].subcommands[subName].aliases 		= await doQuestion(scq[1],colors.FgBlue) || scq[1][2];
-						config.commands[cmdName].subcommands[subName].aliases 		= config.commands[cmdName].subcommands[subName].aliases.split(/[,|\s]/g);
+						config.commands[cmdName].subcommands[subName].aliases 		= await doQuestion(scq[1],colors.FgRed) || scq[1][2];
+						config.commands[cmdName].subcommands[subName].aliases 		= config.commands[cmdName].subcommands[subName].aliases.toLowerCase().split(/[,|\s]/g);
 
 						scq[2][2] = "do"+cmdName[0].toUpperCase()+cmdName.slice(1)+(subName[0].toUpperCase())+subName.slice(1);
-						config.commands[cmdName].subcommands[subName].procedure 	= await doQuestion(scq[2],colors.FgBlue) || scq[2][2];
-						config.commands[cmdName].subcommands[subName].args 			= await doQuestion(scq[3],colors.FgBlue) || "";
+						config.commands[cmdName].subcommands[subName].procedure 	= await doQuestion(scq[2],colors.FgRed) || scq[2][2];
+						config.commands[cmdName].subcommands[subName].args 			= await doQuestion(scq[3],colors.FgRed) || "";
 						config.commands[cmdName].subcommands[subName].args			= config.commands[cmdName].subcommands[subName].args.length > 0 ? config.commands[cmdName].subcommands[subName].args.split(/[,|\s]/g) : [];
 						
 						config.commands[cmdName].subcommands[subName].permission 	= await doQuestion(scq[4],colors.FgCyan) || scq[4][2];
 
 						config.commands[cmdName].subcommands[subName].help 			= {}
 						config.commands[cmdName].subcommands[subName].help.id	 	= subName;
-						config.commands[cmdName].subcommands[subName].help.title 	= await doQuestion(hq[0],colors.FgBlue) || hq[0][2];
-						config.commands[cmdName].subcommands[subName].help.text 	= await doQuestion(hq[1],colors.FgBlue) || hq[1][2];
+						config.commands[cmdName].subcommands[subName].help.title 	= await doQuestion(hq[0],colors.FgRed) || hq[0][2];
+						config.commands[cmdName].subcommands[subName].help.text 	= await doQuestion(hq[1],colors.FgRed) || hq[1][2];
 
 						hq[2][2] = config.commands[cmdName].subcommands[subName].args.length > 0 ? "<"+config.commands[cmdName].subcommands[subName].args.join("> <")+">" : "";
-						config.commands[cmdName].subcommands[subName].help.example 	= await doQuestion(hq[2],colors.FgBlue) || "";
+						config.commands[cmdName].subcommands[subName].help.example 	= await doQuestion(hq[2],colors.FgRed) || "";
 						config.commands[cmdName].subcommands[subName].help.example  = "%PREFIX%%SUBCMD% "+config.commands[cmdName].subcommands[subName].help.example
 						
 					}

@@ -16,8 +16,8 @@ async function event( obj ) {
     
     for( let i = 0; i < result.length; ++i ) {
         
-        if( result[i].type === 3 ) { continue; } 
-        if( replyObj.fields.length === 25 ) break;
+    	if( result[i].type === 3 && !result[i].nameKey.includes("HERO") ) { continue; }
+    	if( replyObj.fields.length === 25 ) break;
         
         let nameKey = result[i].nameKey || null;
         let descKey = result[i].descKey || null;

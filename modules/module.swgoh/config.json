@@ -115,13 +115,13 @@
 		"mod":{
 			"aliases":["m","mods"],
 			"procedure":"mod",
-			"args":["id"],
+			"args":["id","text"],
 			"color":"0x8e8e8e",
 			"help":{
 	    	    "id":"mod",
 	            "title":"SWGOH Mod Management",
-	            "text":"Receive a formatted player-mods file for use with the Crouching Rancor Mod Management tool at:\nhttp://apps.crouchingrancor.com/",
-	            "example":"%PREFIX%%COMMAND% <player>"
+	            "text":"See the equipped mods for a specified user's toon.\n\nFor help with mod management, see the Crouching Rancor Mod Management tool at:\nhttp://apps.crouchingrancor.com/",
+	            "example":"%PREFIX%%COMMAND% <player> <unit>"
 	    	},
 	    	"subcommands":{}
 		},
@@ -282,7 +282,7 @@
     	
     	"GET_UNITNAMES":"SELECT UnitDef.id, REPLACE(udn.text,'\"','') as 'name' FROM UnitDef JOIN Localization udn ON udn.id = UnitDef.nameKey AND udn.language = 'ENG_US' WHERE UnitDef.id IN ( ? )",
     	
-    	"GET_MODS":"CALL spGetPlayerMods( ? )",
+    	"GET_MODS":"CALL spGetPlayerUnitMods( ?, ? )",
     	
     	"GET_ZETAS":"CALL spGetPlayerZetas( ?, ? )",
     	"GET_ZETA_SUGGEST":"CALL spGetPlayerZetaSuggest( ?, ?, ? )",

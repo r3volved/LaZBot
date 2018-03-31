@@ -11,8 +11,8 @@ async function doHelp( obj ) {
     let nbsp  = ' ';
     let extras = [];
     
-    let cmdW = 9;
-    let aliasW = 15; 
+    let cmdW = 10;
+    let aliasW = 14; 
     for( let k in obj.instance.registry.modules ) {
 
         let modl = obj.instance.registry.modules[k];

@@ -70,7 +70,7 @@ async function parseMessage( message, modules ) {
     	
     	for( let m in modules ) {
 	    	for( let c in modules[m].commands ) {
-	    		if( c === content[0] || modules[m].commands[c].aliases.includes(content[0]) ) {
+	    		if( c === content[0].toLowerCase() || modules[m].commands[c].aliases.includes(content[0].toLowerCase()) ) {
 	    			mObj.module = m;
 	    			mObj.cmd = c;
 	    			content = content.slice(1);
@@ -87,7 +87,7 @@ async function parseMessage( message, modules ) {
     		
         	mObj.subcmd = null;
     		for( let sc in modules[mObj.module].commands[mObj.cmd].subcommands ) {
-        		if( sc === content[0] || ( modules[mObj.module].commands[mObj.cmd].subcommands[sc] && modules[mObj.module].commands[mObj.cmd].subcommands[sc].aliases.includes(content[0]) ) ) {
+        		if( sc === content[0].toLowerCase() || ( modules[mObj.module].commands[mObj.cmd].subcommands[sc] && modules[mObj.module].commands[mObj.cmd].subcommands[sc].aliases.includes(content[0].toLowerCase()) ) ) {
         			mObj.subcmd = sc;
         			content = content.slice(1);
         			break;
@@ -106,7 +106,7 @@ async function parseMessage( message, modules ) {
         			switch( a ) {
         				case "id":
         					mObj.args.id = mObj.args.id || null;
-        					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+        					if( content[0] && content[0].toLowerCase() === 'help' ) { mObj.args.help = true; }
         					if( !content || content.length === 0 || content[0].length === 0 || content[0] === 'me' ) { 
     	    					mObj.args.discordId = message.author.id;
         						mObj.args.id = mObj.args.discordId;
@@ -130,7 +130,7 @@ async function parseMessage( message, modules ) {
     						break;
         				case "discordId":
         					mObj.args.discordId = mObj.args.discordId || null;
-        					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+        					if( content[0] && content[0].toLowerCase() === 'help' ) { mObj.args.help = true; }
         					if( !content || content.length === 0 || content[0].length === 0 || content[0] === 'me' ) { 
         						mObj.args.discordId = message.author.id;
         						content = content.slice(1);
@@ -144,7 +144,7 @@ async function parseMessage( message, modules ) {
         					break;
         				case "allycode":        					
         					mObj.args.allycode = mObj.args.allycode || null;
-        					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+        					if( content[0] && content[0].toLowerCase() === 'help' ) { mObj.args.help = true; }
         					if( content[0] && content[0].replace(/-/g,'').match(/\d{9}/) ) { 
         						mObj.args.allycode = content[0].replace(/-/g,'');
         						content = content.slice(1);
@@ -152,17 +152,17 @@ async function parseMessage( message, modules ) {
         					}
         					break;        					
         				case "name":
-        					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+        					if( content[0] && content[0].toLowerCase() === 'help' ) { mObj.args.help = true; }
         					mObj.args.name = content[0] || null;
     						content = content.slice(1);
         					break;
 	    				case "lang":
-	    					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+	    					if( content[0] && content[0].toLowerCase() === 'help' ) { mObj.args.help = true; }
 	    					mObj.args.lang = content[0] || null;
 							content = content.slice(1);
 	    					break;
         				case "num":
-        					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+        					if( content[0] && content[0].toLowerCase() === 'help' ) { mObj.args.help = true; }
         					mObj.args.num = content[0] || null;
     						mObj.args.num = !isNaN(mObj.args.num) ? mObj.args.num : null; 
     						content = !mObj.args.num ? content : content.slice(1);
@@ -170,7 +170,7 @@ async function parseMessage( message, modules ) {
         				case "string":
 	    				case "text":
         				default:
-        					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+        					if( content[0] && content[0].toLowerCase() === 'help' ) { mObj.args.help = true; }
         					mObj.args.text = content ? content.join(' ') : null;
 	    					
         			}
@@ -184,7 +184,7 @@ async function parseMessage( message, modules ) {
         			switch( a ) {
 	    				case "id":
 	    					mObj.args.id = mObj.args.id || null;
-	    					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+	    					if( content[0] && content[0].toLowerCase() === 'help' ) { mObj.args.help = true; }
 	    					if( !content || content.length === 0 || content[0].length === 0 || content[0] === 'me' ) { 
 	    						mObj.args.discordId = message.author.id;
 	    						mObj.args.id = mObj.args.discordId;
@@ -208,7 +208,7 @@ async function parseMessage( message, modules ) {
 							break;
 	    				case "discordId":
 	    					mObj.args.discordId = mObj.args.discordId || null;
-	    					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+	    					if( content[0] && content[0].toLowerCase() === 'help' ) { mObj.args.help = true; }
 	    					if( !content || content.length === 0 || content[0].length === 0 || content[0] === 'me' ) { 
         						mObj.args.discordId = message.author.id;
 	    						content = content.slice(1);
@@ -222,7 +222,7 @@ async function parseMessage( message, modules ) {
 	    					break;
 	    				case "allycode":        					
 	    					mObj.args.allycode = mObj.args.allycode || null;
-	    					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+	    					if( content[0] && content[0].toLowerCase() === 'help' ) { mObj.args.help = true; }
 	    					if( content[0] && content[0].replace(/-/g,'').match(/\d{9}/) ) { 
 	    						mObj.args.allycode = content[0].replace(/-/g,'');
 	    						content = content.slice(1);
@@ -230,17 +230,17 @@ async function parseMessage( message, modules ) {
 	    					}
 	    					break;        					
 	    				case "name":
-	    					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+	    					if( content[0] && content[0].toLowerCase() === 'help' ) { mObj.args.help = true; }
 	    					mObj.args.name = content[0] || null;
 							content = content.slice(1);
 	    					break;
 	    				case "lang":
-	    					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+	    					if( content[0] && content[0].toLowerCase() === 'help' ) { mObj.args.help = true; }
 	    					mObj.args.lang = content[0] || null;
 							content = content.slice(1);
 	    					break;
 	    				case "num":
-	    					if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+	    					if( content[0] && content[0].toLowerCase() === 'help' ) { mObj.args.help = true; }
 	    					mObj.args.num = content[0] || null;
     						mObj.args.num = !isNaN(mObj.args.num) ? mObj.args.num : null; 
     						content = !mObj.args.num ? content : content.slice(1);
@@ -248,7 +248,7 @@ async function parseMessage( message, modules ) {
 	    				case "string":
 	    				case "text":
 		    			default:
-		    				if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+		    				if( content[0] && content[0].toLowerCase() === 'help' ) { mObj.args.help = true; }
 		    				mObj.args.text = content ? content.join(' ') : null;
 	
 	    			}
@@ -258,7 +258,11 @@ async function parseMessage( message, modules ) {
         	}
     		
     	}
-    	if( content[0] && content[0] === 'help' ) { mObj.args.help = true; }
+    	if( content[0] && content[0].toLowerCase() === 'help' ) { 
+    		mObj.args = mObj.args || {};
+    		mObj.args.help = true; 
+    	}
+    	console.log( mObj );
     	
 		return mObj;
     
