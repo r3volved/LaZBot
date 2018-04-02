@@ -54,6 +54,52 @@ client.on('guildCreate', guild => {
 });
 
 
+//ON GUILD MEMBER ADD
+client.on('guildMemberAdd', async (member) => {
+  
+	try {
+        let result = null;
+        let sql = "SELECT * FROM `factions` WHERE `factions`.`serverId` = ?";
+        let args = [];
+        args.push( await member.guild.id );
+        
+        try {
+        	result = await instance.dbHandler.doSQL(instance.settings.database, sql, args)
+            if( !result || result.length === 0 ) { return; }
+        } catch(e) {
+        	return;
+        }
+        	
+        //Otherwise build embed
+    	const Discord = require('discord.js');
+        const embed = new Discord.RichEmbed();
+
+        let description = 'To participate on this server, you must pick a side!\nAre you:```md\n';
+        for( let r of result ) {
+        	if( r.type === 'DEFAULT' ) { continue; }
+        	description += '# '+r.faction+'\n'
+        }
+        description += '```\nTo access the server, please choose your loyalty by typing in the command below:\n```'+instance.settings.prefix+"join <faction>```";
+        
+        embed.setColor('0x6F9AD3');
+        
+        let title = 'Welcome to the server!';
+        if( member.guild.id === "333971980497977345" ) {
+        	title = 'Welcome to Wrigley Starport- CubsFanHan\'s discord server!';
+        }
+        
+        embed.setTitle('Welcome to the server!');
+        embed.setDescription(description);
+        
+        await client.channels.find("id",result[0].channelId).send('Hello there <@'+member.id+'>! That was a smooth landing- nice work.',{embed});
+
+	} catch(e) {	
+		console.warn("Message listener problem!");
+		console.error(e);		
+	}
+ 	
+});
+
 
 /** 
  * MONITOR CLIENT CONNECTION 

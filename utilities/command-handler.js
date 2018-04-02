@@ -87,7 +87,7 @@ async function parseMessage( message, modules ) {
     		
         	mObj.subcmd = null;
     		for( let sc in modules[mObj.module].commands[mObj.cmd].subcommands ) {
-        		if( sc === content[0].toLowerCase() || ( modules[mObj.module].commands[mObj.cmd].subcommands[sc] && modules[mObj.module].commands[mObj.cmd].subcommands[sc].aliases.includes(content[0].toLowerCase()) ) ) {
+        		if( content[0] && (sc === content[0].toLowerCase() || ( modules[mObj.module].commands[mObj.cmd].subcommands[sc] && modules[mObj.module].commands[mObj.cmd].subcommands[sc].aliases.includes(content[0].toLowerCase()) ) ) ) {
         			mObj.subcmd = sc;
         			content = content.slice(1);
         			break;
@@ -262,7 +262,8 @@ async function parseMessage( message, modules ) {
     		mObj.args = mObj.args || {};
     		mObj.args.help = true; 
     	}
-    	console.log( mObj );
+    	
+    	//console.log( mObj );
     	
 		return mObj;
     
