@@ -11,12 +11,20 @@ class PermissionHandler {
     async authorIs( configPermission ) {
         
     	try {
-	    	if( this.message.author.id === this.clientConfig.settings.master ) { 
+    		if( configPermission === "master" ) {	    		    	    	
+	    		if( this.message.author.id === this.clientConfig.settings.master ) { 
+		    		return true; 
+		    	}
+	    		return false;
+    		}
+	    	
+	    	if( this.message.channel.type === "dm" ) { 
 	    		return true; 
 	    	}
 
-	    	if( configPermission === "admin" ) {
-	    		if( this.message.channel.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.adminRole) == null) { 
+	    	let guild = await this.message.guild.fetchMembers();
+	    	if( configPermission === "admin" ) {	    		
+	    		if( guild.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.adminRole) == null) { 
 	    			return false;
 	    		}
 	    		return true;
@@ -24,10 +32,10 @@ class PermissionHandler {
 	        
 	        if( configPermission === "mod" ) {
 		    	let admin = false;
-	        	if( this.message.channel.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.adminRole) !== null) {
+	        	if( guild.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.adminRole) !== null) {
 	    	    	admin = true;	        		
 	        	}
-	        	if( admin || this.message.channel.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.modRole) !== null) { 
+	        	if( admin || guild.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.modRole) !== null) { 
 		    		return true;
 	    		}
 	        	return false
@@ -36,7 +44,9 @@ class PermissionHandler {
 	        if( configPermission === "anyone" ) { 
 	        	return true; 
 	    	}
-	    	
+
+	        return false;
+	        
     	} catch(e) { 
     		return false;
     	}
@@ -45,7 +55,8 @@ class PermissionHandler {
     
     async authorHasRole( role ) {
     	try {
-    		return !!this.message.member.roles.find("name", role);
+	    	let guild = await this.message.guild.fetchMembers();
+    		return !!guild.members.find("id", this.message.author.id).roles.find("name", role);
     	} catch(e) { 
     		return false;
     	}
@@ -54,7 +65,8 @@ class PermissionHandler {
     
     async authorHasPermission( permission ) {
         try {
-        	return this.message.member.hasPermission(permission);
+	    	let guild = await this.message.guild.fetchMembers();
+        	return guild.members.find("id", this.message.author.id).hasPermission(permission);
         } catch(e) { 
     		return false;
     	}
@@ -92,14 +104,16 @@ class PermissionHandler {
 	            return true;
 	        }
 	        
+	    	let guild = await this.message.guild.fetchMembers();
+	        
 	        //Check for admin role
 	        if( moduleRoleRequired === this.clientConfig.settings.permissions[1] ) {
-	            return this.message.channel.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.adminRole); 
+	            return guild.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.adminRole); 
 	        }
 	        
 	        //Check for admin or moderator
 	        if( moduleRoleRequired === this.clientConfig.settings.permissions[2] ) {
-	            return this.message.channel.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.adminRole) ? true : this.message.channel.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.modRole);
+	            return guild.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.adminRole) ? true : this.message.channel.members.find("id", this.message.author.id).roles.find("name", this.clientConfig.settings.modRole);
 	        }
 	        
     	} catch(e) { 

@@ -176,6 +176,8 @@ async function doFactionJoin( obj ) {
     //Args passed to command
     let { text } = obj.command.args;
 
+    text = text.replace(/[<|#|\s]*(\w)[>]*/gi,'$1');
+    
     //Do stuff here for doFactionJoin
     //...
     let result = null;

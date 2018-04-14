@@ -29,7 +29,7 @@ async function doPoints( obj ) {
 			    		
 		} else {
 			
-			if( !await obj.pHandler.authorIs( "admin" ) ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }
+			if( !await obj.pHandler.authorIs( "mod" ) ) { return obj.message.react(obj.instance.settings.reaction.DENIED); }
 			
 			let karma = message[1];
 			let carrier = message[2];
