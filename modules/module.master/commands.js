@@ -25,5 +25,8 @@ module.exports = {
   },
   doEval: async ( obj ) => {
     return await require('./eval.js').doEval( obj );
+  },
+  doRestart: () => {
+	process.exit(1);
   }
 };

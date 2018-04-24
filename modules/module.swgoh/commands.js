@@ -52,7 +52,10 @@ module.exports = {
 		return require('./guild.js')["guild"]( obj );
     },
     guildDetails: async ( obj ) => { 
-		return require('./guild.js')["guildDetails"]( obj );
+    	try {
+			let register = await getRegister( obj );
+			return require('./guild.js')["guildDetails"]( obj, register );
+    	} catch(e) { obj.error('arenaUnits.getRegister',e); }
     },
     guildStats: async ( obj ) => { 
 		return require('./guild.js')["guildStats"]( obj );

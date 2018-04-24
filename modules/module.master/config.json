@@ -55,6 +55,21 @@
       },
       "subcommands": {}
     },
+    "restart": {
+      "aliases": [
+        "kill"
+      ],
+      "procedure": "doRestart",
+      "args": [],
+      "permission": "master",
+      "help": {
+        "id": "restart",
+        "title": "Restart",
+        "text": "Restart the bot",
+        "example": "%PREFIX%%COMMAND%"
+      },
+      "subcommands": {}
+    },
     "command": {
       "aliases": [
         "cmd"

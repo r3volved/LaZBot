@@ -47,21 +47,28 @@ async function guild( obj ) {
     
 }
 
-async function guildDetails( obj ) {
+async function guildDetails( obj, register ) {
 
-    let procedure, args = null;
-    if( !obj.command.args.text || obj.command.args.text === 'help' ) { return obj.help(obj.command); }
-    
-    if( obj.command.args.text.match(/\d{9}/) ) { obj.command.args.allycode = obj.command.args.text; }
+    let procedure, result, args = null;
+    try {
+    	result = register || await obj.instance.dbHandler.getRegister( obj );
+    } catch(e) {
+        return obj.error('doRandom.getRegister',e);
+    }
+
+    if( result && result.length > 0 && !obj.command.args.text ) { 
+        obj.command.args.allycode = result[0].allyCode || null;
+    }
+
     if( obj.command.args.allycode ) {
     	procedure = obj.module.queries.GET_GUILD_PLAYERS_BY_ALLYCODE;
     	args = obj.command.args.allycode;
     } else {
     	procedure = obj.module.queries.GET_GUILD_PLAYERS_BY_GUILDNAME;
-    	args = '%'+obj.command.args.text+'%';
+    	obj.command.args.id += obj.command.args.text ? " "+obj.command.args.text : '';
+    	args = '%'+obj.command.args.id+'%';
     } 
     
-    let result = null;
     try { 
 	    result = await obj.instance.dbHandler.getRows( obj.instance.settings.datadb, procedure, args );
     } catch(e) {
@@ -69,7 +76,7 @@ async function guildDetails( obj ) {
     }
     
     result = result[0];
-    if( (!result || result.length === 0) && obj.command.args.allycode ) { return obj.fail('No guilds found with this allycode'); }
+    if( (!result || result.length === 0) ) { return obj.fail('No guilds found with this allycode'); }
     else if( !result || result.length === 0 ) { return obj.fail('No guilds found with this name'); }
         
     let reply = {};
