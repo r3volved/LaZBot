@@ -1,0 +1,170 @@
+{ 
+  "id": "master",
+  "name": "Master Tools",
+  "version": "2.7",
+  "type": "command",
+  "permission": "master",
+  "commands": {
+    "status": {
+      "aliases": [
+        "state"
+      ],
+      "procedure": "doStatus",
+      "args": [],
+      "permission": "master",
+      "help": {
+        "id": "status",
+        "title": "Bot Status",
+        "text": "Report current client status",
+        "example": "%PREFIX%%COMMAND% "
+      },
+      "subcommands": {}
+    },
+    "presence": {
+      "aliases": [
+        "pres"
+      ],
+      "procedure": "doPresence",
+      "args": [
+        "text"
+      ],
+      "permission": "master",
+      "help": {
+        "id": "presence",
+        "title": "Bot Presence",
+        "text": "Report current discord presence for this client",
+        "example": "%PREFIX%%COMMAND% [details]"
+      },
+      "subcommands": {}
+    },
+    "report": {
+      "aliases": [
+        "rep"
+      ],
+      "procedure": "doReport",
+      "args": [
+        "id",
+        "text"
+      ],
+      "permission": "master",
+      "help": {
+        "id": "report",
+        "title": "SWGOH Client Reporting",
+        "text": "Various data reporting",
+        "example": "%PREFIX%%COMMAND% <id> <text>"
+      },
+      "subcommands": {}
+    },
+    "restart": {
+      "aliases": [
+        "kill"
+      ],
+      "procedure": "doRestart",
+      "args": [],
+      "permission": "master",
+      "help": {
+        "id": "restart",
+        "title": "Restart",
+        "text": "Restart the bot",
+        "example": "%PREFIX%%COMMAND%"
+      },
+      "subcommands": {}
+    },
+    "command": {
+      "aliases": [
+        "cmd"
+      ],
+      "procedure": "doCommand",
+      "args": [
+        "text"
+      ],
+      "permission": "master",
+      "help": {
+        "id": "command",
+        "title": "Command Reporting",
+        "text": "Report command usage",
+        "example": "%PREFIX%%COMMAND% <command>"
+      },
+      "subcommands": {}
+    },
+    "update": {
+      "aliases": [
+        "up"
+      ],
+      "procedure": "doUpdate",
+      "args": [],
+      "permission": "master",
+      "help": {
+        "id": "update",
+        "title": "SWGOH Client Updates",
+        "text": "Client and data update routines for SWGOH",
+        "example": "%PREFIX%%COMMAND% "
+      },
+      "subcommands": {
+        "client": {
+          "aliases": [
+            "c"
+          ],
+          "procedure": "doUpdateClient",
+          "args": [
+            "text"
+          ],
+          "permission": "master",
+          "help": {
+            "id": "client",
+            "title": "Client Update",
+            "text": "Update the SWGOH client",
+            "example": "%PREFIX%%SUBCMD% [force]"
+          }
+        },
+        "players": {
+          "aliases": [
+            "p"
+          ],
+          "procedure": "doUpdatePlayers",
+          "args": [
+            "num"
+          ],
+          "permission": "master",
+          "help": {
+            "id": "players",
+            "title": "Player Update",
+            "text": "Update specified number of SWGOH players",
+            "example": "%PREFIX%%SUBCMD% <num>"
+          }
+        },
+        "guilds": {
+          "aliases": [
+            "g"
+          ],
+          "procedure": "doUpdateGuilds",
+          "args": [],
+          "permission": "master",
+          "help": {
+            "id": "guilds",
+            "title": "Guild Update",
+            "text": "Update SWGOH guilds",
+            "example": "%PREFIX%%SUBCMD% "
+          }
+        }
+      }
+    },
+    "eval": {
+      "aliases": [
+        "evil"
+      ],
+      "procedure": "doEval",
+      "args": [
+        "text"
+      ],
+      "permission": "master",
+      "help": {
+        "id": "eval",
+        "title": "Evil Eval",
+        "text": "This command can be dangerous - **caution**",
+        "example": "%PREFIX%%COMMAND% <stuff to eval>"
+      },
+      "subcommands": {}
+    }
+  }
+}

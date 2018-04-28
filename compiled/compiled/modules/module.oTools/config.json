@@ -1,0 +1,133 @@
+{
+	"id": "oTools",
+	"name": "Officer Tools",
+	"version": "0.2",
+	"type": "command",
+	"permission": "anyone",
+	"commands": {
+		"poll": {
+			"aliases": ["p"],
+			"procedure": "doPoll",
+			"args": ["text"],
+			"permission": "anyone",
+			"help": {
+				"id": "poll",
+				"title": "Quick Poll",
+				"text": "One Poll to rule them all, one Poll to find them, one Poll to bring them all and in the darkness bind them.",
+				"example": "%PREFIX%%COMMAND% <question> | <answer1> [ | <answer2> ... <answer9> ]"
+			},
+			"subcommands": {
+				
+			}
+		},
+		"warning": {
+			"aliases": ["warn", "w"],
+			"procedure": "warningAdd",
+			"args": ["id", "text"],
+			"permission": "anyone",
+			"help": {
+				"id": "warning",
+				"title": "Add Warning",
+				"text": "Issue member a warning.",
+				"example": "%PREFIX%%COMMAND% <discordId> <reason>"
+			},
+			"subcommands": {
+				"add": {
+					"aliases": ["a"],
+					"procedure": "warningAdd",
+					"args": ["id", "text"],
+					"permission": "mod",
+					"help": {
+						"id": "add",
+						"title": "Add Warning",
+						"text": "Issue member a warning.",
+						"example": "%PREFIX%%SUBCMD% <discordId> <reason>"
+					}
+				},
+				"remove": {
+					"aliases": ["r"],
+					"procedure": "warningRemove",
+					"args": ["id", "num"],
+					"permission": "admin",
+					"help": {
+						"id": "remove",
+						"title": "Remove a Warning",
+						"text": "Remove the last warning given to a specified member.",
+						"example": "%PREFIX%%SUBCMD% <discordId>"
+					}
+				},
+				"report": {
+					"aliases": ["rpt"],
+					"procedure": "warningReport",
+					"args": ["text"],
+					"permission": "anyone",
+					"help": {
+						"id": "report",
+						"title": "Warning Report",
+						"text": "Show a count of warnings issued to all users in this channel over a period of days before today's date (default is last 30 days).",
+						"example": "%PREFIX%%SUBCMD% [ <days> ]"
+					}
+				},
+				"detail": {
+					"aliases": ["d"],
+					"procedure": "warningReportDetail",
+					"args": ["text"],
+					"permission": "anyone",
+					"help": {
+						"id": "detail",
+						"title": "Warning Report Detailed",
+						"text": "Show a detailed report of warnings issued to a specified user over a period of days before today's date (default is last 30 days).",
+						"example": "%PREFIX%%SUBCMD% <discordId> [ <days> ]"
+					}
+				},
+				"clear": {
+					"aliases": ["c"],
+					"procedure": "warningClear",
+					"args": ["id"],
+					"permission": "admin",
+					"help": {
+						"id": "clear",
+						"title": "Clear Warnings",
+						"text": "Remove all warnings from a user in a channel.",
+						"example": "%PREFIX%%SUBCMD% <discordId>"
+					}
+				},
+				"info": {
+					"aliases": ["i"],
+					"procedure": "warningInfo",
+					"args": [],
+					"permission": "anyone",
+					"help": {
+						"id": "info",
+						"title": "Warning Test Info",
+						"text": "Just some info.",
+						"example": "%PREFIX%%SUBCMD%"
+					}
+				}
+			}
+		}
+	},
+	"queries": {
+	
+		"GET_WARNINGS_DAYS": "SELECT * FROM `warnings` WHERE `discordId` = ? AND `guild` = ? AND DATEDIFF(NOW(),`issued`) <= ?",
+		"GET_ALL_WARNINGS": "SELECT * FROM `warnings` WHERE `discordId` = ?",
+		
+		"GET_WARNINGS_BY_REASON": "SELECT * FROM `warnings` WHERE `discordId` = ? AND `guild` = ?",
+		"GET_WARNINGS_BY_REASON_DAYS": "SELECT * FROM `warnings` WHERE `discordId` = ? AND `channel` = ? AND DATEDIFF(NOW(),`issued`) <= ?",
+		"GET_WARNINGS_BY_CHANNEL": "SELECT * FROM `warnings` WHERE `channel` = ?",
+		"GET_WARNINGS_BY_CHANNEL_DAYS": "SELECT * FROM `warnings` WHERE `channel` = ? AND DATEDIFF(NOW(),`issued`) <= ?",
+		
+		"GET_WARNINGS_DETAILED": "SELECT * FROM `warnings` WHERE `discordId` = ? AND `channel` = ? AND DATEDIFF(NOW(),`issued`) <= ?",
+		"GET_WARNINGS_DETAILED_BY_NAME": "SELECT * FROM `warnings` WHERE LOWER(`discordName`) LIKE LOWER(?) AND `channel` = ? AND DATEDIFF(NOW(),`issued`) <= ?",
+		
+		"SET_WARNING": "INSERT INTO `warnings` (`discordId`, `discordName`, `reason`, `issuedBy`, `issuedName`, `channel`, `guild`) VALUES (?, ?, ?, ?, ?, ?, ?);",
+		
+		"DEL_WARNING_BY_ID": "DELETE FROM `warnings` WHERE `discordId` = ? AND `channel` = ? ORDER BY `issued` DESC LIMIT ?",
+		"DEL_ALL_WARNING_BY_ID": "DELETE FROM `warnings` WHERE `discordId` = ? AND `channel` = ?",
+		
+		"GET_USER_BY_NAME": "SELECT * FROM `warnings` WHERE LOWER(`discordName`) LIKE LOWER(?) AND `guild` = ?",
+		"SET_USER_AWAY": "INSERT INTO `awaylog` (`guild`, `channel`, `discordId`, `discordName`, `startDate`, `endDate`) VALUES (?, ?, ?, ?, ?, ?);",
+		"GET_USER_AWAY": "SELECT * FROM `awaylog` WHERE `discordId` = ? AND `guild` = ? AND `channel` = ?;",
+		"GET_USER_AWAY_DATE": "SELECT * FROM `awaylog` WHERE `discordId` = ? AND `guild` = ? AND `channel` = ? AND `startDate` BETWEEN ? AND ?;"
+	}
+}

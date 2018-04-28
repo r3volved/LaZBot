@@ -1,0 +1,60 @@
+{
+  "id": "google",
+  "name": "Google Tools",
+  "version": "2.5",
+  "type": "command",
+  "permission": "anyone",
+  "commands": {
+    "search": {
+      "aliases": [
+        "gs"
+      ],
+      "procedure": "doSearch",
+      "args": [
+        "text"
+      ],
+      "help": {
+        "id": "search",
+        "title": "Quick-search Google",
+        "text": "...Do you feel lucky?",
+        "example": "%PREFIX%%COMMAND% <stuff to search>"
+      },
+      "subcommands": {
+        "site": {
+          "aliases": [
+            "s"
+          ],
+          "procedure": "doSearchSite",
+          "args": [
+            "id",
+            "text"
+          ],
+          "help": {
+            "id": "site",
+            "title": "Quick-search a site from Google ",
+            "text": "...Do you feel lucky?",
+            "example": "%PREFIX%%SUBCMD% <site.com> <stuff to search>"
+          }
+        }
+      }
+    },
+    "translate": {
+      "aliases": [
+        "gt"
+      ],
+      "procedure": "doTranslate",
+      "args": [
+        "id",
+        "lang",
+        "num"
+      ],
+      "help": {
+        "id": "translate",
+        "title": "Google translate",
+        "text": "Quick translate specified number of previous user messages to specified language",
+        "example": "%PREFIX%%COMMAND% <@mention> <lang> <num>"
+      },
+      "subcommands": {}
+    }
+  }
+}

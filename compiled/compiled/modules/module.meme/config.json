@@ -1,0 +1,49 @@
+{
+
+    "id":"meme",
+
+    "name":"Meme monitor",
+
+    "version":"2.9",
+    
+    "type":"preMonitor",
+    
+    "permission":"admin",
+    
+    "commands":{
+    
+    	"meme":{
+			"aliases":["memes"],
+			"procedure":"toggle",
+			"args":["text"],
+			"help":{
+	    		"id":"meme",
+	        	"title":"Barriss is a bitch monitor",
+		        "text":"Slap a fool who mentions the skank",
+		        "example":"%PREFIX%%COMMAND% on|off"
+	    	},
+			"subcommands":{ 
+				"status":{
+					"aliases":[],
+					"procedure":"status",
+					"args":[],
+					"help":{
+			    		"id":"status",
+				        "title":"Meme monitor status",
+				        "text":"Check monitoring status for this channel.",
+				        "example":"%PREFIX%%SUBCMD%"
+			    	}
+				}
+			}
+		}
+    
+    },
+    
+    "queries":{
+    	
+    	"GET_SETTINGS":"SELECT `meme` FROM `channel` WHERE `channelID` = ?",
+    	"SET_SETTINGS":"INSERT INTO `channel` (`channelID`, `channelName`, `serverID`, `serverName`, `meme`) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE `channelName`=VALUES(`channelName`), `serverID`=VALUES(`serverID`), `serverName`=VALUES(`serverName`), `meme`=VALUES(`meme`)"
+    	
+    }    
+    
+}
