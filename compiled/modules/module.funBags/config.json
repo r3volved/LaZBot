@@ -1,0 +1,109 @@
+{
+	"id": "funBags",
+	"name": "Fun Bags",
+	"version": "0.1",
+	"type": "command",
+	"permission": "anyone",
+	"commands": {
+		"weather": {
+			"aliases": ["we"],
+			"procedure": "getWeather",
+			"args": ["text"],
+			"permission": "anyone",
+			"help": {
+				"id": "weather",
+				"title": "Get Weather",
+				"text": "Get a quick weather synopsis for a specified location.",
+				"example": "%PREFIX%%COMMAND% <location>"
+			},
+			"subcommands": {
+				"forecast": {
+					"aliases": ["f"],
+					"procedure": "getForecast",
+					"args": ["text"],
+					"permission": "anyone",
+					"help": {
+						"id": "forecast",
+						"title": "Get Weather Forecast",
+						"text": "Gets a short weather forecast.",
+						"example": "%PREFIX%%SUBCMD% <location>"
+					}
+				}
+			}
+		},
+		"spirit": {
+			"aliases": [],
+			"procedure": "doSpirit",
+			"args": [],
+			"permission": "anyone",
+			"help": {
+				"id": "spirit",
+				"title": "Spirit Animal",
+				"text": "Find out what your spirit animal is. Because people care.",
+				"example": "%PREFIX%%COMMAND%"
+			}
+		},
+		"urban": {
+			"aliases": ["ud"],
+			"procedure": "doUrban",
+			"args": ["text"],
+			"permission": "anyone",
+			"help": {
+				"id": "urban",
+				"title": "Urban Dictionary",
+				"text": "Lookup text in the Urban Dictionary. Because science.",
+				"example": "%PREFIX%%COMMAND% <search text>"
+			}
+		},
+		"quote": {
+			"aliases": ["q", "bl"],
+			"procedure": "doQLotto",
+			"args": ["text"],
+			"permission": "anyone",
+			"help": {
+				"id": "quote",
+				"title": "Borderlands quotes for the Lolz",
+				"text": "Random Borderlands quotes. For the puppies.",
+				"example": "%PREFIX%%COMMAND%"
+			},
+			"subcommands": {
+				"torgue": {
+					"aliases": ["t", "torq"],
+					"procedure": "doQTorgue",
+					"args": ["text"],
+					"permission": "anyone",
+					"help": {
+						"id": "torgue",
+						"title": "Torgue Quotes",
+						"text": "Displays random quotes from Mr. Torgue in Borderlands",
+						"example": "%PREFIX%%SUBCMD%"
+					}
+				},
+				"psycho": {
+					"aliases": ["p", "sych"],
+					"procedure": "doQPsycho",
+					"args": ["text"],
+					"permission": "anyone",
+					"help": {
+						"id": "psycho",
+						"title": "Psycho Quotes",
+						"text": "Displays random quotes from the psychos in Borderlands",
+						"example": "%PREFIX%%SUBCMD%"
+					}
+				},
+				"Jack": {
+					"aliases": ["j", "hand"],
+					"procedure": "doQJack",
+					"args": ["text"],
+					"permission": "anyone",
+					"help": {
+						"id": "jack",
+						"title": "Handsome Jack Quotes",
+						"text": "Displays random quotes from Handsome Jack in Borderlands",
+						"example": "%PREFIX%%SUBCMD%"
+					}
+				}
+			}
+		}
+	}
+}

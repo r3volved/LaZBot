@@ -1,0 +1,13 @@
+{
+       
+   "SUCCESS":"✅",
+   "ERROR":"❌",
+   "WARNING":"⚠",
+   "DENIED":"🚫",
+   "DM":"📫",
+   "THINKING":"🤔",
+   "WORK":"⏳",
+   "WORKING":"⌛",
+   "INFO":"ℹ"
+        
+}
