@@ -1,0 +1,96 @@
+{
+  "id": "monitors",
+  "name": "Monitors",
+  "version": "1.0",
+  "type": "preMonitor",
+  "permission": "anyone",
+  "commands": {
+    "meme": {
+      "aliases": [
+        "memer"
+      ],
+      "procedure": "doMeme",
+      "args": [
+        "text"
+      ],
+      "permission": "admin",
+      "help": {
+        "id": "meme",
+        "title": "Meme Monitor",
+        "text": "Watch for and respond to 'revan', 'barriss' and 'jar jar'",
+        "example": "%PREFIX%%COMMAND% <on|off>"
+      },
+      "subcommands": {
+        "status": {
+          "aliases": [
+            "state"
+          ],
+          "procedure": "doMemeStatus",
+          "args": [],
+          "permission": "anyone",
+          "help": {
+            "id": "status",
+            "title": "Meme Monitor",
+            "text": "Current meme monitor status",
+            "example": "%PREFIX%%SUBCMD% "
+          }
+        }
+      }
+    },
+    "nomention": {
+      "aliases": [
+        "nome"
+      ],
+      "procedure": "doNomention",
+      "args": [
+        "text"
+      ],
+      "permission": "admin",
+      "help": {
+        "id": "nomention",
+        "title": "Mention Monitor",
+        "text": "Watch for and respond to mentions",
+        "example": "%PREFIX%%COMMAND% <on|off>"
+      }
+    },
+    "questions": {
+      "aliases": [
+        "qmonitor"
+      ],
+      "procedure": "doQuestions",
+      "args": [
+        "text"
+      ],
+      "permission": "admin",
+      "help": {
+        "id": "questions",
+        "title": "Question Monitor",
+        "text": "Monitor a channel for questions. Remove and DM user if a non-question is send",
+        "example": "%PREFIX%%COMMAND% <on|off>"
+      },
+      "subcommands": {
+        "status": {
+          "aliases": [
+            "state"
+          ],
+          "procedure": "doQuestionsStatus",
+          "args": [],
+          "permission": "anyone",
+          "help": {
+            "id": "status",
+            "title": "Question Monitor",
+            "text": "Current question monitor status",
+            "example": "%PREFIX%%SUBCMD% "
+          }
+        }
+      }
+    }
+  },
+    
+	"queries":{
+		
+		"GET_MEME":"SELECT `meme` FROM `channel` WHERE `channelID` = ?",
+		"SET_MEME":"INSERT INTO `channel` (`channelID`, `channelName`, `serverID`, `serverName`, `meme`) VALUES (?, ?, ?, ?, ?) ON DUPLICATE KEY UPDATE `channelName`=VALUES(`channelName`), `serverID`=VALUES(`serverID`), `serverName`=VALUES(`serverName`), `meme`=VALUES(`meme`)"
+		
+	}
+}

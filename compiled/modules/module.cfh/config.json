@@ -1,0 +1,215 @@
+{
+  "id": "cfh",
+  "name": "CubsFanHan Fun",
+  "version": "2.4",
+  "type": "command",
+  "permission": "anyone",
+  "commands": {
+    "points": {
+      "aliases": [
+        "cfh",
+        "cfhp"
+      ],
+      "procedure": "doPoints",
+      "args": [
+        "text"
+      ],
+      "permission": "anyone",
+      "help": {
+        "id": "points",
+        "title": "CFH Points",
+        "text": "Han shot first",
+        "example": "%PREFIX%%COMMAND% <+-points> <mention> [reason]"
+      },
+      "subcommands": {
+        "reset": {
+          "aliases": [
+            "clear"
+          ],
+          "procedure": "doPointsReset",
+          "args": [
+            "text"
+          ],
+          "permission": "admin",
+          "help": {
+            "id": "reset",
+            "title": "Reset points",
+            "text": "Clear the points in the server and start fresh",
+            "example": "%PREFIX%%SUBCMD% <text>"
+          }
+        },
+        "report": {
+          "aliases": [
+            "list"
+          ],
+          "procedure": "doPointsReport",
+          "args": [
+            "num"
+          ],
+          "permission": "anyone",
+          "help": {
+            "id": "report",
+            "title": "Report points list",
+            "text": "See list by upper or lower limit",
+            "example": "%PREFIX%%SUBCMD% <+-limit>"
+          }
+        },
+        "see": {
+          "aliases": [
+            "view"
+          ],
+          "procedure": "doPointsSee",
+          "args": [
+            "text"
+          ],
+          "permission": "anyone",
+          "help": {
+            "id": "see",
+            "title": "See someones points",
+            "text": "See someone's CFH points by mention",
+            "example": "%PREFIX%%SUBCMD% <mention>"
+          }
+        }
+      }
+    },
+    "faction": {
+      "aliases": [
+        "f","join"
+      ],
+      "procedure": "doFaction",
+      "args": [
+        "text"
+      ],
+      "permission": "anyone",
+      "help": {
+        "id": "faction",
+        "title": "Faction Help",
+        "text": "Faction help text",
+        "example": "%PREFIX%%COMMAND% <text>"
+      },
+      "subcommands": {
+        "add": {
+          "aliases": [
+            "a"
+          ],
+          "procedure": "doFactionAdd",
+          "args": [
+            "text"
+          ],
+          "permission": "admin",
+          "help": {
+            "id": "add",
+            "title": "Faction add help",
+            "text": "Faction add text",
+            "example": "%PREFIX%%SUBCMD% <faction>"
+          }
+        },
+        "remove": {
+          "aliases": [
+            "r"
+          ],
+          "procedure": "doFactionRemove",
+          "args": [
+            "text"
+          ],
+          "permission": "admin",
+          "help": {
+            "id": "remove",
+            "title": "Faction remove help",
+            "text": "Faction remove text",
+            "example": "%PREFIX%%SUBCMD% <faction>"
+          }
+        },
+        "greeting": {
+          "aliases": [
+            "g"
+          ],
+          "procedure": "doFactionGreeting",
+          "args": [
+            "text"
+          ],
+          "permission": "admin",
+          "help": {
+            "id": "greeting",
+            "title": "Faction greeting help",
+            "text": "Faction greeting help text",
+            "example": "%PREFIX%%SUBCMD% <greeting>"
+          }
+        },
+        "status": {
+          "aliases": [
+            "s"
+          ],
+          "procedure": "doFactionStatus",
+          "args": [],
+          "permission": "admin",
+          "help": {
+            "id": "status",
+            "title": "Faction status help",
+            "text": "Faction status help text",
+            "example": "%PREFIX%%SUBCMD% "
+          }
+        },
+        "clear": {
+          "aliases": [
+            "c"
+          ],
+          "procedure": "doFactionClear",
+          "args": [
+            "text"
+          ],
+          "permission": "mod",
+          "help": {
+            "id": "clear",
+            "title": "Faction clear help",
+            "text": "Faction clear help text",
+            "example": "%PREFIX%%SUBCMD% <mention>"
+          }
+        },
+        "points": {
+          "aliases": [
+            "p"
+          ],
+          "procedure": "doFactionPoints",
+          "args": [
+            "num",
+            "text"
+          ],
+          "permission": "mod",
+          "help": {
+            "id": "points",
+            "title": "Faction points help",
+            "text": "Faction points help text",
+            "example": "%PREFIX%%SUBCMD% <+-num> [reason]"
+          }
+        },
+        "join": {
+          "aliases": [
+            "j"
+          ],
+          "procedure": "doFactionJoin",
+          "args": [
+            "text"
+          ],
+          "permission": "anyone",
+          "help": {
+            "id": "join",
+            "title": "Faction join help",
+            "text": "Faction join help text",
+            "example": "%PREFIX%%SUBCMD% <faction>"
+          }
+        }
+      }
+    }
+  },
+  "queries":{
+	
+	"GET_KARMA":"SELECT * FROM `karma` WHERE `serverId` = ? AND `carrier` = ?",
+	"SET_KARMA":"INSERT INTO `karma` (`serverId`, `carrier`, `karma`, `log`) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `karma`=(VALUES(`karma`)+`karma`), `log`=CONCAT(`log`,VALUES(`log`))",
+	
+	"GET_FACTIONS":"SELECT * FROM `factions` WHERE `factions`.`serverId` = ?",
+	"DEL_FACTION":"DELETE FROM `factions` WHERE `factions`.`serverId` = ? AND `factions`.`faction` = ?",
+	"SET_FACTION":"INSERT INTO `factions` (`serverId`, `faction`, `type`, `channelId`) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE `type`=VALUES(`type`)"
+	
+  }
+}
