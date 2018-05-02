@@ -24,6 +24,10 @@ async function warningAdd( obj ) {
         let issuedTag = obj.message.author.tag;
         let culpritTag = obj.message.mentions.users.first().tag;
 
+        if (culprit === issuedBy) {
+        	return obj.fail(':scream: Why you warn yourself dude?! Don\'t do that. :poop:');
+        }
+        
         if( useKeywords ) {
 	        let found = false;
 	        for( let val of reasons ) {
@@ -90,6 +94,10 @@ async function warningRemove( obj ) {
 	    let culprit = obj.command.args.id;
         let culpritName = obj.message.mentions.users.first().username; 
 
+        if (culprit === issuedBy) {
+        	return obj.fail(':expressionless: Srsly.');
+        }
+        
 		let getWarns = null;
 		try {
 			getWarns = await obj.instance.dbHandler.getRows(obj.instance.settings.database, obj.module.queries.GET_WARNINGS_BY_REASON_DAYS, [culprit, channel, 30]);
