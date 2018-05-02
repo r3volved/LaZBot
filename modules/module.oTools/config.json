@@ -64,8 +64,8 @@
 					"help": {
 						"id": "report",
 						"title": "Warning Report",
-						"text": "Show a count of warnings issued to all users in this channel over a period of days before today's date (default is last 30 days).",
-						"example": "%PREFIX%%SUBCMD% [ <days> ]"
+						"text": "Show a count of warnings issued to all users over a period of days before today's date. Optionally specify a channel and/or days. Default is current channel and 30 days.",
+						"example": "%PREFIX%%SUBCMD% [ <channel> <days> ]"
 					}
 				},
 				"detail": {
@@ -86,7 +86,7 @@
 					"args": ["id"],
 					"permission": "admin",
 					"help": {
-						"id": "clear",
+						"id": "warnClear",
 						"title": "Clear Warnings",
 						"text": "Remove all warnings from a user in a channel.",
 						"example": "%PREFIX%%SUBCMD% <discordId>"
