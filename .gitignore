@@ -59,9 +59,13 @@ typings/
 
 .settings/
 commands/
-modules/module.swgohRegistration/compiled/
 logs/
 spreadsheet/
-compiled/
+swgohAPI/
 test.js
 .project
+lazbot.json
+bluntbot.json
+qbot.json
+scorpio.json
+shittybot.json

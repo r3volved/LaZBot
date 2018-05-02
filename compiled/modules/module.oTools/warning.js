@@ -18,28 +18,12 @@ async function warningAdd( obj ) {
         	console.log( 'no reason' );
         	return obj.fail( '**Could not issue warning**\nNo reason given' );
         }
-
-        let culpritName = '';
-        let culpritTag = '';
-        if( obj.message.mentions.users.size > 0 ) {
-        	culpritName = obj.message.mentions.users.first().username;
-        	culpritTag = obj.message.mentions.users.first().tag;
-        } else {
-        	culpritName = obj.message.author.username;
-        	culpritTag = obj.message.author.tag;
-        }
         
         let issuedBy = obj.message.author.id;
+        let culpritName = obj.message.mentions.users.first().username;  
         let issuedTag = obj.message.author.tag;
+        let culpritTag = obj.message.mentions.users.first().tag;
 
-        if (culprit === obj.instance.client.user.id) {
-        	return obj.fail('I bet you think you\'re real funny, don\'t ya. Jackass.');
-        }
-        
-        if (culprit === issuedBy) {
-        	return obj.fail(':scream: Why you warn yourself dude?! Don\'t do that. :poop:');
-        }
-        
         if( useKeywords ) {
 	        let found = false;
 	        for( let val of reasons ) {
@@ -103,23 +87,9 @@ async function warningRemove( obj ) {
 	    let issuedBy = obj.message.author.id;
 
         let limit  =  1;
-	      let culprit = obj.command.args.id;
-        
-        let culpritName = '';
-        if( obj.message.mentions.users.size > 0 ) {
-        	culpritName = obj.message.mentions.users.first().username;
-        } else {
-        	culpritName = obj.message.author.username;
-        }
-        
-        if (culprit === obj.instance.client.user.id) {
-        	return obj.fail('Wait a minute. No you didn\'t. Go away ant.');
-        }
+	    let culprit = obj.command.args.id;
+        let culpritName = obj.message.mentions.users.first().username; 
 
-        if (culprit === issuedBy) {
-        	return obj.fail(':expressionless: Srsly.');
-        }
-        
 		let getWarns = null;
 		try {
 			getWarns = await obj.instance.dbHandler.getRows(obj.instance.settings.database, obj.module.queries.GET_WARNINGS_BY_REASON_DAYS, [culprit, channel, 30]);
@@ -173,34 +143,12 @@ async function warningReport( obj ) {
 		let server = obj.message.guild.id;
 		let channel = obj.message.channel.id;
         
-    	let { text } = obj.command.args;
-     
-        let channelId = null;
-        let days = 30;
-        let pcs = text.split(/\s+/g);
-
-		if (text.length > 0 && text.length < 17 && !isNaN(text)) {
-			days = Number(text);
-			channelId = channel;
-		} else if (text.length === 0) {
-			days = 30;
-			channelId = channel;
-		} else {
-        	for( let p of pcs ) { 
-            	if( !isNaN(p) && p.length < 3 ) {
-            		days = p;
-            	} else if (isNaN(p) && p.length >= 17) {
-					channelId = p.replace(/[\\|<|#|!]*(\d{17,18})[>]*/g, '$1');
-				}
-			}
-		}
-		if (channelId === '' || channelId === days) {
-			channelId = channel;
-		}
-
+        let text = '';
+        let days = obj.command.args.text && !isNaN(obj.command.args.text) ? parseInt(obj.command.args.text) : 30;
+        
         let getWarns = null;
         try {
-        	getWarns = await obj.instance.dbHandler.getRows(obj.instance.settings.database, obj.module.queries.GET_WARNINGS_BY_CHANNEL_DAYS, [channelId, days]);
+        	getWarns = await obj.instance.dbHandler.getRows(obj.instance.settings.database, obj.module.queries.GET_WARNINGS_BY_CHANNEL_DAYS, [channel, days]);
         } catch(e) {
         	return obj.fail('Could not find any warnings in this channel. Everyone must be a saint.');
         }
@@ -218,7 +166,7 @@ async function warningReport( obj ) {
         
         let d = new Date();
         let runDate =  d.getDate();
-        let desc = 'In the last '+days+' day(s), users in <#'+channelId+'> have warnings:\n----------------------------------------------------------\n';
+        let desc = 'In the last '+days+' day(s), these users have warnings:\n----------------------------------------------------------\n';
         
         let max = 0;
         let users = {};

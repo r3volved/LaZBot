@@ -1,0 +1,30 @@
+{
+
+    "id":"nodev",
+
+    "name":"No-mention monitor",
+
+    "version":"1.0",
+    
+    "type":"preMonitor",
+    
+    "permission":"admin",
+    
+    "commands":{
+    
+    	"nomention":{
+			"aliases":[],
+			"procedure":"nodev",
+			"args":[],
+			"help":{
+	    		"id":"nodev",
+	        	"title":"Please do not ping the SWGOH devs",
+		        "text":"We'd like to kindly ask that you avoid tagging the SWGOH devs.\nIf you'd like to ask a question, please see https://discord.gg/D3JsSVu and pose your question in <#436630440678391818>",
+		        "example":""
+	    	},
+			"subcommands":{}
+		}
+    
+    }    
+    
+}
