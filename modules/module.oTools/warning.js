@@ -18,12 +18,24 @@ async function warningAdd( obj ) {
         	console.log( 'no reason' );
         	return obj.fail( '**Could not issue warning**\nNo reason given' );
         }
+
+        let culpritName = '';
+        let culpritTag = '';
+        if( obj.message.mentions.users.size > 0 ) {
+        	culpritName = obj.message.mentions.users.first().username;
+        	culpritTag = obj.message.mentions.users.first().tag;
+        } else {
+        	culpritName = obj.message.author.username;
+        	culpritTag = obj.message.author.tag;
+        }
         
         let issuedBy = obj.message.author.id;
-        let culpritName = obj.message.mentions.users.first().username;  
         let issuedTag = obj.message.author.tag;
-        let culpritTag = obj.message.mentions.users.first().tag;
 
+        if (culprit === obj.instance.client.user.id) {
+        	return obj.fail('I bet you think you\'re real funny, don\'t ya. Jackass.');
+        }
+        
         if (culprit === issuedBy) {
         	return obj.fail(':scream: Why you warn yourself dude?! Don\'t do that. :poop:');
         }
@@ -91,8 +103,18 @@ async function warningRemove( obj ) {
 	    let issuedBy = obj.message.author.id;
 
         let limit  =  1;
-	    let culprit = obj.command.args.id;
-        let culpritName = obj.message.mentions.users.first().username; 
+	      let culprit = obj.command.args.id;
+        
+        let culpritName = '';
+        if( obj.message.mentions.users.size > 0 ) {
+        	culpritName = obj.message.mentions.users.first().username;
+        } else {
+        	culpritName = obj.message.author.username;
+        }
+        
+        if (culprit === obj.instance.client.user.id) {
+        	return obj.fail('Wait a minute. No you didn\'t. Go away ant.');
+        }
 
         if (culprit === issuedBy) {
         	return obj.fail(':expressionless: Srsly.');
