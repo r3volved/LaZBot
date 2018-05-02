@@ -24,6 +24,10 @@ async function warningAdd( obj ) {
         let issuedTag = obj.message.author.tag;
         let culpritTag = obj.message.mentions.users.first().tag;
 
+        if (culprit === issuedBy) {
+        	return obj.fail(':scream: Why you warn yourself dude?! Don\'t do that. :poop:');
+        }
+        
         if( useKeywords ) {
 	        let found = false;
 	        for( let val of reasons ) {
@@ -90,6 +94,10 @@ async function warningRemove( obj ) {
 	    let culprit = obj.command.args.id;
         let culpritName = obj.message.mentions.users.first().username; 
 
+        if (culprit === issuedBy) {
+        	return obj.fail(':expressionless: Srsly.');
+        }
+        
 		let getWarns = null;
 		try {
 			getWarns = await obj.instance.dbHandler.getRows(obj.instance.settings.database, obj.module.queries.GET_WARNINGS_BY_REASON_DAYS, [culprit, channel, 30]);
@@ -143,12 +151,34 @@ async function warningReport( obj ) {
 		let server = obj.message.guild.id;
 		let channel = obj.message.channel.id;
         
-        let text = '';
-        let days = obj.command.args.text && !isNaN(obj.command.args.text) ? parseInt(obj.command.args.text) : 30;
-        
+    	let { text } = obj.command.args;
+     
+        let channelId = null;
+        let days = 30;
+        let pcs = text.split(/\s+/g);
+
+		if (text.length > 0 && text.length < 17 && !isNaN(text)) {
+			days = Number(text);
+			channelId = channel;
+		} else if (text.length === 0) {
+			days = 30;
+			channelId = channel;
+		} else {
+        	for( let p of pcs ) { 
+            	if( !isNaN(p) && p.length < 3 ) {
+            		days = p;
+            	} else if (isNaN(p) && p.length >= 17) {
+					channelId = p.replace(/[\\|<|#|!]*(\d{17,18})[>]*/g, '$1');
+				}
+			}
+		}
+		if (channelId === '' || channelId === days) {
+			channelId = channel;
+		}
+
         let getWarns = null;
         try {
-        	getWarns = await obj.instance.dbHandler.getRows(obj.instance.settings.database, obj.module.queries.GET_WARNINGS_BY_CHANNEL_DAYS, [channel, days]);
+        	getWarns = await obj.instance.dbHandler.getRows(obj.instance.settings.database, obj.module.queries.GET_WARNINGS_BY_CHANNEL_DAYS, [channelId, days]);
         } catch(e) {
         	return obj.fail('Could not find any warnings in this channel. Everyone must be a saint.');
         }
@@ -166,7 +196,7 @@ async function warningReport( obj ) {
         
         let d = new Date();
         let runDate =  d.getDate();
-        let desc = 'In the last '+days+' day(s), these users have warnings:\n----------------------------------------------------------\n';
+        let desc = 'In the last '+days+' day(s), users in <#'+channelId+'> have warnings:\n----------------------------------------------------------\n';
         
         let max = 0;
         let users = {};
