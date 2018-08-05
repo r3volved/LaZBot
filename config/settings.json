@@ -1,0 +1,21 @@
+{
+	"token":"YOUR_TOKEN",
+	"prefix":"YOUR_PREFIX",
+	"allowed":[
+		"ALLOWED_SERVER_ID",
+		"IF_BLANK_ALL_SERVERS_ALLOWED"
+	],
+	"notallowed":"REPLY_MESSAGE_WHEN_SERVER_NOT_ALLOWED",
+	"botmasters":[
+		"ID_OF_BOTMASTER",
+		"ID_OF_BOTMASTER"
+	],
+  	"swapi":{
+  		"username":"YOUR_API_SWGOH_HELP_USERNAME",
+  		"password":"YOUR_API_SWGOH_HELP_PASSWORD"
+  	},
+	"commands":{
+		"help":"help.js",
+		"invite":"invite.js"      
+	}
+}

@@ -1,22 +1,15 @@
 {
   "name": "lazbot",
-  "version": "1.0.0",
+  "version": "5.0.0",
   "description": "Modularized discord bot",
   "main": "lazbot.js",
   "dependencies": {
+    "api-swgoh-help": "^1.6.0",
     "cheerio": "^1.0.0-rc.2",
-    "discord.js": "^11.2.1",
-    "google-protobuf": "^3.5.0",
-    "google-translate-api": "^2.3.0",
-    "moment": "^2.20.1",
-    "mongodb": "^3.0.1",
-    "mysql": "^2.15.0",
-    "node-fetch": "^2.0.0-alpha.9",
-    "node-schedule": "^1.2.5",
-    "performance-now": "^2.1.0",
-    "querystring": "^0.2.0",
-    "rss-parser-browser": "^2.2.2",
-    "uuid": "^3.1.0"
+    "discord.js": "^11.3.2",
+    "mongodb": "^3.1.0",
+    "open-graph": "^0.2.3",
+    "performance-now": "^2.1.0"
   },
   "devDependencies": {},
   "scripts": {
