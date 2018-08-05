@@ -3,20 +3,41 @@ const Discord 	= require('discord.js');
 const client 	= new Discord.Client();
 
 /** SET CLIENT SETTINGS */
-client.settings 			= require(__dirname+'/config/'+( process.argv[2] || 'settings' )+'.json');
-client.settings.root 		= __dirname;
-client.settings.cmds 		= client.settings.root+'/commands/';
-client.settings.config 		= client.settings.root+'/config/';
-
-/** INIT SWGOH SERVICE */
-const ApiSwgohHelp = require('api-swgoh-help');
-client.swapi = new ApiSwgohHelp(client.settings.swapi);
-
-/** INIT CLIENT UTILITIES */
-client.util = require(client.settings.cmds+'util.js');
+client.folders = {
+	root:__dirname,
+	config:__dirname+'/config/',
+	utilities:__dirname+'/utilities/',
+	commands:__dirname+'/commands/'
+}
 
 
- 
+/**
+ * STARTUP, INIT SETTINGS AND LOGIN
+ */
+client.startUp = async () => {
+	try {
+		await require(client.folders.utilities+'startUp.js')( client );
+		await client.login(client.settings.token);
+    } catch(err) {
+        console.error('\n ! '+err);
+        process.exit(-1);
+    }    
+}
+
+
+/**
+ * SHUTDOWN GRACEFULLY
+ */
+client.shutDown = async () => {
+	try {
+		await require(client.folders.utilities+'shutDown.js')( client );
+    } catch(err) {
+        console.error('\n ! '+err);
+        process.exit(-1);
+    }    
+}
+
+
 /**
  * MONITOR CLIENT
  */
@@ -31,9 +52,10 @@ client.on('disconnect', async (event) => {
 	//Try login again
 	if( event.code !== 4004 ) {
 		try {
-			await doLogin();
+			await client.login(client.settings.token);
 		} catch(e) {
 			console.error(' ! Error trying to re-login\n',e);
+			await client.shutDown();
 		}
 	}
 });
@@ -64,24 +86,6 @@ client.on('warn', async (info) => {
 
 
 
-/** 
- * MONITOR CLIENT
- */
-//ON CLIENT JOIN GUILD
-client.on('guildCreate', guild => {});
-//ON CLIENT LEAVES GUILD
-client.on('guildDelete', guild => {});
-
-
-
-/**
- * MONITOR GUILD MEMBERS
- */
-//ON MEMBER JOIN GUILD
-client.on('guildMemberAdd', async (member) => {});
-
-
-
 /**
  * MONITOR MESSAGES
  */
@@ -90,24 +94,20 @@ client.on('message', async (message) => {
   
 	/** Ignore conditions **/
 	if( message.author.bot ) { return; }
-	if( !message.content.startsWith(client.settings.prefix) && !message.isMentioned(client.user) ) { return; }
-	if( message.content === client.settings.prefix ) { return; }
+	if( !message.content.startsWith(client.settings.prefix) ) { return; }
 	
 	try {
 	
-		//Check if client is allowed in server
-		client.util.isAllowed( client, message );
-
 		//Match command syntax
 		const cmdRegex = new RegExp("^("+client.settings.prefix+")(.[\\S]+)[\\s]*");
 		command = message.content.match(cmdRegex) ? message.content.match(cmdRegex)[2].trim() : null;
 		
-		/** Ignore conditions **/
+		/** Ignore condition **/
 		if( !command || !client.settings.commands[command] ) { return; }
 			
 		//Do command
 		await message.react('🤔');
-		await require(client.settings.cmds+client.settings.commands[command])( client, message );
+		await require(client.folders.commands+client.settings.commands[command])( client, message );
 			
 	} catch(e) {
 		client.util.replyWithError( message, e );
@@ -115,21 +115,8 @@ client.on('message', async (message) => {
 	
 });
 
+process.on('SIGTERM', client.shutDown);
+process.on('SIGINT', client.shutDown);
 
-/**
- * LOGIN WITH TOKEN
- */
-async function doLogin() {
-
-	try {
-
-		await client.login(client.settings.token);
-    
-    } catch(err) {
-        console.error('\n ! '+err);
-        process.exit(-1);
-    }    
-
-}
-//TRIGGER LOGIN
-doLogin();
+//Do start up
+client.startUp();
