@@ -110,7 +110,8 @@ client.on('message', async (message) => {
 		await require(client.folders.commands+client.settings.commands[command])( client, message );
 			
 	} catch(e) {
-		client.util.replyWithError( message, e );
+		console.error(e);
+		client.helpers.replyWithError( message, e );
 	}	
 	
 });

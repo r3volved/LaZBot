@@ -10,16 +10,13 @@ module.exports = async ( client ) => {
 	     * Close connections
 	     */
 
-	    try {
-	    	
-	    	
-	    	console.log('Closed connection to ...');
+	    try {	    	
+			await client.mongo.close();
+	    	console.log('Closed connection to mongo');
 	    } catch(e) {
-	    	errors.push('Could not close connection to ...');
+	    	errors.push('Could not close connection to mongo');
 	    	console.error(e);
 	    }
-
-	    
 	    
 	    /**
 	     * Shut down
