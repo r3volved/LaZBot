@@ -15,8 +15,9 @@ module.exports = async ( client ) => {
 		
 		/** INIT SWGOH SERVICE */
 		const ApiSwgohHelp = require('api-swgoh-help');
-		client.swapi = new ApiSwgohHelp(client.settings.swapi);
-
+		client.swgoh = new ApiSwgohHelp(client.settings.swapi);
+		client.swapi = await require(client.folders.utilities+'swapi.js')( client.swgoh, client.cache, client.helpers );
+		
 	} catch(e) {
 		console.error(e);
 		throw e;

@@ -16,6 +16,8 @@
   	},
 	"commands":{
 		"help":"help.js",
-		"invite":"invite.js"      
+		"invite":"invite.js",
+		"player":"player.js"
+		     
 	}
 }
