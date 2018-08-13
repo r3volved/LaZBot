@@ -4,7 +4,8 @@ module.exports = clientMongo => {
 	
 	return {
 		put:put,
-		get:get
+		get:get,
+		del:del
 	};
 
 };
@@ -50,6 +51,25 @@ async function get( database, collection, matchCondition ) {
         //Try update or insert
 		matchCondition = matchCondition || {};
     	return await dbo.collection(collection).find(matchCondition).toArray();
+    	
+	} catch(e) { 
+		throw e; 
+	}    		
+
+}
+
+async function del( database, collection, matchCondition ) {
+	
+	try {
+    	
+		if( !database ) { throw new Error('No database specified to del'); }
+		if( !collection ) { throw new Error('No collection specified to del'); }
+		if( !matchCondition ) { throw new Error('No match condition provided to del'); }
+		
+		const dbo = await mongo.db( database );
+	    
+        //Try update or insert
+    	return await dbo.collection(collection).deleteMany(matchCondition);
     	
 	} catch(e) { 
 		throw e; 

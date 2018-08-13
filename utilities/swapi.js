@@ -18,7 +18,7 @@ async function player( allycode ) {
 	
 	try {
     	
-		if( !allycode || isNaN(allycode) || allycode.length !== 9 ) { throw new Error('Please provide a valid allycode'); }
+		if( !allycode || isNaN(allycode) ) { throw new Error('Please provide a valid allycode'); }
 		allycode = parseInt(allycode);
 				
 		/** Get player from cache */
@@ -27,7 +27,7 @@ async function player( allycode ) {
 		/** Check if existance and expiration */
 		if( !player || !player[0] || isExpired(player[0].updated, playerCooldown) ) { 
 			/** If not found or expired, fetch new from API and save to cache */
-			player = await swgoh.fetchPlayer(allycode);
+			player = await swgoh.fetchPlayer({ allycode:allycode });
 			player = await cache.put('swapi', 'players', {allyCode:allycode}, player);
 		} else {
 			/** If found and valid, serve from cache */
@@ -46,7 +46,7 @@ async function guild( allycode ) {
 	
 	try {
     	
-		if( !allycode || isNaN(allycode) || allycode.length !== 9 ) { throw new Error('Please provide a valid allycode'); }
+		if( !allycode || isNaN(allycode) ) { throw new Error('Please provide a valid allycode'); }
 		allycode = parseInt(allycode);
 				
 		/** Get player from cache */
@@ -58,20 +58,23 @@ async function guild( allycode ) {
 		/** Check if existance and expiration */
 		if( !guild || !guild[0] || isExpired(guild[0].updated, guildCooldown) ) { 
 			/** If not found or expired, fetch new from API and save to cache */
-			guild = await swgoh.fetchGuild(allycode, 'details');
+			guild = await swgoh.fetchGuild({ allycode:allycode });
 			guild = await cache.put('swapi', 'guilds', {name:guild.name}, guild);
-			
-			let roster = await swgoh.fetchGuild(allycode, 'roster');
-			for( let p of roster ) {
-				cache.put('swapi', 'players', {allyCode:p.allyCode}, p);
-			}
-			roster = null;
 			
 		} else {
 			/** If found and valid, serve from cache */
 			guild = guild[0];
 		}
-
+		
+		let roster = guild.roster.map(x => x.allyCode);
+		roster.forEach( async p => {
+			try {
+				await this.player( p );
+			} catch(e) {
+				console.log(e.message);
+			}
+		});
+		
 		return guild;
 		
 	} catch(e) { 
@@ -82,5 +85,5 @@ async function guild( allycode ) {
 
 function isExpired( updated, cooldown ) {
 	let diff = helpers.convertMS( new Date() - new Date(updated) );
-	return diff.hour >= cooldown;	
+	return diff.day > 0 || diff.hour >= cooldown;	
 }

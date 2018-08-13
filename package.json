@@ -4,7 +4,7 @@
   "description": "Modularized discord bot",
   "main": "lazbot.js",
   "dependencies": {
-    "api-swgoh-help": "^1.6.0",
+    "api-swgoh-help": "^2.0.0",
     "discord.js": "^11.3.2",
     "mongodb": "^3.1.1"
   },
