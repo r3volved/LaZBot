@@ -58,14 +58,6 @@ typings/
 .env
 
 .settings/
-commands/
-logs/
-spreadsheet/
-swgohAPI/
-test.js
 .project
-lazbot.json
-bluntbot.json
-qbot.json
+sb.json
 scorpio.json
-shittybot.json
